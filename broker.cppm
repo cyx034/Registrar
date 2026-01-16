@@ -6,3 +6,5 @@ export import :broker.coursebroker;
 export import :broker.enrollmentbroker;
 export import :broker.teachersecretarybroker;
 export import :broker.teacherbroker;
+export import :broker.schedulebroker;
+export import :broker.scheduleEntrybroker;

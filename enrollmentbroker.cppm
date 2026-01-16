@@ -44,7 +44,7 @@ void EnrollmentBroker::initialize()
         _enrollment.push_back(std::make_unique<Enrollment>(
             res[0]["sno"].as<string>(),
             res[0]["cno"].as<string>(),
-            res[0]["grade"].as<string>()));
+            res[0]["grade"].as<double>()));
     }
 }
 

@@ -16,7 +16,7 @@ private:
     string m_id;
     string m_name;
     string m_academy;
-    double grade;
+    string gradelevel;
     vector<shared_ptr<class ScheduleEntry>> _scheduleEntrys;
 };
 

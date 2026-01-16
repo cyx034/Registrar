@@ -15,8 +15,8 @@ private:
     string m_classTime;
     string m_classRoom;
     bool m_status;
-    int m_maxStudents;
-    int m_currentStudents;
+//    int m_maxStudents;
+//    int m_currentStudents;
     weak_ptr<Teacher> _teacher;
     weak_ptr<Course> _course;
 };
