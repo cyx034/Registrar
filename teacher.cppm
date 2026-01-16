@@ -13,7 +13,7 @@ public:
     virtual ~Teacher() override;
     void schedule();
 
-    double CourseEvalue();
+    bool CourseEvalueAccess(shared_ptr<Course> course);
 
 private:
     vector<shared_ptr<class Course>> _courses;
@@ -30,7 +30,7 @@ Teacher::void schedule()
 
 {}
 
-double Teacher::CourseEvalue()
+bool Teacher::CourseEvalueAccess(shared_ptr<Course> course)
 {
     double grade;
 

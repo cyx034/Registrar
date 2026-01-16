@@ -2,7 +2,7 @@
 export module registrar;
 export import :student;
 export import :course;
-
+export import :ui;
 
 export import :broker;
 
@@ -18,6 +18,8 @@ public:
     void studentEnrollsInCourse(string sid,string cid); //处理学生选课注册的逻辑
 
     void studentDropCourse(string sid,string cid);
+
+    void teacherEnterGrade(string sid,string cid,double grade);
 
     void courseRoster(string cid);  //打印指定课程的学生花名册（课程名单）
     void classSchedule(string sid);  //打印指定学生的课表
@@ -39,6 +41,21 @@ Registrar& Registrar::system()
     static Registrar instance;  //局部静态变量
     return instance;
 }
+
+bool Registrar::teacherEnterGrade(string tid,string sid,string cid,double grade)
+{
+    if(tid.empty()||sid.empty()||cid.empty()||grade>100||grade<0){
+        std::cerr << "数据错误" <<std::endl;
+        return false;
+    }
+    auto teacher = _teacherBroker.findTeacherById(tid);
+    auto student = _studentBroker.findStudentById(sid);
+    auto course = _courseBroker.findCourseById(cid);
+    if(teacher->CourseEvalueAccess(course)){
+        //教师有权限登入成绩，登入成绩
+    }
+}
+
 
 //处理学生选课注册的逻辑
 void Registrar::studentEnrollsInCourse(string sid,string cid)

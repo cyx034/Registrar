@@ -11,11 +11,6 @@ project(registrar LANGUAGES CXX)
 add_executable(registrar
     #math.cpp                              # 模块实现单元
     main.cpp
-
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
 )
 
 set(MODULE_INTERFACE_FILES

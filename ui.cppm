@@ -1,4 +1,4 @@
-export module ui;
+export module registrar:ui;
 import std;
 import registrar;
 
@@ -8,13 +8,20 @@ using std::cin;
 export class Ui
 {
 public:
-    Ui();//构造函数
+    Ui();
     void welcomeui();
     void studentui();
     void teacherui();
     void teachingsecretaryui();
-
+private:
+    Registrar& _registrar;
 };
+
+Ui::Ui()
+    :_registrar(Registrar::system())
+{
+    _registrar.initialize()
+}
 
 void Ui::welcomeui()
 {
@@ -25,7 +32,7 @@ void Ui::welcomeui()
         print("                  1.学生登录                   \n");
         print("                  2.教师登录                   \n");
         print("                  3.教务秘书登录                \n");
-        print("                  0.退出系统                   \n\n");
+        print("                  4.退出系统                   \n\n");
         print("请选择登录身份: ");
         cin>>choice;
         switch(choice)
@@ -35,8 +42,7 @@ void Ui::welcomeui()
                 break;
             case 2:
                 teacherui();
-                break;            print("课程表删除成功！\n");
-            break;
+                break;
             case 3:
                 teachingsecretaryui();
                 break;
@@ -57,12 +63,12 @@ void Ui::studentui()
 
     int choice;
     print("\n--------------------------------------------\n");
-    print("                     学生系统                  \n\n");
+    print("                    学生系统                  \n\n");
     print("                  1.选课功能                   \n");
     print("                  2.退课功能                   \n");
-    //print("                  3.查看课表                   \n");
-    //print("                  4.查看成绩                   \n");
-    print("                  0.返回主菜单                  \n\n");
+    print("                  3.查看课表                   \n");
+    print("                  4.查看成绩                   \n");
+    print("                  5.返回主菜单                  \n\n");
     print("请选择你要进行的操作: ");
     cin>>choice;
     switch(choice)
@@ -72,15 +78,20 @@ void Ui::studentui()
             string cid;
             print("请输入要选择的课程号: ");
             cin>>cid;
-
+            _registrar.studentEnrollsInCourse(sid,cid);
             break;
         case 2:
             string cid1;
             print("请输入要退选的课程号: ");
             cin>>cid1;
-
+            _registrar.studentDropCourse(sid,cid1);
             break;
-        case 0:
+        case 3:
+            _registrar.classSchedule(sid);
+            break;
+        case 4:
+            break;
+        case 5:
             print("返回主菜单\n");
         default:
             print("输入无效，请重新选择!\n");
@@ -114,7 +125,7 @@ void Ui::teacherui()
             cin>>sid;
             print("请输入该学生的成绩: ");
             cin>>grade;
-
+            _registrar.teacherEnterGrade(tid,sid,cid,grade);
             break;
         case 2:
             //查看教师课表
@@ -136,7 +147,7 @@ void Ui::teachingsecretaryui()
 
     int choice;
     print("\n--------------------------------------------\n");
-    print("                     教学秘书系统               \n\n");
+    print("                   教学秘书系统               \n\n");
     print("                  1.创建课程表                  \n");
     print("                  2.删除课程表                  \n");
     print("                  3.增加课程条目                \n");
