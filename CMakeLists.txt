@@ -35,7 +35,7 @@ set(MODULE_CONTROL
 
 
 set(MODULE_UI
-
+    ui.cppm
 )
 
 set(MODULE_DOMAIN
@@ -79,7 +79,6 @@ target_link_libraries(registrar
         pqxx
         pq
 )
-
 
 
 

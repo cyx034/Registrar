@@ -13,14 +13,14 @@ public:
     bool hasId(string sid,string cid);
 
 private:
-    shared_ptr<string> _studentId;
-    shared_ptr<string> _courseId;
+    string _sid;
+    string _cid;
     vector<unique_ptr<class Grade>> _grades;
 };
 
 Enrollment::Enrollment(string sid,string cid)
-    :_studentId(sid)
-    ,_courseId(cid)
+    :_sid(sid)
+    ,_cid(cid)
 {}
 
 Enrollment::~Enrollment()
@@ -28,5 +28,5 @@ Enrollment::~Enrollment()
 
 bool Enrollemnt::hasId(string sid,string cid)
 {
-    return _studentId == sid && _courseId == cid;
+    return _sid == sid && _cid == cid;
 }

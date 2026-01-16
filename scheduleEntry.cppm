@@ -18,7 +18,7 @@ private:
     int m_maxStudents;
     int m_currentStudents;
     weak_ptr<Teacher> _teacher;
-    weak_ptr<Course> _course
+    weak_ptr<Course> _course;
 };
 
 ScheduleEntry::ScheduleEntry(string id,string classTime,string classRoom,int maxStudents,
