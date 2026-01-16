@@ -11,8 +11,8 @@ public:
     Student(string id,string name,string major,string gradelevel);  //初始化
     ~Student();
 
-    void enrollIn(string cid);
-    void dropIn(string cid);
+    void enrollIn(shared_ptr<class Course> course);
+    void dropIn(shared_ptr<class Course> course);
     void schedule();
     void transcript();
 
@@ -31,24 +31,31 @@ Student::Student(string id, string name,string major,string gradelevel)
 Student::~Student()
 {}
 
-void Student::enrollIn(string cid)
+void Student::enrollIn(shared_ptr<class Course> course)
 {
-    //通过id查找课程
-    if(course->acceptEnrollment(m_id)){
-        _enrollments.push_back(make_shared<Enrollment>(m_id,cid));
+    if(!course) return;
+    auto enrollment = course->acceptenrollment(m_id);
+    if(enrollment){
+        _enrollments.push_back(enrollment); //复用Course返回的指针，不再重复创建
         print("选课成功\n");
+    }else{
+        print("选课失败\n");
     }
 }
 
-void Student::dropIn(string cid)
+void Student::dropIn(shared_ptr<class Course> course)
 {
-    //通过id找到课程
+    if(!course) return;
+    string info = course->info();
+    //获得cid
+    string cid = info.substr(0,info.find(' '));
     if(!course->dropenrollment(m_id)){
         print("退课失败，你未选该课程!\n");
         return;
     }
+    //移除学生的enrollment
     auto it = std::remove_if(_enrollments.begin(),_enrollments.end(),
-                                [&](const shared_ptr<Enrollment>& en)){
+                                [this,&cid](const shared_ptr<Enrollment>& en)){
                                     return en->hasId(m_id,cid);
                                 }
                             );

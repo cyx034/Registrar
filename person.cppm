@@ -21,10 +21,9 @@ Person::Person(string id,string name,string academy)
 Person::~Person()
 {}
 
-
 Person::string info()
 {
-    return format("id: {}, name: {}, academy: {}",m_id,m_name,m_academy);
+    return format("{}  {}  {}\n", m_id, m_name,m_academy);
 }
 
 bool Person::hasId(string id)

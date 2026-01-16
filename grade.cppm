@@ -27,7 +27,7 @@ Grade:::~Grade()
 
 double Grade::score()
 {
-    //假设成绩已存在
+    //成绩已存在
     auto size = m_homeworks.size();
     if(size == 0) return 0;
     std::stable_sort(m_homeworks.begin(),m_homeworks.end());

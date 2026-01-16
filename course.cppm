@@ -11,7 +11,7 @@ public:
     Course(string id,string name);
     ~Course();
 
-    bool acceptEnrollment(string sid);
+    shared_ptr<class Enrollemnt> acceptEnrollment(string sid);
     bool dropEnrollment(string sid);
     string info();
     bool hasId(string id);
@@ -34,11 +34,11 @@ Course::Course(string id, string name)
 Course::~Course()
 {}
 
-bool Course::acceptEnrollment(string sid)
+shared_ptr<Enrollemnt> Course::acceptEnrollment(string sid)
 {
     //判断条件并添加选课记录
     if(_enrollments.size() > 60){   //人数限制
-        return false;
+        return nullptr;
     }
     //学分限制
     //课程冲突
@@ -49,9 +49,11 @@ bool Course::acceptEnrollment(string sid)
                                     return en->hasId(sid,m_id);
                                 }
                             );
-    if(it != _enrollments.end()) return false;  //已存在，选课失败
-
-    _enrollments.push_back(make_shared<Enrollment>(sid,m_id));
+    if(it != _enrollments.end()) return nullptr;  //已存在，选课失败
+    //创建共享的enrollment对象
+    auto enrollment = make_shared<Enrollment>(sid,m_id);
+    _enrollments.push_back(enrollment);
+    return enrollment;   //返回这个智能指针给Student
 
     return true;
 }
@@ -59,7 +61,7 @@ bool Course::acceptEnrollment(string sid)
 bool Course::dropEnrollment(string sid)
 {
     auto it = std::find_if(_enrollments.begin(),_enrollments.end(),
-                                [&sid](const shared_ptr<Enrollment>& en){
+                                [&sid,m_id](const shared_ptr<Enrollment>& en){
                                     return en->hasId(sid,m_id);
                                 }
                             );
