@@ -1,5 +1,6 @@
 export module registrar:domain.person;
 import std;
+using std::string;
 
 using std::string;
 
