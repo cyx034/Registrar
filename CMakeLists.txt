@@ -11,6 +11,7 @@ project(registrar LANGUAGES CXX)
 add_executable(registrar
     #math.cpp                              # 模块实现单元
     main.cpp
+    broker.cppm
 
 
 )
@@ -18,7 +19,6 @@ add_executable(registrar
 set(MODULE_INTERFACE_FILES
     #${MODULE_LIB_DIR1}/utils.cppm         #添加模块库的模块接口单元
     #math.cppm                             # 模块接口单元
-    registrar.cppm
 )
 
 set(MODULE_BROKER
@@ -31,7 +31,7 @@ set(MODULE_BROKER
 )
 
 set(MODULE_CONTROL
-
+    registrar.cppm
 )
 
 
@@ -65,6 +65,16 @@ target_sources(registrar  PRIVATE FILE_SET cxx_modules TYPE CXX_MODULES
 target_compile_features(registrar PRIVATE cxx_std_23)
 
 
+target_include_directories(registrar
+    PRIVATE
+        /usr/include
+)
+
+target_link_libraries(registrar
+    PRIVATE
+        pqxx
+        pq
+)
 
 
 
