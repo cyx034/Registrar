@@ -12,11 +12,8 @@ public:
     Teacher(Person person);
     virtual ~Teacher() override;
     void schedule();
-<<<<<<< Updated upstream
-    double CourseEvalue(shared_ptr<class Course> course);
-=======
-    double CourseEvalue(shared_ptr<Course> course);
->>>>>>> Stashed changes
+
+    double CourseEvalue();
 
 private:
     vector<shared_ptr<class Course>> _courses;
@@ -29,19 +26,12 @@ Teacher::Teacher(Person person)
 Teacher::~Teacher()
 {}
 
-
-<<<<<<< Updated upstream
-void Teacher::schedule()
-=======
 Teacher::void schedule()
->>>>>>> Stashed changes
+
 {}
 
-double Teacher::CourseEvalue(shared_ptr<Course> course)
+double Teacher::CourseEvalue()
 {
     double grade;
-<<<<<<< Updated upstream
-=======
-    print("You want to ")
->>>>>>> Stashed changes
+
 }

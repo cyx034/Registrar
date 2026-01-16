@@ -1,6 +1,5 @@
 export module registrar:domain.teacherSecretary;
 import std;
-<<<<<<< Updated upstream
 import :domain.person;
 using std::shared_ptr;
 using std::make_shared;
@@ -25,11 +24,6 @@ TeacherSecretary::TeacherSecretaryg(Person person)
     :Person(person)
 {}
 
-
-=======
-import registrar:domain.person;
-using std::shared_ptr;using std::print;using std::string;using std::vector;
-
 export class TeacherSecretary : public Person
 {
 public:
@@ -52,16 +46,11 @@ TeacherSecretary::TeacherSecretary(string id,string name,string academy)
     :Person(id,name,academy)
 {}
 
->>>>>>> Stashed changes
 //创建新的课程表
 void TeacherSecretary::createSchedule(string id)
 {
     for(auto& s:_schedules){
-<<<<<<< Updated upstream
-        if(hasId(id)){
-=======
         if(s->hasId(id)){
->>>>>>> Stashed changes
             print("此课程已存在");
             return;
         }
@@ -71,8 +60,6 @@ void TeacherSecretary::createSchedule(string id)
     print("已成功创建一个新课程");
 }
 
-<<<<<<< Updated upstream
-=======
 //创建新的课程条目
 void TeacherSecretary::createScheduleEntry()
 {
@@ -80,32 +67,18 @@ void TeacherSecretary::createScheduleEntry()
     _scheduleEntrys.push_back(e);
 }
 
->>>>>>> Stashed changes
 //删除课程表
 void TeacherSecretary::removeSchedule(string id)
 {
     for(auto&s :_schedules){
         if(s->hasId(id)){
-<<<<<<< Updated upstream
-            _schedules.erase(s);//课程表移除课程条目
-=======
-            _schedules.erase(s);//删除
->>>>>>> Stashed changes
+            _schedules.erase(s);
             return;
         }
     }
     print("此课程不存在");
 }
 
-<<<<<<< Updated upstream
-//向课程表中添加新的课程条目
-void TeacherSecretary::addEntryToSchedule(string id)
-{
-    for(auto& s:_schedules){
-        if(s->hasId(id)){
-            s->addScheduleEntry();//课程表添加课程条目
-            return;
-=======
 //删除课程表条目
 void TeacherSecretary::removeScheduleEntry(string id)
 {
@@ -126,7 +99,6 @@ void TeacherSecretary::addEntryToSchedule(string id，string sid)
             if(s->hasId(id) && se->hasId(sid){
                 s->addScheduleEntry(se);//课程表添加课程条目
                 return;
->>>>>>> Stashed changes
         }
     }
     print("此课程不存在");
@@ -137,10 +109,6 @@ void TeacherSecretary::addEntryToSchedule(string id，string sid)
 void TeacherSecretary::removeEntryToSchedule(string id,string entryId)
 {
     for(auto&s :_schedules){
-<<<<<<< Updated upstream
-        if(s->hasId(id)){
-            s->removeScheduleEntry(id);//课程表移除课程条目
-=======
         for(auto& se:_scheduleEntrys){
             if(s->hasId(id)){
                 s->removeScheduleEntry(se);//课程表移除课程条目
@@ -157,24 +125,12 @@ void TeacherSecretary::modifySchedule(string id)
     for(auto&s :_schedules){
         if(s->hasId(id)){
             s->modify(id);
->>>>>>> Stashed changes
             return;
         }
     }
     print("此课程不存在");
 }
 
-<<<<<<< Updated upstream
-//修改课程表中的某个课程条目
-void TeacherSecretary::modifySchedule(string id,string entryId)
-{
-    for(auto&s :_schedules){
-        if(s->hasId(id)){
-            schedule->modifyScheduleEntry(Id);//课程表修改课程条目
-        }
-    }
-}
-=======
 //修改课程条目的信息
 void TeacherSecretary::modifyScheduleEntry(string sid)
 {
@@ -188,4 +144,3 @@ void TeacherSecretary::modifyScheduleEntry(string sid)
     print("此课程条目不存在");
 }
 
->>>>>>> Stashed changes

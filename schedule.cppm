@@ -1,14 +1,11 @@
 export module registrar:domain.schedule;
 import std;
-<<<<<<< Updated upstream
+
 using std::vector;
 using std::weak_ptr;
 using std::string;
 using std::shared_ptr;
 using std::print;
-=======
-using std::vector;using std::weak_ptr;using std::string;using std::shared_ptr;using std::print;
->>>>>>> Stashed changes
 
 //课程表
 export class Schedule
@@ -48,15 +45,8 @@ void Schedule::modify(string id)
 //向课程表中添加新的课程条目
 void Schedule::addScheduleEntry(shared_ptr<ScheduleEntry> scheduleEntry)
 {
-<<<<<<< Updated upstream
-    shared_ptr<ScheduleEntry> entry;
-    entry->addinformation();
-    this->_scheduleEntrys.push_back(entry);
-    print("已成功添加该课程条目");
-=======
     _scheduleEntrys.push_back(scheduleEntry);
     print("已从该课程中成功添加该条目");
->>>>>>> Stashed changes
 }
 
 //向课程表中删除课程条目
