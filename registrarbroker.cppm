@@ -16,7 +16,7 @@ public:
     virtual ~RegistrarBroker();
     void connect();
 protected:
-    std::unique_ptr<pqxx::connection> dbConnection;//conn("host=localhost port=5432 dbname=db user=postgres");
+    std::shared_ptr<pqxx::connection> dbConnection;//conn("host=localhost port=5432 dbname=db user=postgres");
     bool status;
 };
 

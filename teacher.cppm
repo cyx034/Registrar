@@ -1,5 +1,5 @@
-export module   ;
-import //导入基类
+export module registrar:domain.teacher;
+import :domain.person;
 import std;
 
 using std::print;

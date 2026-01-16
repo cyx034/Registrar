@@ -9,20 +9,20 @@ import std;
 using std::string;
 using std::cerr;
 using std::endl;
-using std::unique_ptr;
+using std::shared_ptr;
 
 export class StudentBroker: public RegistrarBroker
 {
 public:
     using RegistrarBroker::RegistrarBroker;
 
-    std::unique_ptr<Student> findStudentById(const std::string& id);
+    std::shared_ptr<Student> findStudentById(const std::string& id);
     void initialize();
 
 private:
-    vector<unique_ptr<Student>> _students;
-    unique_ptr<Student> findStudentByIdLocal(const string &id);
-    unique_ptr<Student> findStudentByIdDB(const string& id);
+    vector<shared_ptr<Student>> _students;
+    shared_ptr<Student> findStudentByIdLocal(const string &id);
+    shared_ptr<Student> findStudentByIdDB(const string& id);
 };
 
 void StudentBroker::initialize()
@@ -44,14 +44,14 @@ void StudentBroker::initialize()
     }
 }
 
-std::unique_ptr<Student> StudentBroker::findStudentById(const std::string& id)
+shared_ptr<Student> StudentBroker::findStudentById(const std::string& id)
 {
     if(auto local = findStudentByIdLocal(id))  //先从本地缓存中找
         return local;
     return findStudentByIdDB(id); //没有就去数据库中找
 }
 
-unique_ptr<Student> StudentBroker::findStudentByIdLocal(const string &id)
+shared_ptr<Student> StudentBroker::findStudentByIdLocal(const string &id)
 {
     for(auto& student : _students){
         if(student->hasId(id))
@@ -60,7 +60,7 @@ unique_ptr<Student> StudentBroker::findStudentByIdLocal(const string &id)
     return nullptr;
 }
 
-unique_ptr<Student> StudentBroker::findStudentByIdDB(const string& id)
+shared_ptr<Student> StudentBroker::findStudentByIdDB(const string& id)
 {
     if (!status) {
         cerr << "数据库未连接" << endl;
@@ -80,7 +80,7 @@ unique_ptr<Student> StudentBroker::findStudentByIdDB(const string& id)
             res[0]["sacademy"].as<string>(),
             res[0]["smajor"].as<string>()
         );
-        _student.pushback(std::move(student));
+        _student.push_back(std::move(student));
     } catch (const std::exception& e) {
         cerr << "查询失败：" << e.what() << endl;
         return nullptr;

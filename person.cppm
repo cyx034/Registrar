@@ -1,4 +1,4 @@
-export module person;
+export module registrar:domain.person;
 import std;
 
 export class Person

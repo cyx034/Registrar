@@ -10,20 +10,20 @@ import std;
 using std::string;
 using std::cerr;
 using std::endl;
-using std::unique_ptr;
+using std::shared_ptr;
 
 export class CourseBroker : public RegistrarBroker
 {
 public:
     using RegistrarBroker::RegistrarBroker;
 
-    std::unique_ptr<Course> findCourseById(const std::string& id);
+    std::shared_ptr<Course> findCourseById(const std::string& id);
     void initialize();
 
 private:
-    vector<std::unique_ptr<Course>> _courses;
-    unique_ptr<Course> findCourseByIdLocal(const string &id);
-    unique_ptr<Course> findCourseByIdDB(const string& id);
+    vector<std::shared_ptr<Course>> _courses;
+    shared_ptr<Course> findCourseByIdLocal(const string &id);
+    shared_ptr<Course> findCourseByIdDB(const string& id);
 };
 
 void CourseBroker::initialize()
@@ -46,14 +46,14 @@ void CourseBroker::initialize()
     }
 }
 
-unique_ptr<Course> CourseBroker::findCourseById(const std::string& id)
+shared_ptr<Course> CourseBroker::findCourseById(const std::string& id)
 {
     if(auto local = findCourseByIdLocal(id))  //先从本地缓存中找
         return local;
     return findCourseByIdDB(id); //没有就去数据库中找
 }
 
-unique_ptr<Course> CourseBroker::findCourseByIdLocal(const string &id)
+shared_ptr<Course> CourseBroker::findCourseByIdLocal(const string &id)
 {
     for(auto& course : _courses){
         if(course->hasId(id))
@@ -62,7 +62,7 @@ unique_ptr<Course> CourseBroker::findCourseByIdLocal(const string &id)
     return nullptr;
 }
 
-unique_ptr<Course> CourseBroker::findCourseByIdDB(const string& id)
+shared_ptr<Course> CourseBroker::findCourseByIdDB(const string& id)
 {
     if (!status) {
         cerr << "数据库未连接" << endl;
@@ -82,7 +82,7 @@ unique_ptr<Course> CourseBroker::findCourseByIdDB(const string& id)
             res[0]["ccredit"].as<string>(),
             res[0]["cacademy"].as<string>(),
             res[0]["tno"].as<string>());
-        _courses.pushback(std::move(course));   //把用到的存入缓存区
+        _courses.push_back(std::move(course));   //把用到的存入缓存区
     } catch (const std::exception& e) {
         cerr << "查询失败：" << e.what() << endl;
         return nullptr;

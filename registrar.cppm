@@ -28,6 +28,8 @@ private:
                  //再配合静态成员函数来创建对象）
     StudentBroker _studentBroker;
     CourseBroker _courseBroker;
+    Teacher _teacherBroker;
+    TeacherSecretary _secretaryBroker;
 };
 
 
@@ -41,8 +43,8 @@ Registrar& Registrar::system()
 //处理学生选课注册的逻辑
 void Registrar::studentEnrollsInCourse(string sid,string cid)
 {
-    Student* student = findStudentById(sid);  //查找学生
-    Course* course = findCourseById(cid);  //查找课程
+    auto student = _studentBroker.findStudentById(sid);  //查找学生
+    auto course = _courseBroker.findCourseById(cid);  //查找课程
 
     if(student && course){  //如果学生和课程都存在
         student -> enrollIn(course);  //执行注册
@@ -52,8 +54,8 @@ void Registrar::studentEnrollsInCourse(string sid,string cid)
 //处理学生退课逻辑
 void Registrar::studentDropCourse(string sid,string cid)
 {
-    Student* student = findStudentById(sid);  //查找学生
-    Course* course = findCourseById(cid);  //查找课程
+    auto student = _studentBroker.findStudentById(sid);  //查找学生
+    auto course = _courseBroker.findCourseById(cid);  //查找课程
 
     if(student && course){  //如果学生和课程都存在
        student -> dropOut(course);  //执行注册
@@ -63,7 +65,7 @@ void Registrar::studentDropCourse(string sid,string cid)
 //打印指定课程的学生花名册（课程名单）
 void Registrar::courseRoster(string cid)
 {
-    auto c = findCourseById(cid); //查找课程
+    auto c = _courseBroker.findCourseById(cid); //查找课程
     //缺少空指针检查
     print("{}\n",c->roster());
 }
@@ -71,7 +73,7 @@ void Registrar::courseRoster(string cid)
 //打印指定学生的课表
 void Registrar::classSchedule(string sid)
 {
-    auto s = findStudentById(sid);
+    auto s = _studentBroker.findStudentById(sid);
     print("{}\n",s->printSchedules());
 }
 
@@ -80,6 +82,8 @@ void Registrar::initialize()  //系统初始化
 {
     _studentBroker.initialize();
     _courseBroker.initialize();
+    _teacherBroker.initialize();
+    _secretaryBroker.initialize();
 }
 
 Registrar::Registrar(){}

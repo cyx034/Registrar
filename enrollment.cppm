@@ -1,4 +1,4 @@
-export module enrollment;
+export module registrar:domain.enrollment;
 import std;
 
 using std::string;

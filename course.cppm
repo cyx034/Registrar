@@ -1,4 +1,4 @@
-export module course;
+export module registrar:domain.course;
 import std;
 
 using std::string;

@@ -9,20 +9,20 @@ import std;
 using std::string;
 using std::cerr;
 using std::endl;
-using std::unique_ptr;
+using std::shared_ptr;
 
 export class TeacherSecretaryBroker : public RegistrarBroker
 {
 public:
     using RegistrarBroker::RegistrarBroker;
 
-    std::unique_ptr<TeacherSecretary> findTeacherSecretaryById(const std::string& id);
+    std::shared_ptr<TeacherSecretary> findTeacherSecretaryById(const std::string& id);
     void initialize();
 
 private:
-    vector<std::unique_ptr<TeacherSecretary>> _teachersecretary;
-    unique_ptr<TeacherSecretary> findTeacherSecretaryByIdLocal(const string &id);
-    unique_ptr<TeacherSecretary> findTeacherSecretaryByIdDB(const string& id);
+    vector<std::shared_ptr<TeacherSecretary>> _teachersecretary;
+    shared_ptr<TeacherSecretary> findTeacherSecretaryByIdLocal(const string &id);
+    shared_ptr<TeacherSecretary> findTeacherSecretaryByIdDB(const string& id);
 };
 
 void TeacherSecretaryBroker::initialize()
@@ -43,14 +43,14 @@ void TeacherSecretaryBroker::initialize()
     }
 }
 
-unique_ptr<TeacherSecretary> TeacherSecretaryBroker::findTeacherSecretaryById(const std::string& id)
+shared_ptr<TeacherSecretary> TeacherSecretaryBroker::findTeacherSecretaryById(const std::string& id)
 {
     if(auto local = findTeacherSecretaryByIdLocal(id))  //先从本地缓存中找
         return local;
     return findTeacherSecretaryByIdDB(id); //没有就去数据库中找
 }
 
-unique_ptr<TeacherSecretary> TeacherSecretaryBroker::findTeacherSecretaryByIdLocal(const string &id)
+shared_ptr<TeacherSecretary> TeacherSecretaryBroker::findTeacherSecretaryByIdLocal(const string &id)
 {
     for(auto& teachersecretary : _teachersecretary){
         if(teachersecretary->hasId(id))
@@ -59,7 +59,7 @@ unique_ptr<TeacherSecretary> TeacherSecretaryBroker::findTeacherSecretaryByIdLoc
     return nullptr;
 }
 
-unique_ptr<TeacherSecretary> TeacherSecretaryBroker::findTeacherSecretaryByIdDB(const string& id)
+shared_ptr<TeacherSecretary> TeacherSecretaryBroker::findTeacherSecretaryByIdDB(const string& id)
 {
     if (!status) {
         cerr << "数据库未连接" << endl;
@@ -77,7 +77,7 @@ unique_ptr<TeacherSecretary> TeacherSecretaryBroker::findTeacherSecretaryByIdDB(
             res[0]["tsno"].as<string>(),
             res[0]["tsname"].as<string>(),
             res[0]["tsacademy"].as<string>());
-        _teachersecretary.pushback(std::move(teachersecretary));   //把用到的存入缓存区
+        _teachersecretary.push_back(std::move(teachersecretary));   //把用到的存入缓存区
     } catch (const std::exception& e) {
         cerr << "查询失败：" << e.what() << endl;
         return nullptr;

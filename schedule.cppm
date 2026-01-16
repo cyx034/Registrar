@@ -1,4 +1,4 @@
-export module ;
+export module registrar:domain.schedule;
 import std;
 using std::vector;using std::weak_ptr;
 

@@ -1,11 +1,11 @@
-export module ?;
+export module registrar:domain.teacherSecretary;
 import std;
 using std::shared_ptr;
 
-export class TeacherSecretaryg:public Person
+export class TeacherSecretary:public Person
 {
 public:
-    TeacherSecretaryg(Person person);
+    TeacherSecretary(Person person);
     void createSchedule(string id);
     bool addEntryToSchedule(string id);
     bool removeEntryToSchedule(string id);
@@ -15,13 +15,13 @@ private:
     vector<shared_ptr<Schedule>> _schedules;
 };
 
-TeacherSecretaryg::TeacherSecretaryg(Person person)
+TeacherSecretary::TeacherSecretaryg(Person person)
     :Person(person)
 {}
 
 
 //创建新的课程表
-void TeacherSecretaryg::createSchedule(string id)
+void TeacherSecretary::createSchedule(string id)
 {
     for(auto& s:_schedules){
         if(hasId(id)){
@@ -35,7 +35,7 @@ void TeacherSecretaryg::createSchedule(string id)
 }
 
 //删除课程表
-void TeacherSecretaryg::removeSchedule(string id)
+void TeacherSecretary::removeSchedule(string id)
 {
     for(auto&s :_schedules){
         if(s->hasId(id)){
@@ -47,7 +47,7 @@ void TeacherSecretaryg::removeSchedule(string id)
 }
 
 //向课程表中添加新的课程条目
-void TeacherSecretaryg::addEntryToSchedule(string id)
+void TeacherSecretary::addEntryToSchedule(string id)
 {
     for(auto& s:_schedules){
         if(s->hasId(id)){
@@ -60,7 +60,7 @@ void TeacherSecretaryg::addEntryToSchedule(string id)
 
 
 //删除课程表的某个课程条目
-void TeacherSecretaryg::removeEntryToSchedule(string id,string entryId)
+void TeacherSecretary::removeEntryToSchedule(string id,string entryId)
 {
     for(auto&s :_schedules){
         if(s->hasId(id)){
@@ -72,7 +72,7 @@ void TeacherSecretaryg::removeEntryToSchedule(string id,string entryId)
 }
 
 //修改课程表中的某个课程条目
-void TeacherSecretaryg::modifySchedule(string id,string entryId)
+void TeacherSecretary::modifySchedule(string id,string entryId)
 {
     for(auto&s :_schedules){
         if(s->hasId(id)){

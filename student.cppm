@@ -1,4 +1,4 @@
-export module person:student;
+export module registrar:domain.student;
 import std;
 import person;
 

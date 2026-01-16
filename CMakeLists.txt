@@ -11,6 +11,7 @@ project(registrar LANGUAGES CXX)
 add_executable(registrar
     #math.cpp                              # 模块实现单元
     main.cpp
+
 )
 
 set(MODULE_INTERFACE_FILES
@@ -44,9 +45,10 @@ set(MODULE_DOMAIN
     enrollment.cppm
     grade.cppm
     teacher.cppm
-    teacherSecretaryg.cppm
+    teacherSecretary.cppm
     schedule.cppm
     scheduleEntry.cppm
+    domain.cppm
 
 )
 

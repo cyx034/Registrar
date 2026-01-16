@@ -9,14 +9,14 @@ import std;
 using std::string;
 using std::cerr;
 using std::endl;
-using std::unique_ptr;
+using std::shared_ptr;
 
 export class EnrollmentBroker : public RegistrarBroker
 {
 public:
     using RegistrarBroker::RegistrarBroker;
 
-    std::unique_ptr<Enrollment> findEnrollmentById(const string& sid,const string& cid);
+    std::shared_ptr<Enrollment> findEnrollmentById(const string& sid,const string& cid);
 //    string getCourseRoster(const string& courseId);
 
     bool save(Enrollment *enrollment);
@@ -25,9 +25,9 @@ public:
     void initialize();
 
 private:
-    vector<std::unique_ptr<Enrollment>> _enrollment;
-    unique_ptr<Erollment> findEnrollmentByIdLocal(const string& sid,const string& cid);
-    unique_ptr<Erollment> findEnrollBymentIdDB(const string& sid,const string& cid);
+    vector<std::shared_ptr<Enrollment>> _enrollment;
+    shared_ptr<Erollment> findEnrollmentByIdLocal(const string& sid,const string& cid);
+    shared_ptr<Erollment> findEnrollBymentIdDB(const string& sid,const string& cid);
 };
 
 void EnrollmentBroker::initialize()
@@ -117,14 +117,14 @@ bool EnrollmentBroker::remove(Enrollment *enrollment)
 
 
 
-unique_ptr<Enrollment> EnrollmentBroker::findEnrollmentById(const std::string& sid,const std::string& cid)
+shared_ptr<Enrollment> EnrollmentBroker::findEnrollmentById(const std::string& sid,const std::string& cid)
 {
     if(auto local = findCourseByIdLocal(id))  //先从本地缓存中找
         return local;
     return findCourseByIdDB(id); //没有就去数据库中找
 }
 
-unique_ptr<Erollment> EnrollmentBroker::findEnrollmentByLocal(const string& sid,const string& cid)
+shared_ptr<Erollment> EnrollmentBroker::findEnrollmentByLocal(const string& sid,const string& cid)
 {
     for(auto& enrollment : _enrollment){
         if(enrollment->hasId(id))
@@ -133,7 +133,7 @@ unique_ptr<Erollment> EnrollmentBroker::findEnrollmentByLocal(const string& sid,
     return nullptr;
 }
 
-unique_ptr<Enrollment> EnrollmentBroker::findEnrollBymentIdDB(const string& sid,const string& cid)
+shared_ptr<Enrollment> EnrollmentBroker::findEnrollBymentIdDB(const string& sid,const string& cid)
 {
     if (!status) {
         cerr << "数据库未连接" << endl;

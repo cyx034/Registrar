@@ -1,4 +1,4 @@
-export module enrollment:grade;
+export module registrar:domain.enrollment.grade;
 import std;
 
 using std::vector;
