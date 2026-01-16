@@ -22,7 +22,7 @@ Grade::Grade(double midterm,double final,vector<double> homeworks)
     ,m_homeworks(homeworks)
 {}
 
-Grade:::~Grade()
+Grade::~Grade()
 {}
 
 double Grade::score()
@@ -38,5 +38,5 @@ double Grade::score()
     }else{
      median = m_homeworks[mid];
     }
-    return 0.2 * m_midterm + 0.4 * m_final + 0.4 * median(m_homeworks);
+    return 0.2 * m_midterm + 0.4 * m_final + 0.4 * median;
 }

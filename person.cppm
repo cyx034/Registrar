@@ -1,6 +1,8 @@
 export module registrar:domain.person;
 import std;
 
+using std::string;
+
 export class Person
 {
 public:
@@ -21,7 +23,7 @@ Person::Person(string id,string name,string academy)
 Person::~Person()
 {}
 
-Person::string info()
+string Person::info()
 {
     return format("{}  {}  {}\n", m_id, m_name,m_academy);
 }

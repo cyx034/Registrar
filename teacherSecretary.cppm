@@ -1,6 +1,11 @@
 export module registrar:domain.teacherSecretary;
 import std;
+import :domain.person;
 using std::shared_ptr;
+using std::make_shared;
+using std::string;
+using std::vector;
+using std::print;
 
 export class TeacherSecretary:public Person
 {
@@ -9,10 +14,10 @@ public:
     void createSchedule(string id);
     bool addEntryToSchedule(string id);
     bool removeEntryToSchedule(string id);
-    void removeEntryToSchedule(string id,string entryId)；
+    void removeEntryToSchedule(string id,string entryId);
     bool modifySchedule(string id,string entryId);
 private:
-    vector<shared_ptr<Schedule>> _schedules;
+    vector<shared_ptr<class Schedule>> _schedules;
 };
 
 TeacherSecretary::TeacherSecretaryg(Person person)
@@ -64,7 +69,7 @@ void TeacherSecretary::removeEntryToSchedule(string id,string entryId)
 {
     for(auto&s :_schedules){
         if(s->hasId(id)){
-            s->removeScheduleEntry(Id);//课程表移除课程条目
+            s->removeScheduleEntry(id);//课程表移除课程条目
             return;
         }
     }

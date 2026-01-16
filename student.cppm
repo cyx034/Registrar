@@ -1,14 +1,17 @@
 export module registrar:domain.student;
 import std;
-import person;
+import :domain.person;
+import :domain.enrollment;
 
 using std::string;
 using std::shared_ptr;
+using std::vector;
+using std::print;
 
 export class Student : public Person
 {
 public:
-    Student(string id,string name,string major,string gradelevel);  //初始化
+    Student(string id,string name,string major,string gradelevel); //初始化
     ~Student();
 
     void enrollIn(shared_ptr<class Course> course);
@@ -22,7 +25,7 @@ private:
     vector<shared_ptr<class Enrollment>> _enrollments;
 };
 
-Student::Student(string id, string name,string major,string gradelevel)
+Student::Student(string id,string name,string major,string gradelevel)
     :Person(id,name)
     ,m_major(major)
     ,m_gradelevel(gradelevel)
@@ -34,7 +37,7 @@ Student::~Student()
 void Student::enrollIn(shared_ptr<class Course> course)
 {
     if(!course) return;
-    auto enrollment = course->acceptenrollment(m_id);
+    auto enrollment = course->acceptEnrollment(m_id);
     if(enrollment){
         _enrollments.push_back(enrollment); //复用Course返回的指针，不再重复创建
         print("选课成功\n");
@@ -49,13 +52,13 @@ void Student::dropIn(shared_ptr<class Course> course)
     string info = course->info();
     //获得cid
     string cid = info.substr(0,info.find(' '));
-    if(!course->dropenrollment(m_id)){
+    if(!course->dropEnrollment(m_id)){
         print("退课失败，你未选该课程!\n");
         return;
     }
     //移除学生的enrollment
     auto it = std::remove_if(_enrollments.begin(),_enrollments.end(),
-                                [this,&cid](const shared_ptr<Enrollment>& en)){
+                                [this,&cid](const shared_ptr<Enrollment>& en){
                                     return en->hasId(m_id,cid);
                                 }
                             );

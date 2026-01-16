@@ -1,15 +1,18 @@
 export module registrar:domain.scheduleEntry;
 import std;
+import :domain.schedule;
 using std::weak_ptr;
+using std::print;
+using std::string;
 
 export class ScheduleEntry
 {
 public:
     ScheduleEntry(string id,string classTime,string classRoom,int maxStudents,
-                            int currentStudents,weak_ptr<teacher> teacher,weak_ptr<course> course)
+                            int currentStudents,weak_ptr<Teacher> teacher,weak_ptr<Course> course)
     ~ScheduleEntry();
     void modify(weak_ptr<ScheduleEntry> cheduleEntry);
-    //int setStatus(int newStatus);
+
 private:
     string m_id;
     string m_classTime;

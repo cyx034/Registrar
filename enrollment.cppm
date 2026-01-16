@@ -4,6 +4,7 @@ import std;
 using std::string;
 using std::vector;
 using std::shared_ptr;
+using std::unique_ptr;
 
 export class Enrollment
 {
@@ -26,7 +27,7 @@ Enrollment::Enrollment(string sid,string cid)
 Enrollment::~Enrollment()
 {}
 
-bool Enrollemnt::hasId(string sid,string cid)
+bool Enrollment::hasId(string sid,string cid)
 {
     return _sid == sid && _cid == cid;
 }

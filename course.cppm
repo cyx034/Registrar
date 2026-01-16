@@ -1,9 +1,10 @@
 export module registrar:domain.course;
 import std;
-
+import :domain.enrollment;
 using std::string;
 using std::shared_ptr;
 using std::make_shared;
+using std::vector;
 
 export class Course
 {
@@ -11,7 +12,7 @@ public:
     Course(string id,string name);
     ~Course();
 
-    shared_ptr<class Enrollemnt> acceptEnrollment(string sid);
+    shared_ptr<class Enrollment> acceptEnrollment(string sid);
     bool dropEnrollment(string sid);
     string info();
     bool hasId(string id);
@@ -34,18 +35,15 @@ Course::Course(string id, string name)
 Course::~Course()
 {}
 
-shared_ptr<Enrollemnt> Course::acceptEnrollment(string sid)
+shared_ptr<Enrollment> Course::acceptEnrollment(string sid)
 {
     //判断条件并添加选课记录
-    if(_enrollments.size() > 60){   //人数限制
-        return nullptr;
-    }
     //学分限制
     //课程冲突
 
     //避免重复选课
     auto it = std::find_if(_enrollments.begin(),_enrollments.end(),
-                                [&sid](const shared_ptr<Enrollment>& en){
+                                [&sid,this](const shared_ptr<Enrollment>& en){
                                     return en->hasId(sid,m_id);
                                 }
                             );
@@ -54,14 +52,12 @@ shared_ptr<Enrollemnt> Course::acceptEnrollment(string sid)
     auto enrollment = make_shared<Enrollment>(sid,m_id);
     _enrollments.push_back(enrollment);
     return enrollment;   //返回这个智能指针给Student
-
-    return true;
 }
 
 bool Course::dropEnrollment(string sid)
 {
     auto it = std::find_if(_enrollments.begin(),_enrollments.end(),
-                                [&sid,m_id](const shared_ptr<Enrollment>& en){
+                                [&sid,this](const shared_ptr<Enrollment>& en){
                                     return en->hasId(sid,m_id);
                                 }
                             );

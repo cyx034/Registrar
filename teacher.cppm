@@ -12,7 +12,7 @@ public:
     Teacher(Person person);
     virtual ~Teacher() override;
     void schedule();
-    double CourseEvalue(shared_ptr<Course> course);
+    double CourseEvalue(shared_ptr<class Course> course);
 
 private:
     vector<shared_ptr<class Course>> _courses;
@@ -26,11 +26,10 @@ Teacher::~Teacher()
 {}
 
 
-Teacher::void schedule()
+void Teacher::schedule()
 {}
 
 double Teacher::CourseEvalue(shared_ptr<Course> course)
 {
     double grade;
-    print("You want to ")
 }

@@ -1,6 +1,10 @@
 export module registrar:domain.schedule;
 import std;
-using std::vector;using std::weak_ptr;
+using std::vector;
+using std::weak_ptr;
+using std::string;
+using std::shared_ptr;
+using std::print;
 
 //课程表
 export class Schedule
@@ -14,7 +18,6 @@ public:
     void modifyScheduleEntry(string id);//修改课程条目
 private:
     string m_id;
-    string m_name;
     string m_academy;
     string gradelevel;
     vector<shared_ptr<class ScheduleEntry>> _scheduleEntrys;
@@ -36,9 +39,9 @@ bool Schedule::hasId(string id)
 
 void Schedule::addScheduleEntry()
 {
-    auto entry=make_shared<ScheduleEntry>;
-    entry->addinformation()
-    this._scheduleEntrys.push_back(entry);
+    shared_ptr<ScheduleEntry> entry;
+    entry->addinformation();
+    this->_scheduleEntrys.push_back(entry);
     print("已成功添加该课程条目");
 }
 
