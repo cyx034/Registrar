@@ -8,6 +8,7 @@ public:
     virtual ~Person();
     virtual string info();
     virtual bool hasId(string id);
+
 private:
     string m_id;
     string m_name;
@@ -21,13 +22,12 @@ Person::Person(string id,string name,string academy)
 Person::~Person()
 {}
 
-
-Person::string info()
+string Person::info()
 {
-    return format("id: {}, name: {}, academy: {}",m_id,m_name,m_academy);
+    return format("{}   {}\n", m_id, m_name,m_academy);
 }
 
-bool Person::hasId(string id)
+bool Student::hasId(string id)
 {
     return id == m_id;
 }

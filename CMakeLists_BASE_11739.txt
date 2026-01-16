@@ -11,12 +11,14 @@ project(registrar LANGUAGES CXX)
 add_executable(registrar
     #math.cpp                              # 模块实现单元
     main.cpp
-    broker.cppm
+
+
 )
 
 set(MODULE_INTERFACE_FILES
     #${MODULE_LIB_DIR1}/utils.cppm         #添加模块库的模块接口单元
     #math.cppm                             # 模块接口单元
+    registrar.cppm
 )
 
 set(MODULE_BROKER
@@ -29,7 +31,7 @@ set(MODULE_BROKER
 )
 
 set(MODULE_CONTROL
-    registrar.cppm
+
 )
 
 
@@ -38,24 +40,15 @@ set(MODULE_UI
 )
 
 set(MODULE_DOMAIN
-    person.cppm
-    student.cppm
-    course.cppm
-    enrollment.cppm
-    grade.cppm
-    teacher.cppm
-    teacherSecretaryg.cppm
-    schedule.cppm
-    scheduleEntry.cppm
 
 )
 
 
 source_group("Module Interfaces" FILES ${MODULE_INTERFACE_FILES})
 source_group("Broker" FILES ${MODULE_BROKER})
-source_group("Control" FILES ${MODULE_CONTROL})
-source_group("Ui" FILES ${MODULE_UI})
-source_group("Domain" FILES ${MODULE_DOMAIN})
+source_group("Broker" FILES ${MODULE_CONTROL})
+source_group("Broker" FILES ${MODULE_UI})
+source_group("Broker" FILES ${MODULE_DOMAIN})
 
 
 target_sources(registrar  PRIVATE FILE_SET cxx_modules TYPE CXX_MODULES
@@ -67,16 +60,6 @@ target_sources(registrar  PRIVATE FILE_SET cxx_modules TYPE CXX_MODULES
 target_compile_features(registrar PRIVATE cxx_std_23)
 
 
-target_include_directories(registrar
-    PRIVATE
-        /usr/include
-)
-
-target_link_libraries(registrar
-    PRIVATE
-        pqxx
-        pq
-)
 
 
 

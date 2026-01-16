@@ -12,6 +12,8 @@ add_executable(registrar
     #math.cpp                              # 模块实现单元
     main.cpp
     broker.cppm
+
+
 )
 
 set(MODULE_INTERFACE_FILES
@@ -43,10 +45,6 @@ set(MODULE_DOMAIN
     course.cppm
     enrollment.cppm
     grade.cppm
-    teacher.cppm
-    teacherSecretaryg.cppm
-    schedule.cppm
-    scheduleEntry.cppm
 
 )
 
