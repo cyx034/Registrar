@@ -1,1 +1,159 @@
+module;
 
+#include <pqxx/pqxx>
+
+export module registrar:broker.enrollmentbroker;
+import :broker.registrarbroker;
+import std;
+
+using std::string;
+using std::cerr;
+using std::endl;
+using std::unique_ptr;
+
+export class EnrollmentBroker : public RegistrarBroker
+{
+public:
+    using RegistrarBroker::RegistrarBroker;
+
+    std::unique_ptr<Enrollment> findEnrollmentById(const string& sid,const string& cid);
+//    string getCourseRoster(const string& courseId);
+
+    bool save(Enrollment *enrollment);
+    bool remove(Enrollment *enrollment)
+
+    void initialize();
+
+private:
+    vector<std::unique_ptr<Enrollment>> _enrollment;
+    unique_ptr<Erollment> findEnrollmentByIdLocal(const string& sid,const string& cid);
+    unique_ptr<Erollment> findEnrollBymentIdDB(const string& sid,const string& cid);
+};
+
+void EnrollmentBroker::initialize()
+{
+    if (!status) {
+        cerr << "数据库未连接" << endl;
+        return;
+    }
+    pqxx::work t(*dbConnection);
+    pqxx::result res = rtx.exec("SELECT sno,cno,grade FROM sc LIMIT 5;"); //只读入前5行进入缓存
+    rtx.commit();
+    _enrollment.clear();
+    for(const auto& row : res) {
+        _enrollment.push_back(std::make_unique<Enrollment>(
+            res[0]["sno"].as<string>(),
+            res[0]["cno"].as<string>(),
+            res[0]["grade"].as<string>()));
+    }
+}
+
+bool EnrollmentBroker::save(Enrollment *enrollment)
+{
+    if (!status) {
+        cerr << "数据库未连接" << endl;
+        return false;
+    }
+    if (!enrollment) {
+          cerr << "Enrollment对象为空" << endl;
+          return false;
+      }
+    try {
+        pqxx::work t(*dbConnection);
+        auto res = t.exec_params("SELECT EXISTS(SELECT 1 FROM sc WHERE Sno = $1 AND Cno = $2);",enrollment->_sid,enrollment->_cid);
+        t.commit();
+        bool exists = res[0][0].as<bool>();
+        if (!exists) {
+            pqxx::work deleteTxn(*dbConnection);
+            string saveSql = "INSERT INTO sc VALUES ($1,$2)";
+            deleteTxn.exec_params(saveSql,enrollment->_sid,enrollment->_cid);
+            deleteTxn.commit();
+
+            std::print("注册成功\n");
+            return true;
+        } else {
+            std::print("已注册该课程\n");
+            return true;
+        }
+
+    } catch (const std::exception& e) {
+        cerr << "查询失败：" << e.what() << endl;
+        return nullptr;
+    }
+}
+
+bool EnrollmentBroker::remove(Enrollment *enrollment)
+{
+    if (!status) {
+        cerr << "数据库未连接" << endl;
+        return false;
+    }
+    if (!enrollment) {
+        cerr << "Enrollment对象为空" << endl;
+        return false;
+      }
+    try {
+        pqxx::work t(*dbConnection);
+        auto res = t.exec_params("SELECT EXISTS(SELECT 1 FROM sc WHERE Sno = $1 AND Cno = $2);",enrollment->_sid,enrollment->_cid);
+        t.commit();
+        bool exists = res[0][0].as<bool>();
+        if (exists) {
+            pqxx::work deleteTxn(*dbConnection);
+            string deleteSql = "DELETE FROM sc WHERE Sno = $1 AND Cno = $2";
+            deleteTxn.exec_params(deleteSql,enrollment->_sid,enrollment->_cid);
+            deleteTxn.commit();
+
+            std::print("删除成功\n");
+            return true;
+        } else {
+            std::print("未注册该课程\n");
+            return true;
+        }
+    } catch (const std::exception& e) {
+        cerr << "查询失败：" << e.what() << endl;
+        return nullptr;
+    }
+}
+
+
+
+unique_ptr<Enrollment> EnrollmentBroker::findEnrollmentById(const std::string& sid,const std::string& cid)
+{
+    if(auto local = findCourseByIdLocal(id))  //先从本地缓存中找
+        return local;
+    return findCourseByIdDB(id); //没有就去数据库中找
+}
+
+unique_ptr<Erollment> EnrollmentBroker::findEnrollmentByLocal(const string& sid,const string& cid)
+{
+    for(auto& enrollment : _enrollment){
+        if(enrollment->hasId(id))
+            return enrollment;
+    }
+    return nullptr;
+}
+
+unique_ptr<Enrollment> EnrollmentBroker::findEnrollBymentIdDB(const string& sid,const string& cid)
+{
+    if (!status) {
+        cerr << "数据库未连接" << endl;
+        return nullptr;
+    }
+    try {
+        pqxx::work t(*dbConnection);
+        auto res = t.exec_params("SELECT sno,cno,grade FROM course WHERE cno = $1;",id);
+        t.commit();
+        if (res.empty()) {
+            std::cout << "未找到scID：" << id << endl;
+            return nullptr;
+        }
+        auto enrollment = std::make_unique<Enrollment>(
+            res[0]["sno"].as<string>(),
+            res[0]["cno"].as<string>(),
+            res[0]["grade"].as<string>());
+        _enrollment.push_back(std::move(Enrollment));   //把用到的存入缓存区
+    } catch (const std::exception& e) {
+        cerr << "查询失败：" << e.what() << endl;
+        return nullptr;
+    }
+}

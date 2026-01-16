@@ -11,7 +11,6 @@ project(registrar LANGUAGES CXX)
 add_executable(registrar
     #math.cpp                              # 模块实现单元
     main.cpp
-    broker.cppm
 )
 
 set(MODULE_INTERFACE_FILES
@@ -26,6 +25,7 @@ set(MODULE_BROKER
     enrollmentbroker.cppm
     secretarybroker.cppm
     teacherbroker.cppm
+    broker.cppm
 )
 
 set(MODULE_CONTROL

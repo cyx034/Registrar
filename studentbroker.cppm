@@ -2,8 +2,8 @@ module;
 
 #include <pqxx/pqxx>
 
-export module studentbroker;
-
+export module registrar:broker.studentbroker;
+import :broker.registrarbroker;
 import std;
 
 using std::string;
@@ -32,7 +32,7 @@ void StudentBroker::initialize()
         return;
     }
     pqxx::read_transaction t(*dbConnection);
-    pqxx::result res = rtx.exec("SELECT sno,sname,sacademy,smajor FROM student");
+    pqxx::result res = rtx.exec("SELECT sno,sname,sacademy,smajor FROM student LIMIT 5;");
     rtx.commit();
     _students.clear();
     for(const auto& row : res) {
@@ -68,7 +68,7 @@ unique_ptr<Student> StudentBroker::findStudentByIdDB(const string& id)
     }
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec_params("SELECT sno,sname,sacademy,smajor FROM student WHERE sid = $1",id);
+        auto res = t.exec_params("SELECT sno,sname,sacademy,smajor FROM student WHERE sno = $1;",id);
         t.commit();
         if (res.empty()) {
             std::cout << "未找到学生ID：" << id << endl;

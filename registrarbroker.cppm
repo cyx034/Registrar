@@ -2,7 +2,8 @@ module;
 
 #include <pqxx/pqxx>
 
-export module registrarbroker;
+export module registrar:broker.registrarbroker;
+
 
 import std;
 
@@ -14,7 +15,7 @@ public:
     RegistrarBroker();
     virtual ~RegistrarBroker();
     void connect();
-private:
+protected:
     std::unique_ptr<pqxx::connection> dbConnection;//conn("host=localhost port=5432 dbname=db user=postgres");
     bool status;
 };

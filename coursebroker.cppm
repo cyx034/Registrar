@@ -2,14 +2,15 @@ module;
 
 #include <pqxx/pqxx>
 
-export module coursebroker;
+export module registrar:broker.coursebroker;
+import :broker.registrarbroker;
 
 import std;
 
 using std::string;
 using std::cerr;
 using std::endl;
-using std::course;
+using std::unique_ptr;
 
 export class CourseBroker : public RegistrarBroker
 {
@@ -32,11 +33,11 @@ void CourseBroker::initialize()
         return;
     }
     pqxx::read_transaction t(*dbConnection);
-    pqxx::result res = rtx.exec("SELECT cno,cname,ccredit,cacademy,tno FROM student");
+    pqxx::result res = rtx.exec("SELECT cno,cname,ccredit,cacademy,tno FROM course LIMIT 5;"); //只读入前5行进入缓存
     rtx.commit();
     _courses.clear();
     for(const auto& row : res) {
-        _courses.push_back(std::make_unique<Student>(
+        _courses.push_back(std::make_unique<Course>(
             res[0]["cno"].as<string>(),
             res[0]["cname"].as<string>(),
             res[0]["ccredit"].as<string>(),
@@ -54,9 +55,9 @@ unique_ptr<Course> CourseBroker::findCourseById(const std::string& id)
 
 unique_ptr<Course> CourseBroker::findCourseByIdLocal(const string &id)
 {
-    for(auto& student : _courses){
-        if(student->hasId(id))
-            return student;
+    for(auto& course : _courses){
+        if(course->hasId(id))
+            return course;
     }
     return nullptr;
 }
@@ -69,10 +70,10 @@ unique_ptr<Course> CourseBroker::findCourseByIdDB(const string& id)
     }
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec_params("SELECT cno,cname,ccredit,cacademy,tno FROM student WHERE sid = $1",id);
+        auto res = t.exec_params("SELECT cno,cname,ccredit,cacademy,tno FROM course WHERE cno = $1;",id);
         t.commit();
         if (res.empty()) {
-            std::cout << "未找到学生ID：" << id << endl;
+            std::cout << "未找到课程ID：" << id << endl;
             return nullptr;
         }
         auto course = std::make_unique<Course>(
@@ -81,7 +82,7 @@ unique_ptr<Course> CourseBroker::findCourseByIdDB(const string& id)
             res[0]["ccredit"].as<string>(),
             res[0]["cacademy"].as<string>(),
             res[0]["tno"].as<string>());
-        _courses.pushback(std::move(course));
+        _courses.pushback(std::move(course));   //把用到的存入缓存区
     } catch (const std::exception& e) {
         cerr << "查询失败：" << e.what() << endl;
         return nullptr;
