@@ -9,7 +9,7 @@ public:
     Schedule(string id);
     ~Schedule();
     bool hasId(string id);
-    void addScheduleEntry(string id);//添加课程条目
+    void addScheduleEntry();//添加课程条目
     void removeScheduleEntry(string id);//移除课程条目
     void modifyScheduleEntry(string id);//修改课程条目
 private:
@@ -17,10 +17,11 @@ private:
     string m_name;
     string m_academy;
     double grade;
-    vector<shared_ptr<ScheduleEntry>> _scheduleEntrys;
+    vector<shared_ptr<class ScheduleEntry>> _scheduleEntrys;
 };
 
 Schedule::Schedule(string id)
+    :m_id(id)
 {
     print("The Schedule create");
 }
@@ -33,24 +34,21 @@ bool Schedule::hasId(string id)
     return id==m_id;//判断是否有该条目id
 }
 
-void Schedule::addScheduleEntry(string id)
+void Schedule::addScheduleEntry()
 {
-   for(auto& s:_scheduleEntrys){
-        if(s->hasId()){
-            break;
-        }
-    }
-    //--------//创建一个条目添加到容器中
+    auto entry=make_shared<ScheduleEntry>;
+    entry->addinformation()
+    this._scheduleEntrys.push_back(entry);
     print("已成功添加该课程条目");
 }
 
 void Schedule::removeScheduleEntry(string id)
 {
     for(auto& s:_scheduleEntrys){
-        if(s->hasId()){
-            _scheduleEntrys.erase(it);
+        if(s->hasId(id)){
+            _scheduleEntrys.erase(s);
             print("已成功删除该条目");
-            break;
+            return;
         }
     }
     print("不存在此课程条目");
@@ -59,9 +57,13 @@ void Schedule::removeScheduleEntry(string id)
 void Schedule::modifyScheduleEntry(string id)
 {
     for(auto& s:_scheduleEntrys){
-        if(s->hasId()){
-            s->modify();//---------输入相关修改信息
+        if(s->hasId(id)){
+            if(auto e=newEntry.lock()){
+                e->modify(newEntry);
+                print("修改成功");
+                return;
+            }
         }
     }
-    print("不存在次课程条目");
+    print("不存在此课程条目");
 }

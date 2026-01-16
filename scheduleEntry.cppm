@@ -5,9 +5,10 @@ using std::weak_ptr;
 export class ScheduleEntry
 {
 public:
-    ScheduleEntry(weak_ptr<class Teacher> teacher, weak_ptr<class Course> course);
+    ScheduleEntry(string id,string classTime,string classRoom,int maxStudents,
+                            int currentStudents,weak_ptr<teacher> teacher,weak_ptr<course> course)
     ~ScheduleEntry();
-    void modify();
+    void modify(weak_ptr<ScheduleEntry> cheduleEntry);
     //int setStatus(int newStatus);
 private:
     string m_id;
@@ -20,14 +21,11 @@ private:
     weak_ptr<Course> _course
 };
 
-ScheduleEntry::ScheduleEntry()
-    :m_id(id),m_classTime(
-    string m_classRoom;
-    bool m_status;
-    int m_maxStudents;
-    int m_currentStudents;
-    weak_ptr<Teacher> _teacher;
-    weak_ptr<Course> _course;
+ScheduleEntry::ScheduleEntry(string id,string classTime,string classRoom,int maxStudents,
+                            int currentStudents,weak_ptr<teacher> teacher,weak_ptr<course> course)
+    :m_id(id),m_classTime(clssTime),m_classRoom(classRoom),
+     m_maxStudents(maxStudents),m_currentStudents(currentStudents)
+     _teacher(teacher),_course(course)
 {}
 
 
@@ -36,19 +34,15 @@ ScheduleEntry::~ScheduleEntry()
     print("This ScheduleEntry isn't exit!!!");
 }
 
-string ScheduleEntry::setId(string id)
-{
-    m_id=id;//设置条目id
-}
-
 bool ScheduleEntry::hasId(string id)
 {
     return id==m_id;//判断是否有该条目id
 }
 
-void ScheduleEntry::modify()
+//修改相关信息
+void ScheduleEntry::modify(weak_ptr<ScheduleEntry> scheduleEntry)
 {
-    //-----------------//修改相关信息
+
 }
 
 

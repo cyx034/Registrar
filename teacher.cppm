@@ -10,6 +10,8 @@ public:
     Teacher(Person person);
     virtual ~Teacher() override;
     void schedule();
+private:
+    vector<shared_ptr<class Course> _courses;
 };
 
 Teacher::Teacher(Person person)
@@ -19,5 +21,7 @@ Teacher::Teacher(Person person)
 Teacher::~Teacher()
 {}
 
-Teacher::void schedule()
-{}
+void Teacher::schedule()
+{
+
+}
