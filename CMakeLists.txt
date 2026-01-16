@@ -40,15 +40,20 @@ set(MODULE_UI
 )
 
 set(MODULE_DOMAIN
+    person.cppm
+    student.cppm
+    course.cppm
+    enrollment.cppm
+    grade.cppm
 
 )
 
 
 source_group("Module Interfaces" FILES ${MODULE_INTERFACE_FILES})
 source_group("Broker" FILES ${MODULE_BROKER})
-source_group("Broker" FILES ${MODULE_CONTROL})
-source_group("Broker" FILES ${MODULE_UI})
-source_group("Broker" FILES ${MODULE_DOMAIN})
+source_group("Control" FILES ${MODULE_CONTROL})
+source_group("Ui" FILES ${MODULE_UI})
+source_group("Domain" FILES ${MODULE_DOMAIN})
 
 
 target_sources(registrar  PRIVATE FILE_SET cxx_modules TYPE CXX_MODULES
