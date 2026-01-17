@@ -35,7 +35,7 @@ public:
     bool modifySchedule(string id);
     void modifyScheduleEntry(string sid);
     void addEntryToSchedule(shared_ptr<class Schedule> schedule,shared_ptr<class ScheduleEntry> scheduleEntry);
-    void TeacherSecretary::removeEntryToSchedule(shared_ptr<Schedule> schedule,shared_ptr<ScheduleEntry> scheduleEntry)
+    void removeEntryToSchedule(shared_ptr<Schedule> schedule,shared_ptr<ScheduleEntry> scheduleEntry)
 
 private:
     vector<shared_ptr<class Schedule>> _schedules;

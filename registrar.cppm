@@ -34,10 +34,10 @@ public:
     void removeEntrysToSchedule(string tsid,string sid,string eid);
 
     //修改教学条目信息
-    void modifyEntrytime(string tsid,string eid,string time);
-    void modifyEntryroom(string tsid,string eid,string room);
-    void modifyEntryteacher(string tsid,string eid,string tid);
-    void modifyEntrycourse(string tsid,string eid,string cid);
+    void modifyEntrytime(string eid,string time);
+    void modifyEntryroom(string eid,string room);
+    void modifyEntryteacher(string eid,string tid);
+    void modifyEntrycourse(string eid,string cid);
 private:
     Registrar(); //禁止直接创建对象（将类的构造函数私有化，
                  //再配合静态成员函数来创建对象）
@@ -250,6 +250,7 @@ void Registrar::removeScheduleEntrys(string id, string sid)
     auto schedule = _schedulebroker.findScheduleById(sid);
     if(teacherSecretary&&schedule){
         teacherSecretary->removeScheduleEntry(schedule);
+    }
 }
 
 //教学秘书添加某课程条目到某课程表中
@@ -258,9 +259,8 @@ void Registrar::addEntrysToSchedule(string id,string sid,string eid)
     auto teacherSecretary = _teachersecretarybroker.findTeacherSecretaryById(id);
     auto schedule = _schedulebroker.findScheduleById(sid);
     auto scheduleEntry = _scheduleEntrybroker.findScheduleEntryById(eid);
-        if(teacherSecretary&&schedule&&scheduleEntry){
-            teacherSecretary->addEntryToSchedule(schedule,scheduleEntry);
-        }
+    if(teacherSecretary&&schedule&&scheduleEntry){
+        teacherSecretary->addEntryToSchedule(schedule,scheduleEntry);
     }
 }
 
@@ -270,8 +270,29 @@ void Registrar::removeEntrysToSchedule(string id,string sid,string eid)
     auto teacherSecretary = _teachersecretarybroker.findTeacherSecretaryById(id);
     auto schedule = _schedulebroker.findScheduleById(sid);
     auto scheduleEntry = _scheduleEntrybroker.findScheduleEntryById(eid);
-        if(teacherSecretary&&schedule&&scheduleEntry){
-            teacherSecretary->removeEntryToSchedule(schedule,scheduleEntry);
-        }
+    if(teacherSecretary&&schedule&&scheduleEntry){
+        teacherSecretary->removeEntryToSchedule(schedule,scheduleEntry);
     }
 }
+
+void Registrar::modifyEntrytime(string eid,string time)
+{
+    auto scheduleEntry = _scheduleEntrybroker.findScheduleEntryById(eid);
+    if(scheduleEntry){
+        scheduleEntry->modifyTime(time);
+    }
+}
+
+void Registrar::modifyEntryroom(string eid,string room)
+{
+    auto scheduleEntry = _scheduleEntrybroker.findScheduleEntryById(eid);
+    if(scheduleEntry){
+        scheduleEntry->modifyRoom(room);
+    }
+}
+
+
+
+
+
+

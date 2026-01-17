@@ -8,11 +8,13 @@ using std::string;
 export class ScheduleEntry
 {
 public:
-    void modify(weak_ptr<ScheduleEntry> cheduleEntry);
     ScheduleEntry(string id,string sid,string classTime,string classRoom,weak_ptr<class Teacher> teacher,weak_ptr<class Course> course);
     ~ScheduleEntry();
     bool hasId(string id);
-    void modify(string id);
+
+    void modifyTime(string time);
+    void modifyRoom(string room);
+
 private:
     string m_id;
     string m_sid;
@@ -38,10 +40,17 @@ bool ScheduleEntry::hasId(string id)
 }
 
 //修改相关信息
-bool ScheduleEntry::modify(string sid,string classTime,string classRoom,weak_ptr<Teacher> teacher,weak_ptr<Course> course)
+void ScheduleEntry::modifyTime(string time)
 {
-    //
+    m_classTime = time;
 }
+
+void ScheduleEntry::modifyRoom(string room)
+{
+    m_classRoom = room;
+}
+
+
 
 
 

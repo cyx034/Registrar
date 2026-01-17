@@ -215,25 +215,25 @@ void Ui::teachingsecretaryui()
                     string time2;
                     print("请输入你要修改的时间：");
                     cin>>time2;
-                    _registrar.modifyEntrytime(tsid,id2,time2);
+                    _registrar.modifyEntrytime(id2,time2);
                     break;
                 case 2:
                     string room2;
                     print("请输入你要修改的地点： ");
                     cin>>room2;
-                    _registrar.modifyEntryroom(tsid,id2,room2);
+                    _registrar.modifyEntryroom(id2,room2);
                     break;
                 case 3:
                     string tid2;
                     print("请输入你要修改的教师编号：");
                     cin>>tid2;
-                    _registrar.modifyEntryteacher(tsid,id2,tid2);
+                    _registrar.modifyEntryteacher(id2,tid2);
                     break;
                 case 4:
                     string cid2;
                     print("请输入你要修改的课程编号：");
                     cin>>cid2;
-                    _registrar.modifyEntrycourse(tsid,id2,cid2);
+                    _registrar.modifyEntrycourse(id2,cid2);
                     break;
                 case 5:
                     print("返回上一页\n");
