@@ -90,10 +90,7 @@ void Registrar::studentEnrollsInCourse(string sid,string cid)
     auto course = _courseBroker.findCourseById(cid);  //查找课程
 
     if(student && course){  //如果学生和课程都存在
-        if(auto enrollment = _enrollmenBroker.save(sid,cid)){
-            student -> enrollIn(enrollment);  //执行注册
-            course -> acceptEnrollment(enrollment);
-        }
+        enrollmenBroker.save(sid,cid));
     }
 }
 
@@ -104,7 +101,7 @@ void Registrar::studentDropCourse(string sid,string cid)
     auto course = _courseBroker.findCourseById(cid);  //查找课程
 
     if(student && course){  //如果学生和课程都存在
-       student -> dropOut(course);  //执行注册
+        _enrollmentBroker.remove(sid,cid);
     }
 }
 

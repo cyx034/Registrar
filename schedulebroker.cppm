@@ -45,6 +45,44 @@ void ScheduleBroker::initialize()
     }
 }
 
+shared_ptr<Schedule> ScheduleBroker::save(const string& scid)
+{
+    if (!status) {
+        cerr << "数据库未连接" << endl;
+        return false;
+    }
+
+    try {
+        pqxx::work t(*dbConnection);
+        auto res = t.exec_params("SELECT EXISTS(SELECT 1 FROM sc WHERE scheduleid = $1)",scid);
+        t.commit();
+        bool exists = res[0][0].as<bool>();
+        if (!exists) {
+            pqxx::work deleteTxn(*dbConnection);
+            string saveSql = "INSERT INTO sc VALUES $1";
+            deleteTxn.exec_params(saveSql,scid);
+            deleteTxn.commit();
+
+            auto schedule = std::make_shared<Schedule>(scid,);
+            _schedule.push_back(schedule);  //存入缓存区
+
+            std::print("注册成功\n");
+            return schedule;
+        } else {
+            std::print("已注册该课程\n");
+            return nullptr;
+        }
+
+    } catch (const std::exception& e) {
+        cerr << "查询失败：" << e.what() << endl;
+        return nullptr;
+    }
+}
+
+
+
+
+
 shared_ptr<Schedule> ScheduleBroker::findScheduleById(const std::string& id)
 {
     if(auto local = findScheduleByIdLocal(id))  //先从本地缓存中找

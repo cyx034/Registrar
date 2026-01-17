@@ -20,7 +20,7 @@ private:
     string m_id;
     short m_credit;
 
-    vector<shared_ptr<class Enrollment>> _enrollments;
+//    vector<share_ptr<string>> _enrollments;
 
     class Teacher _teacher;
     shared_ptr<class ScheduleEntry> _scheduleEntry;
@@ -32,7 +32,7 @@ Course::Course(string id, string name)
     , m_id(id)
 {}
 
-void Course::acceptEnrollment(shared_ptr<Enrollment> enrollment)
+/*void Course::acceptEnrollment(shared_ptr<Enrollment> enrollment)
 {
     if(enrollment){
         _enrollments.push_back(enrollment);
@@ -53,7 +53,7 @@ bool Course::dropEnrollment(string sid)
         return true;
     }
     return false;
-}
+}*/
 
 string Course::info(){
     return format("{}   {}\n", m_id, m_name);

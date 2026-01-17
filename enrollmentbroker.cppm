@@ -19,8 +19,8 @@ public:
     std::shared_ptr<Enrollment> findEnrollmentById(const string& sid,const string& cid);
 //    string getCourseRoster(const string& courseId);
 
-    shared_ptr<Enrollment> save(const string& sid,const string& cid);
-    bool remove(Enrollment *enrollment)
+    bool save(const string& sid,const string& cid);
+    bool remove(const string& sid,const string& cid)
 
     bool updateGrade(const Enrollment& enrollment);
 
@@ -57,7 +57,7 @@ void EnrollmentBroker::initialize()
     }
 }
 
-shared_ptr<Enrollment> EnrollmentBroker::save(const string& sid,const string& cid)
+bool EnrollmentBroker::save(const string& sid,const string& cid)
 {
     if (!status) {
         cerr << "数据库未连接" << endl;
@@ -79,19 +79,19 @@ shared_ptr<Enrollment> EnrollmentBroker::save(const string& sid,const string& ci
             _enrollment.push_back(enrollment);  //存入缓存区
 
             std::print("注册成功\n");
-            return enrollment;
+            return true;
         } else {
             std::print("已注册该课程\n");
-            return nullptr;
+            return true;
         }
 
     } catch (const std::exception& e) {
         cerr << "查询失败：" << e.what() << endl;
-        return nullptr;
+        return false;
     }
 }
 
-bool EnrollmentBroker::remove(Enrollment *enrollment)
+bool EnrollmentBroker::remove(const string& sid,const string& cid)
 {
     if (!status) {
         cerr << "数据库未连接" << endl;
@@ -103,14 +103,22 @@ bool EnrollmentBroker::remove(Enrollment *enrollment)
       }
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec_params("SELECT EXISTS(SELECT 1 FROM sc WHERE Sno = $1 AND Cno = $2)",enrollment->_sid,enrollment->_cid);
+        auto res = t.exec_params("SELECT EXISTS(SELECT 1 FROM sc WHERE Sno = $1 AND Cno = $2)",sid,cid);
         t.commit();
         bool exists = res[0][0].as<bool>();
         if (exists) {
             pqxx::work deleteTxn(*dbConnection);
             string deleteSql = "DELETE FROM sc WHERE Sno = $1 AND Cno = $2";
-            deleteTxn.exec_params(deleteSql,enrollment->_sid,enrollment->_cid);
+            deleteTxn.exec_params(deleteSql,sid,cid);
             deleteTxn.commit();
+
+            for (auto it = _enrollment.begin(); it != _enrollment.end(); ) {
+                if ((*it)->sid == sid && (*it)->cid == cid) {
+                    it = _enrollment.erase(it);  // erase返回下一个有效迭代器
+                } else {
+                    ++it;
+                }
+            }
 
             std::print("删除成功\n");
             return true;

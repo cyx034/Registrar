@@ -21,7 +21,7 @@ public:
 private:
     string m_major;
     string m_gradelevel;
-    vector<shared_ptr<class Enrollment>> _enrollments;
+//    vector<shared_ptr<string>> _enrollments;
 };
 
 Student::Student(string id,string name,string academy,string major,string gradelevel)
@@ -30,7 +30,7 @@ Student::Student(string id,string name,string academy,string major,string gradel
     ,m_gradelevel(gradelevel)
 {}
 
-void Student::enrollIn(shared_ptr<Enrollment> enrollment)
+/*void Student::enrollIn(shared_ptr<Enrollment> enrollment)
 {
     if(enrollment){
         _enrollments.push_back(enrollment);
@@ -40,25 +40,9 @@ void Student::enrollIn(shared_ptr<Enrollment> enrollment)
 
 void Student::dropIn(shared_ptr<class Course> course)
 {
-    if(!course) return;
-    string info = course->info();
-    //获得cid
-    string cid = info.substr(0,info.find(' '));
-    if(!course->dropEnrollment(m_id)){
-        print("退课失败，你未选该课程!\n");
-        return;
-    }
-    //移除学生的enrollment
-    auto it = std::remove_if(_enrollments.begin(),_enrollments.end(),
-                                [this,&cid](const shared_ptr<Enrollment>& en){
-                                    return en->hasId(m_id,cid);
-                                }
-                            );
-    if(it != _enrollments.end()){
-        _enrollments.erase(it,_enrollments.end());
-        print("退课成功\n");
-    }
-}
+
+
+}*/
 
 void Student::schedule()
 {
