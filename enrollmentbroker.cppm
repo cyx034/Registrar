@@ -13,13 +13,14 @@ using std::shared_ptr;
 
 export class EnrollmentBroker : public RegistrarBroker
 {
+    fi
 public:
     using RegistrarBroker::RegistrarBroker;
 
     std::shared_ptr<Enrollment> findEnrollmentById(const string& sid,const string& cid);
 //    string getCourseRoster(const string& courseId);
 
-    bool save(Enrollment *enrollment);
+    bool save(shared_ptr<Enrollment> enrollment);
     bool remove(Enrollment *enrollment)
 
     void initialize();
@@ -48,7 +49,7 @@ void EnrollmentBroker::initialize()
     }
 }
 
-bool EnrollmentBroker::save(Enrollment *enrollment)
+bool EnrollmentBroker::save(shared_ptr<Enrollment> enrollment)
 {
     if (!status) {
         cerr << "数据库未连接" << endl;
@@ -68,6 +69,8 @@ bool EnrollmentBroker::save(Enrollment *enrollment)
             string saveSql = "INSERT INTO sc VALUES ($1,$2)";
             deleteTxn.exec_params(saveSql,enrollment->_sid,enrollment->_cid);
             deleteTxn.commit();
+
+            _enrollment.push_back(enrollment);  //存入缓存区
 
             std::print("注册成功\n");
             return true;

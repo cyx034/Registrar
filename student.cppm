@@ -34,17 +34,6 @@ Student::Student(string id,string name,string major,string gradelevel)
 Student::~Student()
 {}
 
-void Student::enrollIn(shared_ptr<class Course> course)
-{
-    if(!course) return;
-    auto enrollment = course->acceptEnrollment(m_id);
-    if(enrollment){
-        _enrollments.push_back(enrollment); //复用Course返回的指针，不再重复创建
-        print("选课成功\n");
-    }else{
-        print("选课失败\n");
-    }
-}
 
 void Student::dropIn(shared_ptr<class Course> course)
 {

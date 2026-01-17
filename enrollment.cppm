@@ -8,6 +8,7 @@ using std::unique_ptr;
 
 export class Enrollment
 {
+    friend class EnrollmentBroker;
 public:
     Enrollment(string sid,string cid);
     bool hasId(string sid,string cid);
