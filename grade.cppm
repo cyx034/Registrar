@@ -7,22 +7,27 @@ export class Grade
 {
 public:
     Grade(double midterm,double final,vector<double> homeworks);
-    ~Grade();
-    double score();
+    string
 
 private:
+
+    double score();
     double m_midterm;
     double m_final;
     vector<double> m_homeworks;
+    double m_grade;
 };
 
 Grade::Grade(double midterm,double final,vector<double> homeworks)
     :m_midterm(midterm)
     ,m_final(final)
     ,m_homeworks(homeworks)
-{}
+{
+    grade = this->score();
+}
 
-Grade::~Grade()
+Grade::Grade(double grade)
+    :m_grade(grade)
 {}
 
 double Grade::score()
@@ -39,4 +44,9 @@ double Grade::score()
      median = m_homeworks[mid];
     }
     return 0.2 * m_midterm + 0.4 * m_final + 0.4 * median;
+}
+
+string Grade::info()
+{
+    format("")
 }

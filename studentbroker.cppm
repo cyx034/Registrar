@@ -80,11 +80,7 @@ shared_ptr<Student> StudentBroker::findStudentByIdDB(const string& id)
             res[0]["sacademy"].as<string>(),
             res[0]["smajor"].as<string>()
         );
-<<<<<<< Updated upstream
         _students.push_back(std::move(student));
-=======
-        _student.push_back(std::move(student));
->>>>>>> Stashed changes
     } catch (const std::exception& e) {
         cerr << "查询失败：" << e.what() << endl;
         return nullptr;

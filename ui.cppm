@@ -4,6 +4,7 @@ import registrar;
 
 using std::print;
 using std::cin;
+using std::vector;
 
 export class Ui
 {
@@ -123,9 +124,15 @@ void Ui::teacherui()
             cin>>cid;
             print("请输入学生号: ");
             cin>>sid;
-            print("请输入该学生的成绩: ");
-            cin>>grade;
-            _registrar.teacherEnterGrade(tid,sid,cid,grade);
+            print("请输入该学生的中期成绩和期末成绩: ");
+            double midterm ,final;
+            cin >> midterm >> final;
+            print("请输入该学生家庭作业成绩: ");
+            vector<double> homework;
+            for(double h;cin>>h){
+                homework.push_back(h);
+            }
+            _registrar.teacherEnterGrade(tid,sid,cid,midterm,final,homework);
             break;
         case 2:
             //查看教师课表

@@ -10,22 +10,26 @@ export class Enrollment
 {
 public:
     Enrollment(string sid,string cid);
-    ~Enrollment();
     bool hasId(string sid,string cid);
 
 private:
     string _sid;
     string _cid;
-    vector<unique_ptr<class Grade>> _grades;
+    Grade _grade;
 };
 
-Enrollment::Enrollment(string sid,string cid)
+Enrollment::Enrollment(string sid,string cid,double midterm,double final,vector<double> homework)
     :_sid(sid)
     ,_cid(cid)
+    ,_grade(midterm,final,homework)
 {}
 
-Enrollment::~Enrollment()
+Enrollment::Enrollment(string sid,string cid,double grade)
+    :_sid(sid)
+    ,_cid(cid)
+    ,_grade(grade)
 {}
+
 
 bool Enrollment::hasId(string sid,string cid)
 {

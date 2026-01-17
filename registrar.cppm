@@ -19,7 +19,7 @@ public:
 
     void studentDropCourse(string sid,string cid);
 
-    void teacherEnterGrade(string sid,string cid,double grade);
+    void teacherEnterGrade(string sid,string cid,double midterm,double final,vector<double>homework);
 
     void courseRoster(string cid);  //打印指定课程的学生花名册（课程名单）
     void classSchedule(string sid);  //打印指定学生的课表
@@ -42,7 +42,7 @@ Registrar& Registrar::system()
     return instance;
 }
 
-bool Registrar::teacherEnterGrade(string tid,string sid,string cid,double grade)
+bool Registrar::teacherEnterGrade(string tid,string sid,string cid,double midterm,double final,vector<double>homework)
 {
     if(tid.empty()||sid.empty()||cid.empty()||grade>100||grade<0){
         std::cerr << "数据错误" <<std::endl;
@@ -51,8 +51,9 @@ bool Registrar::teacherEnterGrade(string tid,string sid,string cid,double grade)
     auto teacher = _teacherBroker.findTeacherById(tid);
     auto student = _studentBroker.findStudentById(sid);
     auto course = _courseBroker.findCourseById(cid);
+
     if(teacher->CourseEvalueAccess(course)){
-        //教师有权限登入成绩，登入成绩
+
     }
 }
 
