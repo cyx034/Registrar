@@ -25,13 +25,19 @@ public:
     void classSchedule(string sid);  //打印指定学生的课表
     void initialize();  //系统初始化
 
-//教学秘书相关操作
-    void Registrar::createSchedules(string id);
-    void Registrar::createScheduleEntrys(string id);
-    void Registrar::removeSchedules(string id，string sid);
-    void Registrar::removeScheduleEntrys(string id, string sid);
-    void Registrar::addEntrysToSchedule(string id,string sid,string eid);
-    void Registrar::removeEntrysToSchedule(string id,string sid,string eid);
+    //教学秘书相关操作
+    void createSchedules(string tsid);
+    void createScheduleEntrys(string tsid);
+    void removeSchedules(string tsid，string sid);
+    void removeScheduleEntrys(string tsid, string sid);
+    void addEntrysToSchedule(string tsid,string sid,string eid);
+    void removeEntrysToSchedule(string tsid,string sid,string eid);
+
+    //修改教学条目信息
+    void modifyEntrytime(string tsid,string eid,string time);
+    void modifyEntryroom(string tsid,string eid,string room);
+    void modifyEntryteacher(string tsid,string eid,string tid);
+    void modifyEntrycourse(string tsid,string eid,string cid);
 private:
     Registrar(); //禁止直接创建对象（将类的构造函数私有化，
                  //再配合静态成员函数来创建对象）
@@ -63,7 +69,7 @@ bool Registrar::teacherEnterGrade(string tid,string sid,string cid,double midter
 
     if(teacher->CourseEvalueAccess(course)){
         auto enrollment = _enrollmenBroker.findEnrollmentById(sid,tid);
-
+        enrollment(sid,cid,midterm,final,homeowrk);
     }
 }
 

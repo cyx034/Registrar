@@ -10,7 +10,6 @@ export class Course
 {
 public:
     Course(string id,string name);
-    ~Course();
 
     shared_ptr<class Enrollment> acceptEnrollment(string sid);
     bool dropEnrollment(string sid);
@@ -22,7 +21,7 @@ private:
     short m_credit;
 
     vector<shared_ptr<class Enrollment>> _enrollments;
-    vector<shared_ptr<class Teacher>> _teachers;
+    class Teacher _teacher;
     shared_ptr<class ScheduleEntry> _scheduleEntry;
 
 };
@@ -31,11 +30,6 @@ Course::Course(string id, string name)
     : m_name(name)
     , m_id(id)
 {}
-
-Course::~Course()
-{}
-
-
 
 bool Course::dropEnrollment(string sid)
 {

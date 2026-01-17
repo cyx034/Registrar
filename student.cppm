@@ -12,7 +12,6 @@ export class Student : public Person
 {
 public:
     Student(string id,string name,string academy,string major,string gradelevel); //初始化
-    ~Student();
 
     void enrollIn(shared_ptr<class Course> course);
     void dropIn(shared_ptr<class Course> course);
@@ -30,10 +29,6 @@ Student::Student(string id,string name,string academy,string major,string gradel
     ,m_major(major)
     ,m_gradelevel(gradelevel)
 {}
-
-Student::~Student()
-{}
-
 
 void Student::dropIn(shared_ptr<class Course> course)
 {
