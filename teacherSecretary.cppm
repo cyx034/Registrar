@@ -7,23 +7,6 @@ using std::string;
 using std::vector;
 using std::print;
 
-export class TeacherSecretary:public Person
-{
-public:
-    TeacherSecretary(string id,string name,string academy);
-    void createSchedule(string id);
-    bool addEntryToSchedule(string id);
-    bool removeEntryToSchedule(string id);
-    void removeEntryToSchedule(string id,string entryId);
-    bool modifySchedule(string id,string entryId);
-private:
-    vector<shared_ptr<class Schedule>> _schedules;
-};
-
-TeacherSecretary::TeacherSecretaryg(Person person)
-    :Person(person)
-{}
-
 export class TeacherSecretary : public Person
 {
 public:
@@ -45,17 +28,17 @@ TeacherSecretary::TeacherSecretary(string id,string name,string academy)
 {}
 
 //创建新的课程表
-void TeacherSecretary::createSchedule()
+void TeacherSecretary::createSchedule(string scheduleid,string term,string academy,string major,string gradelevel)
 {
-    auto s=make_shared<Schedule>;
+    auto s=make_shared<Schedule>(scheduleid,term,academy,major,gradelevel);
     _schedules.push_back(s);
     print("已成功创建一个新课程");
 }
 
 //创建新的课程条目
-void TeacherSecretary::createScheduleEntry()
+void TeacherSecretary::createScheduleEntry(string entryid,string classTime,string classRoom,shared_ptr<teacher> teacher,shared_ptr<course> course)
 {
-    auto e=make_shared<ScheduleEntry>;
+    auto e=make_shared<ScheduleEntry>(entryid,classTime,classRoom,teacher,course);
     _scheduleEntrys.push_back(e);
 }
 
@@ -85,26 +68,3 @@ void TeacherSecretary::removeEntryToSchedule(shared_ptr<Schedule> schedule,share
 {
     schedule->removeScheduleEntry(scheduleEntry);//课程表移除课程条目
 }
-
-//修改课程表信息
-void TeacherSecretary::modifySchedule(string id)
-{
-    for(auto&s :_schedules){
-        if(s->hasId(id)){
-            s->modify(id);
-            return;
-        }
-    }
-    print("此课程不存在");
-}
-
-//修改课程条目的信息
-bool TeacherSecretary::modifyScheduleEntry(string sid,string newId)
-{
-    for(auto&s :_scheduleEntrys){
-        if(s->hasId(sid)){
-            return s->modify(sid);
-        }
-    }
-}
-

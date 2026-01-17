@@ -160,10 +160,12 @@ void Ui::teachingsecretaryui()
     print("                   教学秘书系统               \n\n");
     print("                  1.创建课程表                  \n");
     print("                  2.删除课程表                  \n");
-    print("                  3.增加课程条目                \n");
+    print("                  3.创建课程条目                \n");
     print("                  4.修改课程条目                \n");
     print("                  5.删除课程条目                \n");
-    print("                  6.返回主菜单                  \n\n");
+    print("                  6.添加课程条目到课程表         \n");
+    print("                  7.删除课程表中的课程条目        \n");
+    print("                  8.返回主菜单                  \n\n");
     print("请选择你要进行的操作: ");
     cin>>choice;
     switch(choice)
@@ -189,9 +191,7 @@ void Ui::teachingsecretaryui()
             _registrar.removeSchedules(tsid,id1);
             break;
         case 3:
-            string sid,eid,time,room,tid,cid;
-            print("请输入课程表编号：");
-            cin>>sid;
+            string eid,time,room,tid,cid;
             print("请输入课程条目编号:");
             cin>>eid;
             print("请输入课程时间:");
@@ -202,7 +202,7 @@ void Ui::teachingsecretaryui()
             cin>>tid;
             print("请输入课程编号:");
             cin>>cid;
-            _registrar.createScheduleEntrys(tsid,sid,eid,time,room,tid)
+            _registrar.createScheduleEntrys(tsid,eid,time,room,tid,cid)
             break;
         case 4:
             string id2;
@@ -257,6 +257,22 @@ void Ui::teachingsecretaryui()
             _registrar.removeScheduleEntrys(tsid,id3);
             break;
         case 6:
+            string scheduleid,entryid;
+            print("请输入你要添加课程条目的课程表编号:");
+            cin>>scheduleid;
+            print("请输入你要添加到课程表的课程条目id:");
+            cin>>entryid;
+            _registrar.addEntrysToSchedule(tsid,scheduleid,entryid);
+            break;
+        case 7:
+            string scheduleid,entryid;
+            print("请输入你要添加课程条目的课程表编号:");
+            cin>>scheduleid;
+            print("请输入你要添加到课程表的课程条目id:");
+            cin>>entryid;
+            _registrar.removeEntrysToSchedule(tsid,scheduleid,entryid);
+            break;
+        case 8:
             print("返回主菜单\n");
             break;
         default:

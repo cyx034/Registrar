@@ -11,20 +11,22 @@ using std::print;
 export class Schedule
 {
 public:
-    Schedule(string id);
+    Schedule(string scheduleid,string term,string academy,string major,string gradelevel);
     ~Schedule();
     bool hasId(string id);
     void addScheduleEntry(shared_ptr<class ScheduleEntry> scheduleEntry);
     void removeScheduleEntry(shared_ptr<class ScheduleEntry> scheduleEntry);
 private:
-    string m_id;
+    string m_scheduleid;
+    string m_term;
     string m_academy;
-    string gradelevel;
+    string m_major;
+    string m_gradelevel;
     vector<shared_ptr<class ScheduleEntry>> _scheduleEntrys;
 };
 
-Schedule::Schedule(string id)
-    :m_id(id)
+Schedule::Schedule(string scheduleid,string term,string academy,string major,string gradelevel)
+    :m_scheduleid(scheduleid),m_term(term),m_academy(academy),m_major(major),m_gradelevel(gradelevel)
 {
     print("The Schedule create");
 }
