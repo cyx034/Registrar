@@ -11,7 +11,7 @@ export class Course
 public:
     Course(string id,string name);
 
-    shared_ptr<class Enrollment> acceptEnrollment(string sid);
+    void acceptEnrollment(shared_ptr<Enrollment> enrollment);
     bool dropEnrollment(string sid);
     string info();
     bool hasId(string id);
@@ -31,6 +31,14 @@ Course::Course(string id, string name)
     : m_name(name)
     , m_id(id)
 {}
+
+void Course::acceptEnrollment(shared_ptr<Enrollment> enrollment)
+{
+    if(enrollment){
+        _enrollments.push_back(enrollment);
+    }
+}
+
 
 
 bool Course::dropEnrollment(string sid)

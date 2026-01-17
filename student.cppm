@@ -13,7 +13,7 @@ export class Student : public Person
 public:
     Student(string id,string name,string academy,string major,string gradelevel); //初始化
 
-    void enrollIn(shared_ptr<class Course> course);
+    void enrollIn(shared_ptr<Enrollment> enrollment);
     void dropIn(shared_ptr<class Course> course);
     void schedule();
     void transcript();
@@ -29,6 +29,14 @@ Student::Student(string id,string name,string academy,string major,string gradel
     ,m_major(major)
     ,m_gradelevel(gradelevel)
 {}
+
+void Student::enrollIn(shared_ptr<Enrollment> enrollment)
+{
+    if(enrollment){
+        _enrollments.push_back(enrollment);
+     }
+}
+
 
 void Student::dropIn(shared_ptr<class Course> course)
 {

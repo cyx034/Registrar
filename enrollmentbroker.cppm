@@ -19,7 +19,7 @@ public:
     std::shared_ptr<Enrollment> findEnrollmentById(const string& sid,const string& cid);
 //    string getCourseRoster(const string& courseId);
 
-    bool save(const string& sid,const string& cid);
+    shared_ptr<Enrollment> save(const string& sid,const string& cid);
     bool remove(Enrollment *enrollment)
 
     bool updateGrade(const Enrollment& enrollment);
@@ -48,23 +48,22 @@ void EnrollmentBroker::initialize()
 
         if(!row["grade"].is_null()){
             double grade = res[0]["grade"].as<double>();
-            _enrollment.push_back(std::make_shared<Enrollment>(sno,cno,grade));
+            auto e = std::make_shared<Enrollment>(sno,cno,grade);
+            _enrollment.push_back(e);
         }else{
-            _enrollment.push_back(std::make_shared<Enrollment>(sno,cno,0.0));
+            auto en = std::make_shared<Enrollment>(sno,cno,0.0)
+            _enrollment.push_back(en);
         }
     }
 }
 
-bool EnrollmentBroker::save(const string& sid,const string& cid)
+shared_ptr<Enrollment> EnrollmentBroker::save(const string& sid,const string& cid)
 {
     if (!status) {
         cerr << "数据库未连接" << endl;
         return false;
     }
-    if (!enrollment) {
-          cerr << "Enrollment对象为空" << endl;
-          return false;
-      }
+
     try {
         pqxx::work t(*dbConnection);
         auto res = t.exec_params("SELECT EXISTS(SELECT 1 FROM sc WHERE Sno = $1 AND Cno = $2)",sid,cid);
@@ -76,13 +75,14 @@ bool EnrollmentBroker::save(const string& sid,const string& cid)
             deleteTxn.exec_params(saveSql,sid,cid);
             deleteTxn.commit();
 
+            auto enrollment = std::make_shared<Enrollment>(sid,cid,0.0);
             _enrollment.push_back(enrollment);  //存入缓存区
 
             std::print("注册成功\n");
-            return true;
+            return enrollment;
         } else {
             std::print("已注册该课程\n");
-            return true;
+            return nullptr;
         }
 
     } catch (const std::exception& e) {

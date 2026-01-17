@@ -90,8 +90,10 @@ void Registrar::studentEnrollsInCourse(string sid,string cid)
     auto course = _courseBroker.findCourseById(cid);  //查找课程
 
     if(student && course){  //如果学生和课程都存在
-        _enrollmenBroker.save();
-        student -> enrollIn(course);  //执行注册
+        if(auto enrollment = _enrollmenBroker.save(sid,cid)){
+            student -> enrollIn(enrollment);  //执行注册
+            course -> acceptEnrollment(enrollment);
+        }
     }
 }
 
@@ -134,36 +136,8 @@ void Registrar::initialize()  //系统初始化
 Registrar::Registrar(){}
 
 
-void Student::enrollIn(shared_ptr<class Course> course)
-{
-    if(!course) return;
-    auto enrollment = course->acceptEnrollment(m_id);
-    if(enrollment){
-        _enrollments.push_back(enrollment); //复用Course返回的指针，不再重复创建
-        print("选课成功\n");
-    }else{
-        print("选课失败\n");
-    }
-}
 
-shared_ptr<Enrollment> Course::acceptEnrollment(string sid)
-{
-    //判断条件并添加选课记录
-    //学分限制
-    //课程冲突
 
-    //避免重复选课
-    auto it = std::find_if(_enrollments.begin(),_enrollments.end(),
-                                [&sid,this](const shared_ptr<Enrollment>& en){
-                                    return en->hasId(sid,m_id);
-                                }
-                            );
-    if(it != _enrollments.end()) return nullptr;  //已存在，选课失败
-    //创建共享的enrollment对象
-    auto enrollment = make_shared<Enrollment>(sid,m_id);
-    _enrollments.push_back(enrollment);
-    return enrollment;   //返回这个智能指针给Student
-}
 
 
 
