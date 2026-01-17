@@ -10,17 +10,18 @@ export class ScheduleEntry
 public:
     ScheduleEntry(string id,string classTime,string classRoom,weak_ptr<class Teacher> teacher,weak_ptr<class Course> course);
     ~ScheduleEntry();
-    void modifyTeacher(shared_ptr<class Teacher> teacher);
-    void modifyCourse(shared_ptr<class Course> Course);
-    void modifyTime(string time);
+    shared_ptr<ScheduleEntry> createEntry(string entryid,string classTime,string classRoom,weak_ptr<Teacher> teacher,weak_ptr<Course>course);
     void modifyRoom(string room);
+    void modifyTime(string time);
+    void modifyTeacher(weak_ptr<class Teacher> teacher);
+    void modifyCourse(weak_ptr<class Course> Course);
 private:
     string m_id;
     string m_sid;
     string m_classTime;
     string m_classRoom;
-    shared_ptr<class Teacher> _teacher;
-    shared_ptr<class Course> _course;
+    weak_ptr<class Teacher> _teacher;
+    weak_ptr<class Course> _course;
 };
 
 ScheduleEntry::ScheduleEntry(string id,string classTime,string classRoom,weak_ptr<Teacher> teacher,weak_ptr<Course> course)
@@ -33,10 +34,9 @@ ScheduleEntry::~ScheduleEntry()
     print("This ScheduleEntry isn't exit!!!");
 }
 
-//修改老师
-void ScheduleEntry::modifyTeacher(shared_ptr<Teacher> teacher)
+shared_ptr<ScheduleEntry> ScheduleEntry::createEntry(string entryid,string classTime,string classRoom,weak_ptr<Teacher> teacher,weak_ptr<Course>course)
 {
-    _teacher=teacher;
+    return make_shared<ScheduleEntry>(entryid,classTime,classRoom,teacher,course);
 }
 
 void ScheduleEntry::modifyTime(string time)
@@ -49,6 +49,25 @@ void ScheduleEntry::modifyRoom(string room)
     m_classRoom = room;
 }
 
+//修改老师
+void ScheduleEntry::modifyTeacher(weak_ptr<Teacher> teacher)
+{
+    if(auto t=teacher.lock()){
+        _teacher=teacher;
+    }else{
+        print("无效，无法修改");
+    }
+}
+
+//修改课程
+void ScheduleEntry::modifyCourse(weak_ptr<Course> course)
+{
+    if(auto c=course.lock()){
+        _course=course;
+    }else{
+        print("无效，无法修改");
+    }
+}
 
 
 

@@ -13,7 +13,7 @@ export class Schedule
 public:
     Schedule(string scheduleid,string term,string academy,string major,string gradelevel);
     ~Schedule();
-    bool hasId(string id);
+    shared_ptr<Schedule> create(string scheduleid,string term,string academy,string major,string gradelevel);
     void addScheduleEntry(shared_ptr<class ScheduleEntry> scheduleEntry);
     void removeScheduleEntry(shared_ptr<class ScheduleEntry> scheduleEntry);
 private:
@@ -34,9 +34,10 @@ Schedule::Schedule(string scheduleid,string term,string academy,string major,str
 Schedule::~Schedule()
 {}
 
-bool Schedule::hasId(string id)
+//创建新的课程表
+shared_ptr<Schedule> Schedule::create(string scheduleid,string term,string academy,string major,string gradelevel)
 {
-    return id==m_scheduleid;//判断是否有该条目id
+    return make_shared<Schedule>(scheduleid,term,academy,major,gradelevel);
 }
 
 //向课程表中添加新的课程条目

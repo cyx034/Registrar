@@ -27,7 +27,7 @@ public:
 
     //教学秘书相关操作
     void createSchedules(string tsid,string scheduleid,string term,string academy,string major,string gradelevel);//创建课程表
-    void createScheduleEntrys(string tsid);//创建课程条目
+    void createScheduleEntrys(string tsid,string entryid,string classTime,string classRoom,string teacherid,string courseid)//创建课程条目
     void removeSchedules(string tsid,string scheduleid);
     void removeScheduleEntrys(string tsid, string entryid);//删除课程条目
     void addEntrysToSchedule(string tsid,string scheduleid,string entryid);//向课程表中添加课程条目
@@ -134,12 +134,14 @@ void Registrar::initialize()  //系统初始化
 Registrar::Registrar(){}
 
 
-//教学秘书创建新的课程表
+//创建新的课程表
 void Registrar::createSchedules(string tsid,string scheduleid,string term,string academy,string major,string gradelevel)
 {
     auto teacherSecretary = _secretaryBroker.findTeacherSecretaryById(tsid);
-    if(_secretaryBroker.save(scheduleid,term,academy,major,gradelevel))
-        teacherSecretary->creatSchedule(scheduleid,term,academy,major,gradelevel);
+    if(_scheduleBroker.save(scheduleid,term,academy,major,gradelevel))
+    auto s=Schedule::create(scheduleid,term,academy,major,gradelevel);
+    teacherSecretary._schedules.push_back(s);
+    print("已成功创建");
 }
 
 //教学秘书创建新的课程条目
@@ -149,32 +151,34 @@ void Registrar::createScheduleEntrys(string tsid,string entryid,string classTime
     auto teacher = _teacherBroker.findTeacherById(teacherid);
     auto course = _courseBroker.findCourseById(courseid);
     _scheduleEntryBroker.save(entryid,classTime,classRoom,teacher,course)
-        teacherSecretary->createScheduleEntrys(entryid,classTime,classRoom,teacher,course);
+    auto e=ScheduleEntry::createEntry(entryid,classTime,classRoom,teacher,course);
+    _scheduleEntrys.push_back(e);
+    print("已成功创建课程条目");
 }
 
-//教学秘书删除课程表
+//删除课程表
 void Registrar::removeSchedules(string tsid,string scheduleid)
 {
     auto teacherSecretary = _secretaryBroker.findTeacherSecretaryById(id);
-    auto schedule = _scheduleBroker.findScheduleById(sid);
+    auto schedule = _scheduleBroker.findScheduleById(scheduleid);
     if(teacherSecretary&&schedule){
         if(_scheduleBroker.remove(scheduleid))
             teacherSecretary->removeSchedule(schedule);
     }
 }
 
-//教学秘书删除课程条目
+//删除课程条目
 void Registrar::removeScheduleEntrys(string tsid, string entryid)
 {
     auto teacherSecretary = _secretaryBroker.findTeacherSecretaryById(tsid);
     auto entry = _scheduleEntryBroker.findScheduleEntryById(entryid);
-    if(teacherSecretary&&schedule){
+    if(teacherSecretary&&entry){
         if(_scheduleEntryBroker.remove(entryid))
             teacherSecretary->removeScheduleEntry(entry);
     }
 }
 
-//教学秘书添加某课程条目到某课程表中
+//添加某课程条目到某课程表中
 void Registrar::addEntrysToSchedule(string tsid,string scheduleid,string entryid)
 {
     auto teacherSecretary = _secretaryBroker.findTeacherSecretaryById(tsid);
@@ -182,11 +186,11 @@ void Registrar::addEntrysToSchedule(string tsid,string scheduleid,string entryid
     auto scheduleEntry = _scheduleEntryBroker.findScheduleEntryById(entryid);
     if(teacherSecretary&&schedule&&scheduleEntry){
         if(_scheduleEntryBroker.addToSchedule(entryid,scheduleid))
-            teacherSecretary->addEntryToSchedule(schedule,scheduleEntry);
+        schedule->addScheduleEntry(scheduleEntry);
     }
 }
 
-//教学秘书删除某课程表中的某课程条目
+//删除某课程表中的某课程条目
 void Registrar::removeEntrysToSchedule(string tsid,string scheduleid,string entryid)
 {
     auto teacherSecretary = _secretaryBroker.findTeacherSecretaryById(tsid);
@@ -194,7 +198,7 @@ void Registrar::removeEntrysToSchedule(string tsid,string scheduleid,string entr
     auto scheduleEntry = _scheduleEntryBroker.findScheduleEntryById(entryid);
     if(teacherSecretary&&schedule&&scheduleEntry){
         if(_scheduleEntryBroker.removeToSchedule(entryid,scheduleid))
-            teacherSecretary->removeEntryToSchedule(schedule,scheduleEntry);
+            schedule->removeScheduleEntry(scheduleEntry);
     }
 }
 
@@ -226,5 +230,4 @@ void Registrar::modifyEntryteacher(string entryid,string teacherid)
             scheduleEntry->modifyTeacher(teacher);
     }
 }
-
 
