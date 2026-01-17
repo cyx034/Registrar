@@ -169,10 +169,18 @@ void Ui::teachingsecretaryui()
     switch(choice)
     {
         case 1:
-            string id,name;
+            string id,term,academy,major,gradelevel;
             print("请输入课程表号: ");
             cin>>id;
-            _registrar.createSchedules(tsid,id);
+            print("请输入当前学期: ");
+            cin>>term;
+            print("请输入所属学院: ");
+            cin>>academy;
+            print("请输入所属专业:");
+            cin>>major;
+            print("请输入年级: ");
+            cin>>gradelevel;
+            _registrar.createSchedules(tsid,id,term,academy,major,gradelevel);
             break;
         case 2:
             string id1;
@@ -200,7 +208,7 @@ void Ui::teachingsecretaryui()
             string id2;
             print("请输入你要修改的课程条目编号: ");
             cin>>id2;
-            print("-------------课程条目:{}----------\n\n",);
+            print("-------------课程条目:{}----------\n\n",id2);
             print("             1.修改时间           \n");
             print("             2.修改地点           \n");
             print("             3.修改授课老师        \n");
