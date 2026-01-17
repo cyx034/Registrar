@@ -8,24 +8,21 @@ using std::string;
 export class ScheduleEntry
 {
 public:
-    ScheduleEntry(string id,string sid,string classTime,string classRoom,weak_ptr<class Teacher> teacher,weak_ptr<class Course> course);
+    ScheduleEntry(string id,string classTime,string classRoom,weak_ptr<class Teacher> teacher,weak_ptr<class Course> course);
     ~ScheduleEntry();
-    bool hasId(string id);
-
-    void modifyTime(string time);
-    void modifyRoom(string room);
-
+    void modifyTeacher(shared_ptr<class Teacher> teacher);
+    void modifyCourse(shared_ptr<class Course> Course);
 private:
     string m_id;
     string m_sid;
     string m_classTime;
     string m_classRoom;
-    weak_ptr<class Teacher> _teacher;
-    weak_ptr<class Course> _course;
+    shared_ptr<class Teacher> _teacher;
+    shared_ptr<class Course> _course;
 };
 
-ScheduleEntry::ScheduleEntry(string id,string sid,string classTime,string classRoom,weak_ptr<Teacher> teacher,weak_ptr<Course> course)
-    :m_id(id),m_sid(sid),m_classTime(classTime),m_classRoom(classRoom),_teacher(teacher),_course(course)
+ScheduleEntry::ScheduleEntry(string id,string classTime,string classRoom,weak_ptr<Teacher> teacher,weak_ptr<Course> course)
+    :m_id(id),m_classTime(classTime),m_classRoom(classRoom),_teacher(teacher),_course(course)
 {}
 
 
@@ -34,12 +31,12 @@ ScheduleEntry::~ScheduleEntry()
     print("This ScheduleEntry isn't exit!!!");
 }
 
-bool ScheduleEntry::hasId(string id)
+//修改老师
+void ScheduleEntry::modifyTeacher(shared_ptr<Teacher> teacher)
 {
-    return id==m_id;//判断是否有该条目id
+    _teacher=teacher;
 }
 
-//修改相关信息
 void ScheduleEntry::modifyTime(string time)
 {
     m_classTime = time;
@@ -48,6 +45,12 @@ void ScheduleEntry::modifyTime(string time)
 void ScheduleEntry::modifyRoom(string room)
 {
     m_classRoom = room;
+}
+
+//修改课程
+void ScheduleEntry::modifyCourse(shared_ptr<Course> course)
+{
+    _course=course;
 }
 
 

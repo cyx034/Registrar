@@ -32,8 +32,6 @@ public:
     void createScheduleEntry();
     void removeSchedule(shared_ptr<class Schedule> schedule)
     void removeScheduleEntry(shared_ptr<class ScheduleEntry> scheduleEntry)；
-    bool modifySchedule(string id);
-    void modifyScheduleEntry(string sid);
     void addEntryToSchedule(shared_ptr<class Schedule> schedule,shared_ptr<class ScheduleEntry> scheduleEntry);
     void removeEntryToSchedule(shared_ptr<Schedule> schedule,shared_ptr<ScheduleEntry> scheduleEntry)
 

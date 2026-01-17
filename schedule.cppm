@@ -14,7 +14,6 @@ public:
     Schedule(string id);
     ~Schedule();
     bool hasId(string id);
-    void modify(string id);
     void addScheduleEntry(shared_ptr<class ScheduleEntry> scheduleEntry);
     void removeScheduleEntry(shared_ptr<class ScheduleEntry> scheduleEntry);
 private:
@@ -36,12 +35,6 @@ Schedule::~Schedule()
 bool Schedule::hasId(string id)
 {
     return id==m_id;//判断是否有该条目id
-}
-
-//修改课程表信息
-void Schedule::modify(string id)
-{
-
 }
 
 //向课程表中添加新的课程条目

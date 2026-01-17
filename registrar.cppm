@@ -26,12 +26,12 @@ public:
     void initialize();  //系统初始化
 
     //教学秘书相关操作
-    void createSchedules(string tsid);
-    void createScheduleEntrys(string tsid);
-    void removeSchedules(string tsid，string sid);
-    void removeScheduleEntrys(string tsid, string sid);
-    void addEntrysToSchedule(string tsid,string sid,string eid);
-    void removeEntrysToSchedule(string tsid,string sid,string eid);
+    void createSchedules(string tsid);//创建课程表
+    void createScheduleEntrys(string tsid);//创建课程条目
+    void removeSchedules(string tsid，string sid);//删除课程表
+    void removeScheduleEntrys(string tsid, string sid);//删除课程条目
+    void addEntrysToSchedule(string tsid,string sid,string eid);//向课程表中添加课程条目
+    void removeEntrysToSchedule(string tsid,string sid,string eid);//从课程表中移除课程条目
 
     //修改教学条目信息
     void modifyEntrytime(string eid,string time);
@@ -220,21 +220,21 @@ string Student::printSchedules()
 //
 
 //教学秘书创建新的课程表
-void Registrar::createSchedules(string id)
+void Registrar::createSchedules(string tsid)
 {
-    auto teacherSecretary = _teachersecretarybroker.findTeacherSecretaryById(id);
+    auto teacherSecretary = _teachersecretarybroker.findTeacherSecretaryById(tsid);
     teacherSecretary->creatSchedule();
 }
 
 //教学秘书创建新的课程条目
-void Registrar::createScheduleEntrys(string id)
+void Registrar::createScheduleEntrys(string tsid)
 {
-    auto teacherSecretary = _teachersecretarybroker.findTeacherSecretaryById(id);
+    auto teacherSecretary = _teachersecretarybroker.findTeacherSecretaryById(tsid);
     teacherSecretary->createScheduleEntrys();
 }
 
 //教学秘书删除课程表
-void Registrar::removeSchedules(string id，string sid)
+void Registrar::removeSchedules(string tsid，string sid)
 {
     auto teacherSecretary = _teachersecretarybroker.findTeacherSecretaryById(id);
     auto schedule = _schedulebroker.findScheduleById(sid);
@@ -244,7 +244,7 @@ void Registrar::removeSchedules(string id，string sid)
 }
 
 //教学秘书删除课程条目
-void Registrar::removeScheduleEntrys(string id, string sid)
+void Registrar::removeScheduleEntrys(string tsid, string sid)
 {
     auto teacherSecretary = _teachersecretarybroker.findTeacherSecretaryById(id);
     auto schedule = _schedulebroker.findScheduleById(sid);
@@ -254,7 +254,7 @@ void Registrar::removeScheduleEntrys(string id, string sid)
 }
 
 //教学秘书添加某课程条目到某课程表中
-void Registrar::addEntrysToSchedule(string id,string sid,string eid)
+void Registrar::addEntrysToSchedule(string tsid,string sid,string eid)
 {
     auto teacherSecretary = _teachersecretarybroker.findTeacherSecretaryById(id);
     auto schedule = _schedulebroker.findScheduleById(sid);
@@ -265,7 +265,7 @@ void Registrar::addEntrysToSchedule(string id,string sid,string eid)
 }
 
 //教学秘书删除某课程表中的某课程条目
-void Registrar::removeEntrysToSchedule(string id,string sid,string eid)
+void Registrar::removeEntrysToSchedule(string tsid,string sid,string eid)
 {
     auto teacherSecretary = _teachersecretarybroker.findTeacherSecretaryById(id);
     auto schedule = _schedulebroker.findScheduleById(sid);
@@ -291,8 +291,19 @@ void Registrar::modifyEntryroom(string eid,string room)
     }
 }
 
+//修改课程条目的任课老师
+void Registrar::modifyEntryteacher(string id2,string tid2)
+{
+    auto scheduleEntry = _scheduleEntrybroker.findScheduleEntryById(id2);
+    auto teacher = _teacherBroker.findTeacherById(tid2);
+    scheduleEntry->modifyTeacher(teacher);
+}
 
-
-
-
+//修改课程条目的课程
+void Registrar::modifyEntrycourse(id2,cid2)
+{
+    auto scheduleEntry = _scheduleEntrybroker.findScheduleEntryById(id2);
+    auto course = _courseBroker.findTeacherById(cid2);
+    scheduleEntry->modifyCourse(course);
+}
 
