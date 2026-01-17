@@ -56,7 +56,7 @@ bool Registrar::teacherEnterGrade(string tid,string sid,string cid,double midter
 
     if(teacher->CourseEvalueAccess(course)){
         auto enrollment = _enrollmenBroker.findEnrollmentById(sid,tid);
-        enrollment
+
     }
 }
 

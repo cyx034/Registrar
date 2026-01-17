@@ -27,11 +27,12 @@ Teacher::~Teacher()
 {}
 
 Teacher::void schedule()
-
 {}
 
 bool Teacher::CourseEvalueAccess(shared_ptr<Course> course)
 {
-    double grade;
-
+    for(auto& c : _courses){
+        if(c == course) return true;
+    }
+    return false;
 }

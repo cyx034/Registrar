@@ -7,7 +7,8 @@ export class Grade
 {
 public:
     Grade(double midterm,double final,vector<double> homeworks);
-    string
+    Grade(double grade);
+    string info();
 
 private:
 
@@ -48,5 +49,5 @@ double Grade::score()
 
 string Grade::info()
 {
-    format("")
+    return format("最终成绩为：{}  \n",m_grade);
 }
