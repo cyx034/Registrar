@@ -46,6 +46,81 @@ void ScheduleEntryBroker::initialize()
     }
 }
 
+
+bool ScheduleEntryBroker::save(string entryid,string sid,string cid,string classTime,string classRoom)
+{
+    if (!status) {
+        cerr << "数据库未连接" << endl;
+        return false;
+    }
+
+    try {
+        pqxx::work t(*dbConnection);
+        auto res = t.exec_params("SELECT EXISTS(SELECT 1 FROM schedule_entry WHERE entryid = $1)",entryid);
+        t.commit();
+        bool exists = res[0][0].as<bool>();
+        if (!exists) {
+            pqxx::work deleteTxn(*dbConnection);
+            string saveSql = "INSERT INTO schedule_entry(entryid,cno,tno,time,classroom) VALUES ($1,$2,$3,$4,$5)";
+            deleteTxn.exec_params(saveSql,entryid,sid,cid,classTime,classRoom);
+            deleteTxn.commit();
+
+            auto scheduleEntry = std::make_shared<ScheduleEntry>(entryid,classTime,classRoom,teacher,course);
+            _scheduleEntry.push_back(scheduleEntry);  //存入缓存区
+
+            std::print("加入课程条目成功\n");
+            return true;
+        } else {
+            std::print("已有该课程条目\n");
+            return false;
+        }
+
+    } catch (const std::exception& e) {
+        cerr << "查询失败：" << e.what() << endl;
+        return false;
+    }
+}
+
+bool ScheduleEntryBroker::remove(string entryid)
+{
+    if (!status) {
+        cerr << "数据库未连接" << endl;
+        return false;
+    }
+
+    try {
+        pqxx::work t(*dbConnection);
+        auto res = t.exec_params("SELECT EXISTS(SELECT 1 FROM schedule_entry WHERE entryid = $1)",entryid);
+        t.commit();
+        bool exists = res[0][0].as<bool>();
+        if (exists) {
+            pqxx::work deleteTxn(*dbConnection);
+            string deleteSql = "DELETE FROM schedule_entry WHERE entryid = $1";
+            deleteTxn.exec_params(deleteSql,entry);
+            deleteTxn.commit();
+
+            for (auto it = _scheduleEntry.begin(); it != _scheduleEntry.end(); ) {
+                if ((*it)->m_id == entryid) {
+                    it = _scheduleEntry.erase(it);  // erase返回下一个有效迭代器
+                } else {
+                    ++it;
+                }
+            }
+            std::print("删除课程条目成功\n");
+            return true;
+        } else {
+            std::print("没有该课程条目\n");
+            return false;
+        }
+
+    } catch (const std::exception& e) {
+        cerr << "查询失败：" << e.what() << endl;
+        return false;
+    }
+}
+
+
+
 shared_ptr<ScheduleEntry> ScheduleEntryBroker::findScheduleEntryById(const std::string& id)
 {
     if(auto local = findScheduleByIdLocal(id))  //先从本地缓存中找

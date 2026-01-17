@@ -136,12 +136,12 @@ void Registrar::initialize()  //系统初始化
 Registrar::Registrar(){}
 
 
-
 //教学秘书创建新的课程表
 void Registrar::createSchedules(string tsid,string scheduleid,string term,string academy,string major,string gradelevel)
 {
     auto teacherSecretary = _secretaryBroker.findTeacherSecretaryById(tsid);
-    teacherSecretary->creatSchedule(scheduleid,term,academy,major,gradelevel);
+    if(_secretaryBroker.save(scheduleid,term,academy,major,gradelevel))
+        teacherSecretary->creatSchedule(scheduleid,term,academy,major,gradelevel);
 }
 
 //教学秘书创建新的课程条目
@@ -150,7 +150,8 @@ void Registrar::createScheduleEntrys(string tsid,string entryid,string classTime
     auto teacherSecretary = _secretaryBroker.findTeacherSecretaryById(tsid);
     auto teacher = _teacherBroker.findTeacherById(teacherid);
     auto course = _courseBroker.findCourseById(courseid);
-    teacherSecretary->createScheduleEntrys(entryid,classTime,classRoom,teacher,course);
+    _scheduleEntryBroker.save(entryid,classTime,classRoom,teacher,course)
+        teacherSecretary->createScheduleEntrys(entryid,classTime,classRoom,teacher,course);
 }
 
 //教学秘书删除课程表
@@ -159,17 +160,19 @@ void Registrar::removeSchedules(string tsid,string scheduleid)
     auto teacherSecretary = _secretaryBroker.findTeacherSecretaryById(id);
     auto schedule = _scheduleBroker.findScheduleById(sid);
     if(teacherSecretary&&schedule){
-        teacherSecretary->removeSchedule(schedule);
+        if(_scheduleBroker.remove(scheduleid))
+            teacherSecretary->removeSchedule(schedule);
     }
 }
 
 //教学秘书删除课程条目
-void Registrar::removeScheduleEntrys(string tsid, string scheduleid)
+void Registrar::removeScheduleEntrys(string tsid, string entryid)
 {
     auto teacherSecretary = _secretaryBroker.findTeacherSecretaryById(tsid);
-    auto schedule = _scheduleBroker.findScheduleById(scheduleid);
+    auto entry = _scheduleEntryBroker.findScheduleEntryById(entryid);
     if(teacherSecretary&&schedule){
-        teacherSecretary->removeScheduleEntry(schedule);
+        if(_scheduleEntryBroker.remove(entryid))
+            teacherSecretary->removeScheduleEntry(entry);
     }
 }
 

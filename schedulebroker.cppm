@@ -16,6 +16,9 @@ export class ScheduleBroker: public RegistrarBroker
 public:
     using RegistrarBroker::RegistrarBroker;
 
+    bool save(string scheduleid,string term,string academy,string major,string gradelevel);
+    bool remove(string scheduleid);
+
     std::shared_ptr<Schedule> findScheduleById(const std::string& id);
     void initialize();
 
@@ -45,7 +48,7 @@ void ScheduleBroker::initialize()
     }
 }
 
-shared_ptr<Schedule> ScheduleBroker::save(const string& scid)
+bool ScheduleBroker::save(string scheduleid,string term,string academy,string major,string gradelevel)
 {
     if (!status) {
         cerr << "数据库未连接" << endl;
@@ -54,28 +57,66 @@ shared_ptr<Schedule> ScheduleBroker::save(const string& scid)
 
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec_params("SELECT EXISTS(SELECT 1 FROM sc WHERE scheduleid = $1)",scid);
+        auto res = t.exec_params("SELECT EXISTS(SELECT 1 FROM schedule WHERE scheduleid = $1)",scheduleid);
         t.commit();
         bool exists = res[0][0].as<bool>();
         if (!exists) {
             pqxx::work deleteTxn(*dbConnection);
-            string saveSql = "INSERT INTO sc VALUES $1";
-            deleteTxn.exec_params(saveSql,scid);
+            string saveSql = "INSERT INTO schedule VALUES ($1,$2,$3,$4,$5)";
+            deleteTxn.exec_params(saveSql,scheduleid,term,academy,major,gradelevel);
             deleteTxn.commit();
 
-            auto schedule = std::make_shared<Schedule>(scid,);
+            auto schedule = std::make_shared<Schedule>(scheduleid,term,academy,major,gradelevel);
             _schedule.push_back(schedule);  //存入缓存区
 
-            std::print("注册成功\n");
-            return schedule;
+            std::print("加入课程表成功\n");
+            return true;
         } else {
-            std::print("已注册该课程\n");
-            return nullptr;
+            std::print("已有该课程表\n");
+            return false;
         }
 
     } catch (const std::exception& e) {
         cerr << "查询失败：" << e.what() << endl;
-        return nullptr;
+        return false;
+    }
+}
+
+bool ScheduleBroker::remove(string scheduleid)
+{
+    if (!status) {
+        cerr << "数据库未连接" << endl;
+        return false;
+    }
+
+    try {
+        pqxx::work t(*dbConnection);
+        auto res = t.exec_params("SELECT EXISTS(SELECT 1 FROM schedule WHERE scheduleid = $1)",scheduleid);
+        t.commit();
+        bool exists = res[0][0].as<bool>();
+        if (exists) {
+            pqxx::work deleteTxn(*dbConnection);
+            string deleteSql = "DELETE FROM schedule WHERE scheduleid = $1";
+            deleteTxn.exec_params(deleteSql,scheduleid);
+            deleteTxn.commit();
+
+            for (auto it = _schedule.begin(); it != _schedule.end(); ) {
+                if ((*it)->m_scheduleid == scheduleid) {
+                    it = _schedule.erase(it);  // erase返回下一个有效迭代器
+                } else {
+                    ++it;
+                }
+            }
+            std::print("删除课程表成功\n");
+            return true;
+        } else {
+            std::print("没有该课程表\n");
+            return false;
+        }
+
+    } catch (const std::exception& e) {
+        cerr << "查询失败：" << e.what() << endl;
+        return false;
     }
 }
 
