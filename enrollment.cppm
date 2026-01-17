@@ -13,6 +13,7 @@ export class Enrollment
 public:
     Enrollment(string sid,string cid,double grade);
     bool hasId(string sid,string cid);
+    void computeSort(double midterm,double final,vector<double> homework);
 
 private:
     string _sid;
@@ -34,5 +35,5 @@ bool Enrollment::hasId(string sid,string cid)
 
 void Enrollment::computeSort(double midterm,double final,vector<double> homework)
 {
-    _grade.reset(double midterm,double final,vector<double> homework);  //教师输入成绩，重新修改最终成绩
+    _grade.reset(midterm,final,homework);  //教师输入成绩，重新修改最终成绩
 }

@@ -2,6 +2,7 @@ export module registrar:domain.enrollment.grade;
 import std;
 
 using std::vector;
+using std::string;
 
 export class Grade
 {
@@ -53,5 +54,5 @@ double Grade::score()
 
 string Grade::info()
 {
-    return format("最终成绩为：{}  \n",m_grade);
+    return std::format("最终成绩为：{}  \n",m_grade);
 }

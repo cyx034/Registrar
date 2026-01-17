@@ -1,6 +1,7 @@
 export module registrar:domain.teacherSecretary;
 import std;
 import :domain.person;
+import :domain.schedule;
 using std::shared_ptr;
 using std::make_shared;
 using std::string;
@@ -12,7 +13,7 @@ export class TeacherSecretary : public Person
 public:
     TeacherSecretary(string id,string name,string academy);
     void createSchedule(string scheduleid,string term,string academy,string major,string gradelevel);
-    void createScheduleEntry(string entryid,string classTime,string classRoom,shared_ptr<Teacher> teacher,shared_ptr<Course> course);
+    void createScheduleEntry(string entryid,string classTime,string classRoom,shared_ptr<class Teacher> teacher,shared_ptr<class Course> course);
     void removeSchedule(shared_ptr<class Schedule> schedule);
     void removeScheduleEntry(shared_ptr<class ScheduleEntry> scheduleEntry);
     void addEntryToSchedule(shared_ptr<class Schedule> schedule,shared_ptr<class ScheduleEntry> scheduleEntry);
@@ -57,7 +58,7 @@ void TeacherSecretary::removeSchedule(shared_ptr<Schedule> schedule)
 //删除课程表条目
 void TeacherSecretary::removeScheduleEntry(shared_ptr<ScheduleEntry> scheduleEntry)
 {
-    auto it = std::find(_scheduleEntrys.begin(),_scheduleEntrys.end(),schedule);
+    auto it = std::find(_scheduleEntrys.begin(),_scheduleEntrys.end(),scheduleEntry);
     if(it!=_scheduleEntrys.end()){
         _scheduleEntrys.erase(it);
         print("成功删除该课程条目");

@@ -12,6 +12,8 @@ public:
     ~ScheduleEntry();
     void modifyTeacher(shared_ptr<class Teacher> teacher);
     void modifyCourse(shared_ptr<class Course> Course);
+    void modifyTime(string time);
+    void modifyRoom(string room);
 private:
     string m_id;
     string m_sid;

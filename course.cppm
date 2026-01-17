@@ -1,6 +1,8 @@
 export module registrar:domain.course;
 import std;
 import :domain.enrollment;
+import :domain.teacher;
+import :domain.scheduleEntry;
 using std::string;
 using std::shared_ptr;
 using std::make_shared;
@@ -9,27 +11,26 @@ using std::vector;
 export class Course
 {
 public:
-    Course(string id,string name);
+    Course(string id, string name,short credit,string academy,string tracherId);
 
     void acceptEnrollment(shared_ptr<Enrollment> enrollment);
     bool dropEnrollment(string sid);
     string info();
     bool hasId(string id);
 private:
-    string m_name;
     string m_id;
+    string m_name;
     short m_credit;
+    string m_academy;
 
-//    vector<share_ptr<string>> _enrollments;
-
-    class Teacher _teacher;
-    shared_ptr<class ScheduleEntry> _scheduleEntry;
+//    vector<shared_ptr<string>> _enrollments;
+    string _teacherId;
+    shared_ptr<ScheduleEntry> _scheduleEntry;
 
 };
 
-Course::Course(string id, string name)
-    : m_name(name)
-    , m_id(id)
+Course::Course(string id, string name,short credit,string academy,string teacherId)
+    : m_id(id),m_name(name),m_credit(credit),m_academy(academy),_teacherId(teacherId)
 {}
 
 /*void Course::acceptEnrollment(shared_ptr<Enrollment> enrollment)

@@ -2,7 +2,7 @@
 export module registrar;
 export import :student;
 export import :course;
-export import :ui;
+//export import :ui;
 
 export import :broker;
 
@@ -37,7 +37,6 @@ public:
     void modifyEntrytime(string entryid,string time);
     void modifyEntryroom(string entryid,string room);
     void modifyEntryteacher(string entryid,string teacherid);
-    void modifyEntrycourse(string entryd,string courseid);
 private:
     Registrar(); //禁止直接创建对象（将类的构造函数私有化，
                  //再配合静态成员函数来创建对象）
@@ -222,11 +221,4 @@ void Registrar::modifyEntryteacher(string entryid,string teacherid)
     scheduleEntry->modifyTeacher(teacher);
 }
 
-//修改课程条目的课程
-void Registrar::modifyEntrycourse(entryid,courseid)
-{
-    auto scheduleEntry = _scheduleEntryBroker.findScheduleEntryById(entryid);
-    auto course = _courseBroker.findTeacherById(courseid);
-    scheduleEntry->modifyCourse(course);
-}
 

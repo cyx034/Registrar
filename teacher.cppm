@@ -13,7 +13,7 @@ public:
     virtual ~Teacher() override;
     void schedule();
 
-    bool CourseEvalueAccess(shared_ptr<Course> course);
+    bool CourseEvalueAccess(shared_ptr<class Course> course);
 
 private:
     vector<shared_ptr<class Course>> _courses;
@@ -26,7 +26,7 @@ Teacher::Teacher(Person person)
 Teacher::~Teacher()
 {}
 
-Teacher::void schedule()
+void Teacher::schedule()
 {}
 
 bool Teacher::CourseEvalueAccess(shared_ptr<Course> course)

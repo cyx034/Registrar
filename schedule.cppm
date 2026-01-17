@@ -36,7 +36,7 @@ Schedule::~Schedule()
 
 bool Schedule::hasId(string id)
 {
-    return id==m_id;//判断是否有该条目id
+    return id==m_scheduleid;//判断是否有该条目id
 }
 
 //向课程表中添加新的课程条目

@@ -212,8 +212,7 @@ void Ui::teachingsecretaryui()
             print("             1.修改时间           \n");
             print("             2.修改地点           \n");
             print("             3.修改授课老师        \n");
-            print("             4.修改课程编号        \n");
-            print("             5.返回上一页          \n");
+            print("             4.返回上一页          \n");
             int choice1;
             print("请选择你要进行的操作: ");
             cin>>choice1;
@@ -238,12 +237,6 @@ void Ui::teachingsecretaryui()
                     _registrar.modifyEntryteacher(id2,tid2);
                     break;
                 case 4:
-                    string cid2;
-                    print("请输入你要修改的课程编号：");
-                    cin>>cid2;
-                    _registrar.modifyEntrycourse(id2,cid2);
-                    break;
-                case 5:
                     print("返回上一页\n");
                     break;
                 default:
