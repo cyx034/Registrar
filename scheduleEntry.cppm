@@ -49,12 +49,6 @@ void ScheduleEntry::modifyRoom(string room)
     m_classRoom = room;
 }
 
-//修改课程
-void ScheduleEntry::modifyCourse(shared_ptr<Course> course)
-{
-    _course=course;
-}
-
 
 
 

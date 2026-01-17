@@ -82,7 +82,6 @@ bool Registrar::teacherEnterGrade(string tid,string sid,string cid,double midter
     return false;
 }
 
-
 //处理学生选课注册的逻辑
 void Registrar::studentEnrollsInCourse(string sid,string cid)
 {
@@ -182,7 +181,8 @@ void Registrar::addEntrysToSchedule(string tsid,string scheduleid,string entryid
     auto schedule = _scheduleBroker.findScheduleById(scheduleid);
     auto scheduleEntry = _scheduleEntryBroker.findScheduleEntryById(entryid);
     if(teacherSecretary&&schedule&&scheduleEntry){
-        teacherSecretary->addEntryToSchedule(schedule,scheduleEntry);
+        if(_scheduleEntryBroker.addToSchedule(entryid,scheduleid))
+            teacherSecretary->addEntryToSchedule(schedule,scheduleEntry);
     }
 }
 
@@ -193,7 +193,8 @@ void Registrar::removeEntrysToSchedule(string tsid,string scheduleid,string entr
     auto schedule = _schedulebroker.findScheduleById(scheduleid);
     auto scheduleEntry = _scheduleEntryBroker.findScheduleEntryById(entryid);
     if(teacherSecretary&&schedule&&scheduleEntry){
-        teacherSecretary->removeEntryToSchedule(schedule,scheduleEntry);
+        if(_scheduleEntryBroker.removeToSchedule(entryid,scheduleid))
+            teacherSecretary->removeEntryToSchedule(schedule,scheduleEntry);
     }
 }
 
@@ -201,7 +202,8 @@ void Registrar::modifyEntrytime(string entryid,string time)
 {
     auto scheduleEntry = _scheduleEntryBroker.findScheduleEntryById(entryid);
     if(scheduleEntry){
-        scheduleEntry->modifyTime(time);
+        if(_scheduleBroker.modifyEntrytime(entryid,time))
+            scheduleEntry->modifyTime(time);
     }
 }
 
@@ -209,7 +211,8 @@ void Registrar::modifyEntryroom(string entryid,string room)
 {
     auto scheduleEntry = _scheduleEntryBroker.findScheduleEntryById(entryid);
     if(scheduleEntry){
-        scheduleEntry->modifyRoom(room);
+        if(_scheduleBroker.modifyEntryroom(string entryid,string room))
+            scheduleEntry->modifyRoom(room);
     }
 }
 
@@ -218,7 +221,10 @@ void Registrar::modifyEntryteacher(string entryid,string teacherid)
 {
     auto scheduleEntry = _scheduleEntryBroker.findScheduleEntryById(entryid);
     auto teacher = _teacherBroker.findTeacherById(teacherid);
-    scheduleEntry->modifyTeacher(teacher);
+    if(scheduleEntry){
+        if(_scheduleBroker.modifyEntryteacher(string entryid,string teacherid))
+            scheduleEntry->modifyTeacher(teacher);
+    }
 }
 
 
