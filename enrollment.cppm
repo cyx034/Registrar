@@ -11,7 +11,6 @@ export class Enrollment
 {
     friend class EnrollmentBroker;
 public:
-    Enrollment(string sid,string cid,double midterm,double final,vector<double> homework);
     Enrollment(string sid,string cid,double grade);
     bool hasId(string sid,string cid);
 
@@ -20,13 +19,6 @@ private:
     string _cid;
     Grade _grade;
 };
-
-//教师输入成绩
-Enrollment::Enrollment(string sid,string cid,double midterm,double final,vector<double> homework)
-    :_sid(sid)
-    ,_cid(cid)
-    ,_grade(midterm,final,homework)
-{}
 
 //从数据库中读取最终成绩
 Enrollment::Enrollment(string sid,string cid,double grade)
@@ -38,4 +30,9 @@ Enrollment::Enrollment(string sid,string cid,double grade)
 bool Enrollment::hasId(string sid,string cid)
 {
     return _sid == sid && _cid == cid;
+}
+
+void Enrollment::computeSort(double midterm,double final,vector<double> homework)
+{
+    _grade.reset(double midterm,double final,vector<double> homework);  //教师输入成绩，重新修改最终成绩
 }

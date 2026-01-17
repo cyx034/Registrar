@@ -5,31 +5,35 @@ using std::vector;
 
 export class Grade
 {
+    friend class EnrollmentBroker;
 public:
-    Grade(double midterm,double final,vector<double> homeworks);
     Grade(double grade);
     string info();
+
+    void reset(double midterm,double final,vector<double> homeworks);
+
 
 private:
 
     double score();
-    double m_midterm;
-    double m_final;
+    double m_midterm = 0;
+    double m_final = 0;
     vector<double> m_homeworks;
-    double m_grade;
+    double m_grade = 0;
 };
-
-Grade::Grade(double midterm,double final,vector<double> homeworks)
-    :m_midterm(midterm)
-    ,m_final(final)
-    ,m_homeworks(homeworks)
-{
-    grade = this->score();
-}
 
 Grade::Grade(double grade)
     :m_grade(grade)
 {}
+
+void Grade::reset(double midterm,double final,vector<double> homeworks)
+{
+    m_midterm = midterm;
+    m_final = final;
+    m_homeworks = homeworks;
+    m_grade = score();
+}
+
 
 double Grade::score()
 {

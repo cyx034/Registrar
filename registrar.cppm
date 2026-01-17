@@ -45,7 +45,7 @@ private:
     CourseBroker _courseBroker;
     TeacherBroker _teacherBroker;
     TeacherSecretaryBroker _secretaryBroker;
-    EnrollmentBroker _enrollmenBroker;
+    EnrollmentBroker _enrollmentBroker;
 
 };
 
@@ -59,7 +59,7 @@ Registrar& Registrar::system()
 
 bool Registrar::teacherEnterGrade(string tid,string sid,string cid,double midterm,double final,vector<double>homework)
 {
-    if(tid.empty()||sid.empty()||cid.empty()||grade>100||grade<0){
+    if(tid.empty()||sid.empty()||cid.empty()){
         std::cerr << "数据错误" <<std::endl;
         return false;
     }
@@ -67,10 +67,19 @@ bool Registrar::teacherEnterGrade(string tid,string sid,string cid,double midter
     auto student = _studentBroker.findStudentById(sid);
     auto course = _courseBroker.findCourseById(cid);
 
-    if(teacher->CourseEvalueAccess(course)){
-        auto enrollment = _enrollmenBroker.findEnrollmentById(sid,tid);
-        enrollment(sid,cid,midterm,final,homeowrk);
+    if(student && course && teacher){
+        if(_courseBroker.CourseEvalueAccess(cid,tid)){
+            auto enrollment = _enrollmentBroker.findEnrollmentById(sid,cid);
+            enrollment.computeSort(midterm,final,homework);//修改缓存成绩
+            if(_enrollmentBroker.updateGrade(enrollment)){
+                return true;
+            }
+        }else{
+            print("没有权限\n");
+            return false;
+        }
     }
+    return false;
 }
 
 
@@ -119,7 +128,7 @@ void Registrar::initialize()  //系统初始化
     _courseBroker.initialize();
     _teacherBroker.initialize();
     _secretaryBroker.initialize();
-    _enrollmenBroker.initialize();
+    _enrollmentBroker.initialize();
 }
 
 Registrar::Registrar(){}

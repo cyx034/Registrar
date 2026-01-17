@@ -21,6 +21,7 @@ private:
     short m_credit;
 
     vector<shared_ptr<class Enrollment>> _enrollments;
+
     class Teacher _teacher;
     shared_ptr<class ScheduleEntry> _scheduleEntry;
 
@@ -30,6 +31,7 @@ Course::Course(string id, string name)
     : m_name(name)
     , m_id(id)
 {}
+
 
 bool Course::dropEnrollment(string sid)
 {

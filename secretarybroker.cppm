@@ -32,11 +32,11 @@ void TeacherSecretaryBroker::initialize()
         return;
     }
     pqxx::read_transaction t(*dbConnection);
-    pqxx::result res = rtx.exec("SELECT tsno,tsname,tsacademy FROM teachersecretary LIMIT 5;"); //只读入前5行进入缓存
+    pqxx::result res = rtx.exec("SELECT tsno,tsname,tsacademy FROM teachersecretary LIMIT 5"); //只读入前5行进入缓存
     rtx.commit();
     _teachersecretary.clear();
     for(const auto& row : res) {
-        _teachersecretary.push_back(std::make_unique<TeacherSecretary>(
+        _teachersecretary.push_back(std::make_shared<TeacherSecretary>(
             res[0]["tsno"].as<string>(),
             res[0]["tsname"].as<string>(),
             res[0]["tsacademy"].as<string>()));
@@ -67,13 +67,13 @@ shared_ptr<TeacherSecretary> TeacherSecretaryBroker::findTeacherSecretaryByIdDB(
     }
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec_params("SELECT tno,tname,tacademy FROM teachersecretary WHERE tsno = $1;",id);
+        auto res = t.exec_params("SELECT tno,tname,tacademy FROM teachersecretary WHERE tsno = $1",id);
         t.commit();
         if (res.empty()) {
             std::cout << "未找到教学秘书ID：" << id << endl;
             return nullptr;
         }
-        auto teachersecretary = std::make_unique<TeacherSecretary>(
+        auto teachersecretary = std::make_shared<TeacherSecretary>(
             res[0]["tsno"].as<string>(),
             res[0]["tsname"].as<string>(),
             res[0]["tsacademy"].as<string>());

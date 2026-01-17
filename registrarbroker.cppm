@@ -38,7 +38,7 @@ void RegistrarBroker::connect()
 {
     try {
         std::string connstr = "host=localhost port=5432 dbname=db user=postgres";
-        dbConnection = std::make_unique<pqxx::connection>(connstr);
+        dbConnection = std::make_shared<pqxx::connection>(connstr);
 
         if (dbConnection->is_open()) {
                 status = true;

@@ -13,15 +13,16 @@ using std::shared_ptr;
 
 export class EnrollmentBroker : public RegistrarBroker
 {
-    fi
 public:
     using RegistrarBroker::RegistrarBroker;
 
     std::shared_ptr<Enrollment> findEnrollmentById(const string& sid,const string& cid);
 //    string getCourseRoster(const string& courseId);
 
-    bool save(shared_ptr<Enrollment> enrollment);
+    bool save(const string& sid,const string& cid);
     bool remove(Enrollment *enrollment)
+
+    bool updateGrade(const Enrollment& enrollment);
 
     void initialize();
 
@@ -38,18 +39,23 @@ void EnrollmentBroker::initialize()
         return;
     }
     pqxx::work t(*dbConnection);
-    pqxx::result res = rtx.exec("SELECT sno,cno,grade FROM sc LIMIT 5;"); //只读入前5行进入缓存
+    pqxx::result res = rtx.exec("SELECT sno,cno,grade FROM sc LIMIT 5"); //只读入前5行进入缓存
     rtx.commit();
     _enrollment.clear();
     for(const auto& row : res) {
-        _enrollment.push_back(std::make_unique<Enrollment>(
-            res[0]["sno"].as<string>(),
-            res[0]["cno"].as<string>(),
-            res[0]["grade"].as<double>()));
+        string sno = res[0]["sno"].as<string>();
+        string cno = res[0]["cno"].as<string>();
+
+        if(!row["grade"].is_null()){
+            double grade = res[0]["grade"].as<double>();
+            _enrollment.push_back(std::make_shared<Enrollment>(sno,cno,grade));
+        }else{
+            _enrollment.push_back(std::make_shared<Enrollment>(sno,cno,0.0));
+        }
     }
 }
 
-bool EnrollmentBroker::save(shared_ptr<Enrollment> enrollment)
+bool EnrollmentBroker::save(const string& sid,const string& cid)
 {
     if (!status) {
         cerr << "数据库未连接" << endl;
@@ -61,13 +67,13 @@ bool EnrollmentBroker::save(shared_ptr<Enrollment> enrollment)
       }
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec_params("SELECT EXISTS(SELECT 1 FROM sc WHERE Sno = $1 AND Cno = $2);",enrollment->_sid,enrollment->_cid);
+        auto res = t.exec_params("SELECT EXISTS(SELECT 1 FROM sc WHERE Sno = $1 AND Cno = $2)",sid,cid);
         t.commit();
         bool exists = res[0][0].as<bool>();
         if (!exists) {
             pqxx::work deleteTxn(*dbConnection);
             string saveSql = "INSERT INTO sc VALUES ($1,$2)";
-            deleteTxn.exec_params(saveSql,enrollment->_sid,enrollment->_cid);
+            deleteTxn.exec_params(saveSql,sid,cid);
             deleteTxn.commit();
 
             _enrollment.push_back(enrollment);  //存入缓存区
@@ -97,7 +103,7 @@ bool EnrollmentBroker::remove(Enrollment *enrollment)
       }
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec_params("SELECT EXISTS(SELECT 1 FROM sc WHERE Sno = $1 AND Cno = $2);",enrollment->_sid,enrollment->_cid);
+        auto res = t.exec_params("SELECT EXISTS(SELECT 1 FROM sc WHERE Sno = $1 AND Cno = $2)",enrollment->_sid,enrollment->_cid);
         t.commit();
         bool exists = res[0][0].as<bool>();
         if (exists) {
@@ -118,6 +124,23 @@ bool EnrollmentBroker::remove(Enrollment *enrollment)
     }
 }
 
+bool EnrollmentBroker::updateGrade(const Enrollment& enrollment)
+{
+    if (!status) {
+        cerr << "数据库未连接" << endl;
+        return false;
+    }
+    try {
+        pqxx::work t(*dbConnection);
+        auto res = t.exec_params("UPDATE sc SET grade = $1 WHERE sno = $2 AND cno = $3",enrollment._grade.m_grade,
+                                 enrollment._sid,enrollment._cid);
+        t.commit();
+        return true;
+    } catch (const std::exception& e) {
+        cerr << "更新成绩失败：" << e.what() << endl;
+        return false;
+    }
+}
 
 
 shared_ptr<Enrollment> EnrollmentBroker::findEnrollmentById(const std::string& sid,const std::string& cid)
@@ -144,16 +167,21 @@ shared_ptr<Enrollment> EnrollmentBroker::findEnrollBymentIdDB(const string& sid,
     }
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec_params("SELECT sno,cno,grade FROM course WHERE cno = $1;",id);
+        auto res = t.exec_params("SELECT sno,cno,grade FROM course WHERE cno = $1",id);
         t.commit();
         if (res.empty()) {
             std::cout << "未找到scID：" << id << endl;
             return nullptr;
         }
-        auto enrollment = std::make_unique<Enrollment>(
-            res[0]["sno"].as<string>(),
-            res[0]["cno"].as<string>(),
-            res[0]["grade"].as<string>());
+        string sno = res[0]["sno"].as<string>();
+        string cno = res[0]["cno"].as<string>();
+
+        if(!row["grade"].is_null()){
+            double grade = res[0]["grade"].as<double>();
+            _enrollment.push_back(std::make_shared<Enrollment>(sno,cno,grade));
+        }else{
+            _enrollment.push_back(std::make_shared<Enrollment>(sno,cno,0.0));
+        }
         _enrollment.push_back(std::move(Enrollment));   //把用到的存入缓存区
     } catch (const std::exception& e) {
         cerr << "查询失败：" << e.what() << endl;

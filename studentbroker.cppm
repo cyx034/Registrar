@@ -32,11 +32,11 @@ void StudentBroker::initialize()
         return;
     }
     pqxx::read_transaction t(*dbConnection);
-    pqxx::result res = rtx.exec("SELECT sno,sname,sacademy,smajor FROM student LIMIT 5;");
+    pqxx::result res = rtx.exec("SELECT sno,sname,sacademy,smajor FROM student LIMIT 5");
     rtx.commit();
     _students.clear();
     for(const auto& row : res) {
-        _students.push_back(std::make_unique<Student>(
+        _students.push_back(std::make_shared<Student>(
             res[0]["sno"].as<string>(),
             res[0]["sname"].as<string>(),
             res[0]["sacademy"].as<string>(),
@@ -68,13 +68,13 @@ shared_ptr<Student> StudentBroker::findStudentByIdDB(const string& id)
     }
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec_params("SELECT sno,sname,sacademy,smajor FROM student WHERE sno = $1;",id);
+        auto res = t.exec_params("SELECT sno,sname,sacademy,smajor FROM student WHERE sno = $1",id);
         t.commit();
         if (res.empty()) {
             std::cout << "未找到学生ID：" << id << endl;
             return nullptr;
         }
-        auto student = std::make_unique<Student>(
+        auto student = std::make_shared<Student>(
             res[0]["sno"].as<string>(),
             res[0]["sname"].as<string>(),
             res[0]["sacademy"].as<string>(),

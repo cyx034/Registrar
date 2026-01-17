@@ -18,6 +18,8 @@ public:
     using RegistrarBroker::RegistrarBroker;
 
     std::shared_ptr<Course> findCourseById(const std::string& id);
+
+    bool CourseEvalueAccess(const string& cid,const string& tid);
     void initialize();
 
 private:
@@ -33,11 +35,11 @@ void CourseBroker::initialize()
         return;
     }
     pqxx::read_transaction t(*dbConnection);
-    pqxx::result res = rtx.exec("SELECT cno,cname,ccredit,cacademy,tno FROM course LIMIT 5;"); //只读入前5行进入缓存
+    pqxx::result res = rtx.exec("SELECT cno,cname,ccredit,cacademy,tno FROM course LIMIT 5"); //只读入前5行进入缓存
     rtx.commit();
     _courses.clear();
     for(const auto& row : res) {
-        _courses.push_back(std::make_unique<Course>(
+        _courses.push_back(std::make_shared<Course>(
             res[0]["cno"].as<string>(),
             res[0]["cname"].as<string>(),
             res[0]["ccredit"].as<string>(),
@@ -45,6 +47,28 @@ void CourseBroker::initialize()
             res[0]["tno"].as<string>()));
     }
 }
+
+bool CourseBroker::CourseEvalueAccess(const string& cid,const string& tid)
+{
+    if (!status) {
+        cerr << "数据库未连接" << endl;
+        return nullptr;
+    }
+    try {
+        pqxx::work t(*dbConnection);
+        auto res = t.exec_params("SELECT EXISTS(SELECT 1 FROM course WHERE cno = $1 AND tno = $2)",cid,tid);
+        t.commit();
+        if(res.size() == 1){
+            return res[0][0].as<bool>();
+        }
+    } catch (const std::exception& e) {
+        cerr << "查询失败：" << e.what() << endl;
+        return false;
+    }
+    return false;
+}
+
+
 
 shared_ptr<Course> CourseBroker::findCourseById(const std::string& id)
 {
@@ -70,13 +94,13 @@ shared_ptr<Course> CourseBroker::findCourseByIdDB(const string& id)
     }
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec_params("SELECT cno,cname,ccredit,cacademy,tno FROM course WHERE cno = $1;",id);
+        auto res = t.exec_params("SELECT cno,cname,ccredit,cacademy,tno FROM course WHERE cno = $1",id);
         t.commit();
         if (res.empty()) {
             std::cout << "未找到课程ID：" << id << endl;
             return nullptr;
         }
-        auto course = std::make_unique<Course>(
+        auto course = std::make_shared<Course>(
             res[0]["cno"].as<string>(),
             res[0]["cname"].as<string>(),
             res[0]["ccredit"].as<string>(),

@@ -32,11 +32,11 @@ void ScheduleBroker::initialize()
         return;
     }
     pqxx::read_transaction t(*dbConnection);
-    pqxx::result res = rtx.exec("SELECT scheduleid,term,acadamy,major,gradelevel FROM schedule LIMIT 5;");
+    pqxx::result res = rtx.exec("SELECT scheduleid,term,acadamy,major,gradelevel FROM schedule LIMIT 5");
     rtx.commit();
     _schedule.clear();
     for(const auto& row : res) {
-        _schedule.push_back(std::make_unique<Schedule>(
+        _schedule.push_back(std::make_shared<Schedule>(
             res[0]["scheduleid"].as<string>(),
             res[0]["term"].as<string>(),
             res[0]["academy"].as<string>(),
@@ -69,13 +69,13 @@ shared_ptr<Schedule> ScheduleBroker::findScheduleByIdDB(const string& id)
     }
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec_params("SELECT scheduleid,term,acadamy,major,gradelevel FROM schedule WHERE scheduleid = $1;",id);
+        auto res = t.exec_params("SELECT scheduleid,term,acadamy,major,gradelevel FROM schedule WHERE scheduleid = $1",id);
         t.commit();
         if (res.empty()) {
             std::cout << "未找到课程表id：" << id << endl;
             return nullptr;
         }
-        auto schedule = std::make_unique<Schedule>(
+        auto schedule = std::make_shared<Schedule>(
             res[0]["scheduleid"].as<string>(),
             res[0]["term"].as<string>(),
             res[0]["academy"].as<string>(),
