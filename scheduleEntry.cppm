@@ -38,9 +38,9 @@ bool ScheduleEntry::hasId(string id)
 }
 
 //修改相关信息
-void ScheduleEntry::modify(string id)
+bool ScheduleEntry::modify(string sid,string classTime,string classRoom,weak_ptr<Teacher> teacher,weak_ptr<Course> course)
 {
-
+    //
 }
 
 

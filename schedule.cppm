@@ -40,7 +40,9 @@ bool Schedule::hasId(string id)
 
 //修改课程表信息
 void Schedule::modify(string id)
-{}
+{
+
+}
 
 //向课程表中添加新的课程条目
 void Schedule::addScheduleEntry(shared_ptr<ScheduleEntry> scheduleEntry)

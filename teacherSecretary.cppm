@@ -28,14 +28,14 @@ export class TeacherSecretary : public Person
 {
 public:
     TeacherSecretary(string id,string name,string academy);
-    void createSchedule(string id);
+    void createSchedule();
     void createScheduleEntry();
     bool removeSchedule(string id);
-    void removeScheduleEntry(string sId)；
+    void removeScheduleEntry(string sid)；
     bool modifySchedule(string id);
     void modifyScheduleEntry(string sid);
     void addEntryToSchedule(string id，string sid);
-    void removeEntryToSchedule(string id,string entryId);
+    void removeEntryToSchedule(string id,string sid);
 
 private:
     vector<shared_ptr<class Schedule>> _schedules;
@@ -47,14 +47,8 @@ TeacherSecretary::TeacherSecretary(string id,string name,string academy)
 {}
 
 //创建新的课程表
-void TeacherSecretary::createSchedule(string id)
+void TeacherSecretary::createSchedule()
 {
-    for(auto& s:_schedules){
-        if(s->hasId(id)){
-            print("此课程已存在");
-            return;
-        }
-    }
     auto s=make_shared<Schedule>;
     _schedules.push_back(s);
     print("已成功创建一个新课程");
@@ -80,7 +74,7 @@ void TeacherSecretary::removeSchedule(string id)
 }
 
 //删除课程表条目
-void TeacherSecretary::removeScheduleEntry(string id)
+void TeacherSecretary::removeScheduleEntry(string sid)
 {
     for(auto&s :_scheduleEntrys){
         if(s->hasId(id)){
@@ -106,11 +100,11 @@ void TeacherSecretary::addEntryToSchedule(string id，string sid)
 
 
 //删除课程表的某个课程条目
-void TeacherSecretary::removeEntryToSchedule(string id,string entryId)
+void TeacherSecretary::removeEntryToSchedule(string id,string sid)
 {
     for(auto&s :_schedules){
         for(auto& se:_scheduleEntrys){
-            if(s->hasId(id)){
+            if(s->hasId(id)&& se->hasId(sid)){
                 s->removeScheduleEntry(se);//课程表移除课程条目
                 return;
             }
@@ -132,15 +126,12 @@ void TeacherSecretary::modifySchedule(string id)
 }
 
 //修改课程条目的信息
-void TeacherSecretary::modifyScheduleEntry(string sid)
+bool TeacherSecretary::modifyScheduleEntry(string sid,string newId)
 {
-
     for(auto&s :_scheduleEntrys){
         if(s->hasId(sid)){
-            s->modify(sid);
-            return;
+            return s->modify(sid);
         }
     }
-    print("此课程条目不存在");
 }
 

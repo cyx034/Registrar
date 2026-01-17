@@ -197,3 +197,10 @@ string Student::printSchedules()
 //=delete =default const constexpr explicit
 //
 
+//创建新的课程表
+void Registrar::creatSchedules(string id)
+{
+    auto teacherSecretary = _secreBroker.findStudentById(sid);
+    _teacherBroker->creatSchedule();
+}
+
