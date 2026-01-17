@@ -202,7 +202,7 @@ void Ui::teachingsecretaryui()
             cin>>tid;
             print("请输入课程编号:");
             cin>>cid;
-            _registrar.createScheduleEntrys(tsid,eid,time,room,tid,cid)
+            _registrar.createScheduleEntrys(tsid,eid,time,room,tid,cid);
             break;
         case 4:
             string id2;

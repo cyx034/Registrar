@@ -28,7 +28,7 @@ public:
     //教学秘书相关操作
     void createSchedules(string tsid,string scheduleid,string term,string academy,string major,string gradelevel);//创建课程表
     void createScheduleEntrys(string tsid);//创建课程条目
-    void removeSchedules(string tsid，string scheduleid);//删除课程表
+    void removeSchedules(string tsid,string scheduleid);
     void removeScheduleEntrys(string tsid, string entryid);//删除课程条目
     void addEntrysToSchedule(string tsid,string scheduleid,string entryid);//向课程表中添加课程条目
     void removeEntrysToSchedule(string tsid,string scheduleid,string entryid);//从课程表中移除课程条目
@@ -46,9 +46,10 @@ private:
     TeacherBroker _teacherBroker;
     TeacherSecretaryBroker _secretaryBroker;
     EnrollmentBroker _enrollmentBroker;
+    ScheduleBroker _scheduleBroker;
+    ScheduleEntryBroker _scheduleEntryBroker;
 
 };
-
 
 //单例模式的静态局部变量实现。
 Registrar& Registrar::system()
@@ -128,89 +129,35 @@ void Registrar::initialize()  //系统初始化
     _teacherBroker.initialize();
     _secretaryBroker.initialize();
     _enrollmentBroker.initialize();
+    _scheduleBroker.initialize();
+    _scheduleEntryBroker.initialize()
 }
 
 Registrar::Registrar(){}
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-//根据student的运行时类型调用enrollIn
-//根据course的运行时类型调用acceptEnrollment,要么双方都更新，要么都不更新
-
-void Student::enrollIn(Course *course)
-{
-    if(course->acceptEnrollment(this))  //this 是指向当前Student对象的指针
-        _courses.push_back(course);
-}
-
-//输出每个课程所有选课的学生名单
-void Student::dropOut(class Course* course)
-{
-    if(course->acceptDropOut(this))  //this 是指向当前Student对象的指针
-        for(int i=0;i<_courses.size();i++){
-            if(_courses[i] == course){
-                _courses.erase(_courses.begin()+i);
-                break;
-            }
-        }
-}
-
-//输出该课程所有选课的学生名单
-string Course::roster()
-{
-    auto rst = format("{} selected by the students:\n",m_name);
-    for(auto s : _students){
-        rst += s->info();
-    }
-    return rst;
-}
-
-//输出该学生的课表
-string Student::printSchedules()
-{
-    auto rst = format("{} schedule:\n",m_name);
-    for(auto c : _courses){
-        rst += c->info();
-    }
-    return rst;
-}
-
-//=delete =default const constexpr explicit
-//
-
 //教学秘书创建新的课程表
 void Registrar::createSchedules(string tsid,string scheduleid,string term,string academy,string major,string gradelevel)
 {
-    auto teacherSecretary = _teachersecretarybroker.findTeacherSecretaryById(tsid);
+    auto teacherSecretary = _secretaryBroker.findTeacherSecretaryById(tsid);
     teacherSecretary->creatSchedule(scheduleid,term,academy,major,gradelevel);
 }
 
 //教学秘书创建新的课程条目
 void Registrar::createScheduleEntrys(string tsid,string entryid,string classTime,string classRoom,string teacherid,string courseid)
 {
-    auto teacherSecretary = _teachersecretarybroker.findTeacherSecretaryById(tsid);
+    auto teacherSecretary = _secretaryBroker.findTeacherSecretaryById(tsid);
     auto teacher = _teacherBroker.findTeacherById(teacherid);
     auto course = _courseBroker.findCourseById(courseid);
     teacherSecretary->createScheduleEntrys(entryid,classTime,classRoom,teacher,course);
 }
 
 //教学秘书删除课程表
-void Registrar::removeSchedules(string tsid，string scheduleid)
+void Registrar::removeSchedules(string tsid,string scheduleid)
 {
-    auto teacherSecretary = _teachersecretarybroker.findTeacherSecretaryById(id);
-    auto schedule = _schedulebroker.findScheduleById(sid);
+    auto teacherSecretary = _secretaryBroker.findTeacherSecretaryById(id);
+    auto schedule = _scheduleBroker.findScheduleById(sid);
     if(teacherSecretary&&schedule){
         teacherSecretary->removeSchedule(schedule);
     }
@@ -219,8 +166,8 @@ void Registrar::removeSchedules(string tsid，string scheduleid)
 //教学秘书删除课程条目
 void Registrar::removeScheduleEntrys(string tsid, string scheduleid)
 {
-    auto teacherSecretary = _teachersecretarybroker.findTeacherSecretaryById(tsid);
-    auto schedule = _schedulebroker.findScheduleById(scheduleid);
+    auto teacherSecretary = _secretaryBroker.findTeacherSecretaryById(tsid);
+    auto schedule = _scheduleBroker.findScheduleById(scheduleid);
     if(teacherSecretary&&schedule){
         teacherSecretary->removeScheduleEntry(schedule);
     }
@@ -229,9 +176,9 @@ void Registrar::removeScheduleEntrys(string tsid, string scheduleid)
 //教学秘书添加某课程条目到某课程表中
 void Registrar::addEntrysToSchedule(string tsid,string scheduleid,string entryid)
 {
-    auto teacherSecretary = _teachersecretarybroker.findTeacherSecretaryById(tsid);
-    auto schedule = _schedulebroker.findScheduleById(scheduleid);
-    auto scheduleEntry = _scheduleEntrybroker.findScheduleEntryById(entryid);
+    auto teacherSecretary = _secretaryBroker.findTeacherSecretaryById(tsid);
+    auto schedule = _scheduleBroker.findScheduleById(scheduleid);
+    auto scheduleEntry = _scheduleEntryBroker.findScheduleEntryById(entryid);
     if(teacherSecretary&&schedule&&scheduleEntry){
         teacherSecretary->addEntryToSchedule(schedule,scheduleEntry);
     }
@@ -240,9 +187,9 @@ void Registrar::addEntrysToSchedule(string tsid,string scheduleid,string entryid
 //教学秘书删除某课程表中的某课程条目
 void Registrar::removeEntrysToSchedule(string tsid,string scheduleid,string entryid)
 {
-    auto teacherSecretary = _teachersecretarybroker.findTeacherSecretaryById(tsid);
+    auto teacherSecretary = _secretaryBroker.findTeacherSecretaryById(tsid);
     auto schedule = _schedulebroker.findScheduleById(scheduleid);
-    auto scheduleEntry = _scheduleEntrybroker.findScheduleEntryById(entryid);
+    auto scheduleEntry = _scheduleEntryBroker.findScheduleEntryById(entryid);
     if(teacherSecretary&&schedule&&scheduleEntry){
         teacherSecretary->removeEntryToSchedule(schedule,scheduleEntry);
     }
@@ -250,7 +197,7 @@ void Registrar::removeEntrysToSchedule(string tsid,string scheduleid,string entr
 
 void Registrar::modifyEntrytime(string entryid,string time)
 {
-    auto scheduleEntry = _scheduleEntrybroker.findScheduleEntryById(entryid);
+    auto scheduleEntry = _scheduleEntryBroker.findScheduleEntryById(entryid);
     if(scheduleEntry){
         scheduleEntry->modifyTime(time);
     }
@@ -258,7 +205,7 @@ void Registrar::modifyEntrytime(string entryid,string time)
 
 void Registrar::modifyEntryroom(string entryid,string room)
 {
-    auto scheduleEntry = _scheduleEntrybroker.findScheduleEntryById(entryid);
+    auto scheduleEntry = _scheduleEntryBroker.findScheduleEntryById(entryid);
     if(scheduleEntry){
         scheduleEntry->modifyRoom(room);
     }
@@ -267,7 +214,7 @@ void Registrar::modifyEntryroom(string entryid,string room)
 //修改课程条目的任课老师
 void Registrar::modifyEntryteacher(string entryid,string teacherid)
 {
-    auto scheduleEntry = _scheduleEntrybroker.findScheduleEntryById(entryid);
+    auto scheduleEntry = _scheduleEntryBroker.findScheduleEntryById(entryid);
     auto teacher = _teacherBroker.findTeacherById(teacherid);
     scheduleEntry->modifyTeacher(teacher);
 }
@@ -275,7 +222,7 @@ void Registrar::modifyEntryteacher(string entryid,string teacherid)
 //修改课程条目的课程
 void Registrar::modifyEntrycourse(entryid,courseid)
 {
-    auto scheduleEntry = _scheduleEntrybroker.findScheduleEntryById(entryid);
+    auto scheduleEntry = _scheduleEntryBroker.findScheduleEntryById(entryid);
     auto course = _courseBroker.findTeacherById(courseid);
     scheduleEntry->modifyCourse(course);
 }
