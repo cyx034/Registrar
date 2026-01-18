@@ -126,14 +126,14 @@ bool ScheduleEntryBroker::modifyEntryteacher(string entryid,string tid)
         cerr << "数据库未连接" << endl;
         return false;
     }
-    try {
+    try {set -Ux LD_LIBRARY_PATH /opt/gcc-latest/lib64 $LD_LIBRARY_PATH
         pqxx::work t(*dbConnection);
         auto res = t.exec(pqxx::zview{"SELECT EXISTS(SELECT 1 FROM schedule_entry WHERE entryid = $1)"},pqxx::params{entryid});
         t.commit();
         bool exists = res[0][0].as<bool>();
         if (exists) {
             pqxx::work deleteTxn(*dbConnection);
-            deleteTxn.exec("UPDATE schedule_entry SET tno = $1 WHERE entryid = $2",tid,entryid);
+            deleteTxn.exec(pqxx::zview{"UPDATE schedule_entry SET tno = $1 WHERE entryid = $2"},pqxx::params{tid,entryid});
             deleteTxn.commit();
 
             std::print("修改教师成功\n");
@@ -158,12 +158,12 @@ bool ScheduleEntryBroker::addToSchedule(string entryid,string scheduleid)
     }
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec("SELECT EXISTS(SELECT 1 FROM schedule_entry WHERE entryid = $1)",entryid);
+        auto res = t.exec(pqxx::zview{"SELECT EXISTS(SELECT 1 FROM schedule_entry WHERE entryid = $1)"},pqxx::params{entryid});
         t.commit();
         bool exists = res[0][0].as<bool>();
         if (exists) {
             pqxx::work deleteTxn(*dbConnection);
-            deleteTxn.exec("UPDATE schedule_entry SET scheduleid = $1 WHERE entryid = $2",scheduleid,entryid);
+            deleteTxn.exec(pqxx::zview{"UPDATE schedule_entry SET scheduleid = $1 WHERE entryid = $2"},pqxx::params{scheduleid,entryid});
             deleteTxn.commit();
 
             std::print("课程条目加入课程表成功\n");
@@ -187,11 +187,8 @@ bool ScheduleEntryBroker::removeToSchedule(string entryid,string scheduleid)
     }
     try {
         pqxx::work checkTxn(*dbConnection);
-        string checkSql =
-            "SELECT EXISTS(SELECT 1 FROM schedule_entry "
-            "WHERE entryid = $1 AND scheduleid = $2)";
-
-        auto res = checkTxn.exec(checkSql, entryid, scheduleid);
+        auto res = checkTxn.exec(pqxx::zview{"SELECT EXISTS(SELECT 1 FROM schedule_entry"
+                                             "WHERE entryid = $1 AND scheduleid = $2)"},pqxx::params{entryid, scheduleid});
         checkTxn.commit();
 
         bool belongsToSchedule = res[0][0].as<bool>();
@@ -199,8 +196,7 @@ bool ScheduleEntryBroker::removeToSchedule(string entryid,string scheduleid)
             // 条目不存在或者不属于这个课程表
             // 可以进一步检查是哪种情况
             pqxx::work checkExistsTxn(*dbConnection);
-            string existsSql = "SELECT EXISTS(SELECT 1 FROM schedule_entry WHERE entryid = $1)";
-            auto existsRes = checkExistsTxn.exec(existsSql, entryid);
+            auto existsRes = checkExistsTxn.exec(pqxx::zview{"SELECT EXISTS(SELECT 1 FROM schedule_entry WHERE entryid = $1)"},pqxx::params{entryid});
             checkExistsTxn.commit();
 
             bool entryExists = existsRes[0][0].as<bool>();
@@ -216,11 +212,10 @@ bool ScheduleEntryBroker::removeToSchedule(string entryid,string scheduleid)
             return false;
         }
         pqxx::work deleteTxn(*dbConnection);
-        string deleteSql = "UPDATE schedule_entry SET scheduleid = NULL WHERE entryid = $1";
-        deleteTxn.exec(deleteSql, entryid);
+        deleteTxn.exec(pqxx::zview{"UPDATE schedule_entry SET scheduleid = NULL WHERE entryid = $1"},pqxx::params{entryid});
         deleteTxn.commit();
 
-        std::print("课程条目成功从课程表中删除\n")
+        std::print("课程条目成功从课程表中删除\n");
         return true;
 
     } catch (const std::exception& e) {
@@ -239,13 +234,12 @@ bool ScheduleEntryBroker::save(string entryid,string tid,string cid,string class
 
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec("SELECT EXISTS(SELECT 1 FROM schedule_entry WHERE entryid = $1)",entryid);
+        auto res = t.exec(pqxx::zview{"SELECT EXISTS(SELECT 1 FROM schedule_entry WHERE entryid = $1)"},pqxx::params{entryid});
         t.commit();
         bool exists = res[0][0].as<bool>();
         if (!exists) {
             pqxx::work deleteTxn(*dbConnection);
-            string saveSql = "INSERT INTO schedule_entry(entryid,cno,tno,time,classroom) VALUES ($1,$2,$3,$4,$5)";
-            deleteTxn.exec(saveSql,entryid,tid,cid,classTime,classRoom);
+            deleteTxn.exec(pqxx::zview{"INSERT INTO schedule_entry(entryid,cno,tno,time,classroom) VALUES ($1,$2,$3,$4,$5)"},pqxx::params{entryid,tid,cid,classTime,classRoom});
             deleteTxn.commit();
 
             auto scheduleEntry = std::make_shared<ScheduleEntry>(entryid,classTime,classRoom,tid,cid);
@@ -273,13 +267,12 @@ bool ScheduleEntryBroker::remove(string entryid)
 
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec("SELECT EXISTS(SELECT 1 FROM schedule_entry WHERE entryid = $1)",entryid);
+        auto res = t.exec(pqxx::zview{"SELECT EXISTS(SELECT 1 FROM schedule_entry WHERE entryid = $1)"},pqxx::params{entryid});
         t.commit();
         bool exists = res[0][0].as<bool>();
         if (exists) {
             pqxx::work deleteTxn(*dbConnection);
-            string deleteSql = "DELETE FROM schedule_entry WHERE entryid = $1";
-            deleteTxn.exec(deleteSql,entryid);
+            deleteTxn.exec(pqxx::zview{"DELETE FROM schedule_entry WHERE entryid = $1"},pqxx::params{entryid});
             deleteTxn.commit();
 
             for (auto it = _scheduleEntry.begin(); it != _scheduleEntry.end(); ) {
@@ -328,7 +321,7 @@ shared_ptr<ScheduleEntry> ScheduleEntryBroker::findScheduleEntryByIdDB(const str
     }
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec("SELECT entryid,scheduleid,cno,tno,time,classroom FROM schedule_entry WHERE entryid = $1",id);
+        auto res = t.exec(pqxx::zview{"SELECT entryid,scheduleid,cno,tno,time,classroom FROM schedule_entry WHERE entryid = $1"},pqxx::params{id});
         t.commit();
         if (res.empty()) {
             std::cout << "未找到课程表id：" << id << endl;

@@ -61,13 +61,12 @@ bool ScheduleBroker::save(string scheduleid,string term,string academy,string ma
 
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec("SELECT EXISTS(SELECT 1 FROM schedule WHERE scheduleid = $1)",scheduleid);
+        auto res = t.exec(pqxx::zview{"SELECT EXISTS(SELECT 1 FROM schedule WHERE scheduleid = $1)"},pqxx::params{scheduleid});
         t.commit();
         bool exists = res[0][0].as<bool>();
         if (!exists) {
             pqxx::work deleteTxn(*dbConnection);
-            string saveSql = "INSERT INTO schedule VALUES ($1,$2,$3,$4,$5)";
-            deleteTxn.exec(saveSql,scheduleid,term,academy,major,gradelevel);
+            deleteTxn.exec(pqxx::zview{"INSERT INTO schedule VALUES ($1,$2,$3,$4,$5)"},pqxx::params{scheduleid,term,academy,major,gradelevel});
             deleteTxn.commit();
 
             auto schedule = std::make_shared<Schedule>(scheduleid,term,academy,major,gradelevel);
@@ -95,13 +94,12 @@ bool ScheduleBroker::remove(string scheduleid)
 
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec("SELECT EXISTS(SELECT 1 FROM schedule WHERE scheduleid = $1)",scheduleid);
+        auto res = t.exec(pqxx::zview{"SELECT EXISTS(SELECT 1 FROM schedule WHERE scheduleid = $1)"},pqxx::params{scheduleid});
         t.commit();
         bool exists = res[0][0].as<bool>();
         if (exists) {
             pqxx::work deleteTxn(*dbConnection);
-            string deleteSql = "DELETE FROM schedule WHERE scheduleid = $1";
-            deleteTxn.exec(deleteSql,scheduleid);
+            deleteTxn.exec(pqxx::zview{"DELETE FROM schedule WHERE scheduleid = $1"},pqxx::params{scheduleid});
             deleteTxn.commit();
 
             for (auto it = _schedule.begin(); it != _schedule.end(); ) {
@@ -152,7 +150,7 @@ shared_ptr<Schedule> ScheduleBroker::findScheduleByIdDB(const string& id)
     }
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec("SELECT scheduleid,term,acadamy,major,gradelevel FROM schedule WHERE scheduleid = $1",id);
+        auto res = t.exec(pqxx::zview{"SELECT scheduleid,term,acadamy,major,gradelevel FROM schedule WHERE scheduleid = $1"},pqxx::params{id});
         t.commit();
         if (res.empty()) {
             std::cout << "未找到课程表id：" << id << endl;
