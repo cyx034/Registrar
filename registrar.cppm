@@ -27,7 +27,7 @@ public:
 
     //教学秘书相关操作
     void createSchedules(string tsid,string scheduleid,string term,string academy,string major,string gradelevel);//创建课程表
-    void createScheduleEntrys(string tsid,string entryid,string classTime,string classRoom,string teacherid,string courseid)//创建课程条目
+    void createScheduleEntrys(string tsid,string entryid,string classTime,string classRoom,string teacherid,string courseid);//创建课程条目
     void removeSchedules(string tsid,string scheduleid);
     void removeScheduleEntrys(string tsid, string entryid);//删除课程条目
     void addEntrysToSchedule(string tsid,string scheduleid,string entryid);//向课程表中添加课程条目
