@@ -57,7 +57,7 @@ void ScheduleEntryBroker::initialize()
             res[0]["cno"].as<string>(),
             res[0]["tno"].as<string>(),
             res[0]["time"].as<string>(),
-            res[0]["classrom"].as<string>()));
+            res[0]["classroom"].as<string>()));
     }
 }
 
@@ -239,10 +239,10 @@ bool ScheduleEntryBroker::save(string entryid,string tid,string cid,string class
         bool exists = res[0][0].as<bool>();
         if (!exists) {
             pqxx::work deleteTxn(*dbConnection);
-            deleteTxn.exec(pqxx::zview{"INSERT INTO schedule_entry(entryid,cno,tno,time,classroom) VALUES ($1,$2,$3,$4,$5)"},pqxx::params{entryid,tid,cid,classTime,classRoom});
+            deleteTxn.exec(pqxx::zview{"INSERT INTO schedule_entry(entryid,cno,tno,time,classroom) VALUES ($1,$2,$3,$4,$5)"},pqxx::params{entryid,cid,tid,classTime,classRoom});
             deleteTxn.commit();
 
-            auto scheduleEntry = std::make_shared<ScheduleEntry>(entryid,classTime,classRoom,tid,cid);
+            auto scheduleEntry = std::make_shared<ScheduleEntry>(entryid,"",tid,cid,classTime,classRoom);
             _scheduleEntry.push_back(scheduleEntry);  //存入缓存区
 
             std::print("加入课程条目成功\n");
@@ -333,7 +333,7 @@ shared_ptr<ScheduleEntry> ScheduleEntryBroker::findScheduleEntryByIdDB(const str
             res[0]["cno"].as<string>(),
             res[0]["tno"].as<string>(),
             res[0]["time"].as<string>(),
-            res[0]["classrom"].as<string>()
+            res[0]["classroom"].as<string>()
         );
         _scheduleEntry.push_back(std::move(scheduleEntry));
         return scheduleEntry;

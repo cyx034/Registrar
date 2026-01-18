@@ -9,24 +9,27 @@ export class ScheduleEntry
 {
     friend class ScheduleEntryBroker;
 public:
-    ScheduleEntry(string id,string classTime,string classRoom,weak_ptr<class Teacher> teacher,weak_ptr<class Course> course);
+    ScheduleEntry(string eid,string sid,string cno,string tno,string classTime,string classRoom);
     ~ScheduleEntry();
-    shared_ptr<ScheduleEntry> createEntry(string entryid,string classTime,string classRoom,weak_ptr<Teacher> teacher,weak_ptr<Course>course);
+/*    shared_ptr<ScheduleEntry> createEntry(string entryid,string classTime,string classRoom);
     void modifyRoom(string room);
     void modifyTime(string time);
     void modifyTeacher(weak_ptr<class Teacher> teacher);
-    void modifyCourse(weak_ptr<class Course> Course);
+    void modifyCourse(weak_ptr<class Course> Course);*/
+    bool hasId(string id);
 private:
     string m_id;
     string m_sid;
     string m_classTime;
     string m_classRoom;
-    weak_ptr<class Teacher> _teacher;
-    weak_ptr<class Course> _course;
+    string _tid;
+    string _cid;
+//    weak_ptr<class Teacher> _teacher;
+//    weak_ptr<class Course> _course;
 };
 
-ScheduleEntry::ScheduleEntry(string id,string classTime,string classRoom,weak_ptr<Teacher> teacher,weak_ptr<Course> course)
-    :m_id(id),m_classTime(classTime),m_classRoom(classRoom),_teacher(teacher),_course(course)
+ScheduleEntry::ScheduleEntry(string eid,string sid,string cno,string tno,string classTime,string classRoom)
+    :m_id(eid),m_sid(sid),_cid(cno),_tid(tno),m_classTime(classTime),m_classRoom(classRoom)
 {}
 
 
@@ -35,7 +38,13 @@ ScheduleEntry::~ScheduleEntry()
     print("This ScheduleEntry isn't exit!!!");
 }
 
-shared_ptr<ScheduleEntry> ScheduleEntry::createEntry(string entryid,string classTime,string classRoom,weak_ptr<Teacher> teacher,weak_ptr<Course>course)
+bool ScheduleEntry::hasId(string id)
+{
+    return m_id == id;
+}
+
+
+/*shared_ptr<ScheduleEntry> ScheduleEntry::createEntry(string entryid,string classTime,string classRoom,weak_ptr<Teacher> teacher,weak_ptr<Course>course)
 {
     return make_shared<ScheduleEntry>(entryid,classTime,classRoom,teacher,course);
 }
@@ -68,7 +77,7 @@ void ScheduleEntry::modifyCourse(weak_ptr<Course> course)
     }else{
         print("无效，无法修改");
     }
-}
+}*/
 
 
 

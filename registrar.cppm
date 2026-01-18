@@ -1,7 +1,6 @@
 //registrae.cppm
 export module registrar;
-export import :student;
-export import :course;
+export import :domain;
 //export import :ui;
 
 export import :broker;
@@ -10,6 +9,7 @@ import std;
 using std::string;
 using std::vector;
 using std::make_unique;
+using std::print;
 
 export class Registrar
 {
@@ -19,7 +19,7 @@ public:
 
     void studentDropCourse(string sid,string cid);
 
-    void teacherEnterGrade(string sid,string cid,double midterm,double final,vector<double>homework);
+    bool teacherEnterGrade(string tid,string sid,string cid,double midterm,double final,vector<double>homework);
 
     void courseRoster(string cid);  //打印指定课程的学生花名册（课程名单）
     void classSchedule(string sid);  //打印指定学生的课表
@@ -70,8 +70,8 @@ bool Registrar::teacherEnterGrade(string tid,string sid,string cid,double midter
     if(student && course && teacher){
         if(_courseBroker.CourseEvalueAccess(cid,tid)){
             auto enrollment = _enrollmentBroker.findEnrollmentById(sid,cid);
-            enrollment.computeSort(midterm,final,homework);//修改缓存成绩
-            if(_enrollmentBroker.updateGrade(enrollment)){
+            enrollment->computeSort(midterm,final,homework);//修改缓存成绩
+            if(_enrollmentBroker.updateGrade(*enrollment)){
                 return true;
             }
         }else{
@@ -89,7 +89,7 @@ void Registrar::studentEnrollsInCourse(string sid,string cid)
     auto course = _courseBroker.findCourseById(cid);  //查找课程
 
     if(student && course){  //如果学生和课程都存在
-        enrollmenBroker.save(sid,cid));
+        _enrollmentBroker.save(sid,cid);
     }
 }
 
@@ -105,7 +105,7 @@ void Registrar::studentDropCourse(string sid,string cid)
 }
 
 //打印指定课程的学生花名册（课程名单）
-void Registrar::courseRoster(string cid)
+/*void Registrar::courseRoster(string cid)
 {
     auto c = _courseBroker.findCourseById(cid); //查找课程
     //缺少空指针检查
@@ -117,7 +117,7 @@ void Registrar::classSchedule(string sid)
 {
     auto s = _studentBroker.findStudentById(sid);
     print("{}\n",s->printSchedules());
-}
+}*/
 
 
 void Registrar::initialize()  //系统初始化
@@ -128,7 +128,7 @@ void Registrar::initialize()  //系统初始化
     _secretaryBroker.initialize();
     _enrollmentBroker.initialize();
     _scheduleBroker.initialize();
-    _scheduleEntryBroker.initialize()
+    _scheduleEntryBroker.initialize();
 }
 
 Registrar::Registrar(){}
@@ -139,8 +139,8 @@ void Registrar::createSchedules(string tsid,string scheduleid,string term,string
 {
     auto teacherSecretary = _secretaryBroker.findTeacherSecretaryById(tsid);
     if(_scheduleBroker.save(scheduleid,term,academy,major,gradelevel))
-    auto s=Schedule::create(scheduleid,term,academy,major,gradelevel);
-    teacherSecretary._schedules.push_back(s);
+//    auto s=Schedule::create(scheduleid,term,academy,major,gradelevel);
+//    teacherSecretary._schedules.push_back(s);
     print("已成功创建");
 }
 
@@ -150,20 +150,20 @@ void Registrar::createScheduleEntrys(string tsid,string entryid,string classTime
     auto teacherSecretary = _secretaryBroker.findTeacherSecretaryById(tsid);
     auto teacher = _teacherBroker.findTeacherById(teacherid);
     auto course = _courseBroker.findCourseById(courseid);
-    _scheduleEntryBroker.save(entryid,classTime,classRoom,teacher,course)
-    auto e=ScheduleEntry::createEntry(entryid,classTime,classRoom,teacher,course);
-    _scheduleEntrys.push_back(e);
+    _scheduleEntryBroker.save(entryid,teacherid,courseid,classTime,classRoom);
+//    auto e=ScheduleEntry::createEntry(entryid,classTime,classRoom,teacher,course);
+//    _scheduleEntrys.push_back(e);
     print("已成功创建课程条目");
 }
 
 //删除课程表
 void Registrar::removeSchedules(string tsid,string scheduleid)
 {
-    auto teacherSecretary = _secretaryBroker.findTeacherSecretaryById(id);
+    auto teacherSecretary = _secretaryBroker.findTeacherSecretaryById(tsid);
     auto schedule = _scheduleBroker.findScheduleById(scheduleid);
     if(teacherSecretary&&schedule){
-        if(_scheduleBroker.remove(scheduleid))
-            teacherSecretary->removeSchedule(schedule);
+        _scheduleBroker.remove(scheduleid);
+            //teacherSecretary->removeSchedule(schedule);
     }
 }
 
@@ -173,8 +173,8 @@ void Registrar::removeScheduleEntrys(string tsid, string entryid)
     auto teacherSecretary = _secretaryBroker.findTeacherSecretaryById(tsid);
     auto entry = _scheduleEntryBroker.findScheduleEntryById(entryid);
     if(teacherSecretary&&entry){
-        if(_scheduleEntryBroker.remove(entryid))
-            teacherSecretary->removeScheduleEntry(entry);
+        _scheduleEntryBroker.remove(entryid);
+            //teacherSecretary->removeScheduleEntry(entry);
     }
 }
 
@@ -185,8 +185,8 @@ void Registrar::addEntrysToSchedule(string tsid,string scheduleid,string entryid
     auto schedule = _scheduleBroker.findScheduleById(scheduleid);
     auto scheduleEntry = _scheduleEntryBroker.findScheduleEntryById(entryid);
     if(teacherSecretary&&schedule&&scheduleEntry){
-        if(_scheduleEntryBroker.addToSchedule(entryid,scheduleid))
-        schedule->addScheduleEntry(scheduleEntry);
+        _scheduleEntryBroker.addToSchedule(entryid,scheduleid);
+        //schedule->addScheduleEntry(scheduleEntry);
     }
 }
 
@@ -194,11 +194,11 @@ void Registrar::addEntrysToSchedule(string tsid,string scheduleid,string entryid
 void Registrar::removeEntrysToSchedule(string tsid,string scheduleid,string entryid)
 {
     auto teacherSecretary = _secretaryBroker.findTeacherSecretaryById(tsid);
-    auto schedule = _schedulebroker.findScheduleById(scheduleid);
+    auto schedule = _scheduleBroker.findScheduleById(scheduleid);
     auto scheduleEntry = _scheduleEntryBroker.findScheduleEntryById(entryid);
     if(teacherSecretary&&schedule&&scheduleEntry){
-        if(_scheduleEntryBroker.removeToSchedule(entryid,scheduleid))
-            schedule->removeScheduleEntry(scheduleEntry);
+        _scheduleEntryBroker.removeToSchedule(entryid,scheduleid);
+            //schedule->removeScheduleEntry(scheduleEntry);
     }
 }
 
@@ -206,8 +206,8 @@ void Registrar::modifyEntrytime(string entryid,string time)
 {
     auto scheduleEntry = _scheduleEntryBroker.findScheduleEntryById(entryid);
     if(scheduleEntry){
-        if(_scheduleBroker.modifyEntrytime(entryid,time))
-            scheduleEntry->modifyTime(time);
+        _scheduleEntryBroker.modifyEntrytime(entryid,time);
+            //scheduleEntry->modifyTime(time);
     }
 }
 
@@ -215,8 +215,8 @@ void Registrar::modifyEntryroom(string entryid,string room)
 {
     auto scheduleEntry = _scheduleEntryBroker.findScheduleEntryById(entryid);
     if(scheduleEntry){
-        if(_scheduleBroker.modifyEntryroom(string entryid,string room))
-            scheduleEntry->modifyRoom(room);
+        _scheduleEntryBroker.modifyEntryroom(entryid,room);
+            //scheduleEntry->modifyRoom(room);
     }
 }
 
@@ -226,8 +226,9 @@ void Registrar::modifyEntryteacher(string entryid,string teacherid)
     auto scheduleEntry = _scheduleEntryBroker.findScheduleEntryById(entryid);
     auto teacher = _teacherBroker.findTeacherById(teacherid);
     if(scheduleEntry){
-        if(_scheduleBroker.modifyEntryteacher(string entryid,string teacherid))
-            scheduleEntry->modifyTeacher(teacher);
+        _scheduleEntryBroker.modifyEntryteacher(entryid,teacherid);
+            //scheduleEntry->modifyTeacher(teacher);
     }
 }
+
 

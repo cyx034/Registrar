@@ -11,16 +11,16 @@ using std::vector;
 export class Course
 {
 public:
-    Course(string id, string name,short credit,string academy,string tracherId);
+    Course(string id, string name,string credit,string academy,string tracherId);
 
-    void acceptEnrollment(shared_ptr<Enrollment> enrollment);
-    bool dropEnrollment(string sid);
+//    void acceptEnrollment(shared_ptr<Enrollment> enrollment);
+//    bool dropEnrollment(string sid);
     string info();
     bool hasId(string id);
 private:
     string m_id;
     string m_name;
-    short m_credit;
+    string m_credit;
     string m_academy;
 
 //    vector<shared_ptr<string>> _enrollments;
@@ -29,7 +29,7 @@ private:
 
 };
 
-Course::Course(string id, string name,short credit,string academy,string teacherId)
+Course::Course(string id, string name,string credit,string academy,string teacherId)
     : m_id(id),m_name(name),m_credit(credit),m_academy(academy),_teacherId(teacherId)
 {}
 

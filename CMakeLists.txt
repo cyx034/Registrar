@@ -7,6 +7,9 @@ set(CMAKE_CXX_MODULE_STD ON)
 
 project(registrar LANGUAGES CXX)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 
 # set(MODULE_LIB_DIR1 /opt/utils/modules)  # 模块库的目录的设置
 add_executable(registrar
@@ -77,14 +80,15 @@ target_compile_features(registrar PRIVATE cxx_std_23)
 
 
 target_include_directories(registrar PRIVATE
-    /usr/include)
+    /usr/local/include)
 
 target_link_directories(registrar PRIVATE
-    /usr/lib/libpqxx.so)
+    /usr/local/lib)
 
-
-
-
+target_link_libraries(registrar PRIVATE
+    pqxx
+    pq
+)
 
 
 

@@ -11,7 +11,7 @@ using std::print;
 export class Student : public Person
 {
 public:
-    Student(string id,string name,string academy,string major,string gradelevel); //初始化
+    Student(string id,string name,string academy,string major); //初始化
 
     void enrollIn(shared_ptr<Enrollment> enrollment);
     void dropIn(shared_ptr<class Course> course);
@@ -24,10 +24,9 @@ private:
 //    vector<shared_ptr<string>> _enrollments;
 };
 
-Student::Student(string id,string name,string academy,string major,string gradelevel)
+Student::Student(string id,string name,string academy,string major)
     :Person(id,name,academy)
     ,m_major(major)
-    ,m_gradelevel(gradelevel)
 {}
 
 /*void Student::enrollIn(shared_ptr<Enrollment> enrollment)
