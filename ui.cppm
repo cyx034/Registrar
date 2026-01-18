@@ -1,10 +1,11 @@
-export module registrar:ui;
+export module registrar.ui;
 import std;
 import registrar;
 
 using std::print;
 using std::cin;
 using std::vector;
+using std::string;
 
 export class Ui
 {

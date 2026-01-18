@@ -7,9 +7,6 @@ set(CMAKE_CXX_MODULE_STD ON)
 
 project(registrar LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
 
 # set(MODULE_LIB_DIR1 /opt/utils/modules)  # 模块库的目录的设置
 add_executable(registrar
