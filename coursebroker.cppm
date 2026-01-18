@@ -40,7 +40,7 @@ void CourseBroker::initialize()
         return;
     }
     pqxx::read_transaction t(*dbConnection);
-    pqxx::result res = t.exec("SELECT cno,cname,ccredit,cacademy,tno FROM course LIMIT 5"); //只读入前5行进入缓存
+    pqxx::result res = t.exec(pqxx::zview{"SELECT cno,cname,ccredit,cacademy,tno FROM course LIMIT 5"}); //只读入前5行进入缓存
     t.commit();
     _courses.clear();
     for(const auto& row : res) {
@@ -61,7 +61,7 @@ bool CourseBroker::CourseEvalueAccess(const string& cid,const string& tid)
     }
     try {
         pqxx::work t(*dbConnection);
-        pqxx::result res = t.exec("SELECT EXISTS(SELECT 1 FROM course WHERE cno = $1 AND tno = $2)",,tid);
+        pqxx::result res = t.exec(pqxx::zview{"SELECT EXISTS(SELECT 1 FROM course WHERE cno = $1 AND tno = $2)"},pqxx::params{cid,tid});
         t.commit();
         if(res.size() == 1){
             return res[0][0].as<bool>();
@@ -99,7 +99,7 @@ shared_ptr<Course> CourseBroker::findCourseByIdDB(const string& id)
     }
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec("SELECT cno,cname,ccredit,cacademy,tno FROM course WHERE cno = $1",id);
+        auto res = t.exec(pqxx::zview{"SELECT cno,cname,ccredit,cacademy,tno FROM course WHERE cno = $1"},pqxx::params{id});
         t.commit();
         if (res.empty()) {
             std::cout << "未找到课程ID：" << id << endl;

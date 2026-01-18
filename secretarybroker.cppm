@@ -12,19 +12,20 @@ using std::string;
 using std::cerr;
 using std::endl;
 using std::shared_ptr;
+using std::vector;
 
 export class TeacherSecretaryBroker : public RegistrarBroker
 {
 public:
     using RegistrarBroker::RegistrarBroker;
 
-    std::shared_ptr<TeacherSecretary> findTeacherSecretaryById(const std::string& id);
+    std::shared_ptr<class TeacherSecretary> findTeacherSecretaryById(const std::string& id);
     void initialize();
 
 private:
-    vector<std::shared_ptr<TeacherSecretary>> _teachersecretary;
-    shared_ptr<TeacherSecretary> findTeacherSecretaryByIdLocal(const string &id);
-    shared_ptr<TeacherSecretary> findTeacherSecretaryByIdDB(const string& id);
+    vector<std::shared_ptr<class TeacherSecretary>> _teachersecretary;
+    shared_ptr<class TeacherSecretary> findTeacherSecretaryByIdLocal(const string &id);
+    shared_ptr<class TeacherSecretary> findTeacherSecretaryByIdDB(const string& id);
 };
 
 void TeacherSecretaryBroker::initialize()

@@ -25,9 +25,9 @@ public:
     void initialize();
 
 private:
-    vector<std::shared_ptr<Teacher>> _teacher;
-    shared_ptr<Teacher> findTeacherByIdLocal(const string &id);
-    shared_ptr<Teacher> findTeacherByIdDB(const string& id);
+    vector<std::shared_ptr<class Teacher>> _teacher;
+    shared_ptr<class Teacher> findTeacherByIdLocal(const string &id);
+    shared_ptr<class Teacher> findTeacherByIdDB(const string& id);
 };
 
 void TeacherBroker::initialize()

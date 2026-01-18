@@ -44,7 +44,7 @@ void EnrollmentBroker::initialize()
         return;
     }
     pqxx::work t(*dbConnection);
-    pqxx::result res = t.exec("SELECT sno,cno,grade FROM sc LIMIT 5"); //只读入前5行进入缓存
+    pqxx::result res = t.exec(pqxx::zview{"SELECT sno,cno,grade FROM sc LIMIT 5"}); //只读入前5行进入缓存
     t.commit();
     _enrollment.clear();
     for(const auto& row : res) {
@@ -71,13 +71,12 @@ bool EnrollmentBroker::save(const string& sid,const string& cid)
 
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec("SELECT EXISTS(SELECT 1 FROM sc WHERE Sno = $1 AND Cno = $2)",sid,cid);
+        auto res = t.exec(pqxx::zview{"SELECT EXISTS(SELECT 1 FROM sc WHERE Sno = $1 AND Cno = $2)"},pqxx::params{sid,cid});
         t.commit();
         bool exists = res[0][0].as<bool>();
         if (!exists) {
             pqxx::work deleteTxn(*dbConnection);
-            string saveSql = "INSERT INTO sc VALUES ($1,$2)";
-            deleteTxn.exec(saveSql,sid,cid);
+            deleteTxn.exec(pqxx::zview{"INSERT INTO sc VALUES ($1,$2)"},pqxx::params{sid,cid});
             deleteTxn.commit();
 
             auto enrollment = std::make_shared<Enrollment>(sid,cid,0.0);
@@ -110,7 +109,7 @@ bool EnrollmentBroker::remove(const string& sid,const string& cid)
         if (exists) {
             pqxx::work deleteTxn(*dbConnection);
 
-            deleteTxn.exec("DELETE FROM sc WHERE Sno = $1 AND Cno = $2",sid,cid);
+            deleteTxn.exec(pqxx::zview{"DELETE FROM sc WHERE Sno = $1 AND Cno = $2"},pqxx::params{sid,cid});
             deleteTxn.commit();
 
             for (auto it = _enrollment.begin(); it != _enrollment.end(); ) {
@@ -141,8 +140,8 @@ bool EnrollmentBroker::updateGrade(const Enrollment& enrollment)
     }
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec("UPDATE sc SET grade = $1 WHERE sno = $2 AND cno = $3",enrollment._grade.m_grade,
-                                 enrollment._sid,enrollment._cid);
+        auto res = t.exec(pqxx::zview{"UPDATE sc SET grade = $1 WHERE sno = $2 AND cno = $3"},pqxx::params{enrollment._grade.m_grade,
+                                 enrollment._sid,enrollment._cid});
         t.commit();
         return true;
     } catch (const std::exception& e) {
@@ -176,7 +175,7 @@ shared_ptr<Enrollment> EnrollmentBroker::findEnrollmentByIdDB(const string& sid,
     }
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec("SELECT sno,cno,grade FROM course WHERE cno = $1",id);
+        auto res = t.exec(pqxx::zview{"SELECT sno,cno,grade FROM course WHERE cno = $1"},pqxx::params{id});
         t.commit();
         if (res.empty()) {
             std::cout << "未找到scID：" << id << endl;
