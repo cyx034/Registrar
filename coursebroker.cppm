@@ -25,9 +25,10 @@ public:
 
     std::shared_ptr<class Course> findCourseById(const std::string& id);
 
-    bool CourseEvalueAccess(const string& cid,const string& tid);
+//    bool CourseEvalueAccess(const string& cid,const string& tid);
 
     void courseEntry();
+    bool CourseToTeacher(string tid,string cid);
 
     void initialize();
 
@@ -57,6 +58,24 @@ void CourseBroker::initialize()
     }
 }
 
+bool CourseBroker::CourseToTeacher(string tid,string cid)
+{
+    if (!status) {
+        cerr << "数据库未连接" << endl;
+        return false;
+    }
+    if(findCourseById(cid)){
+        pqxx::read_transaction t(*dbConnection);
+        pqxx::result res = t.exec(pqxx::zview{"SELECT tno FROM course WHERE cno = $1"},pqxx::params{cid});
+        t.commit();
+        if(res[0][0].as<string>()== tid)return true;
+        std::print("没有该课程权限！\n");
+        return false;
+    }else{
+        return false;
+    }
+}
+
 void CourseBroker::courseEntry()
 {
     if (!status) {
@@ -78,7 +97,7 @@ void CourseBroker::courseEntry()
     }
 }
 
-bool CourseBroker::CourseEvalueAccess(const string& cid,const string& tid)
+/*bool CourseBroker::CourseEvalueAccess(const string& cid,const string& tid)
 {
     if (!status) {
         cerr << "数据库未连接" << endl;
@@ -96,7 +115,7 @@ bool CourseBroker::CourseEvalueAccess(const string& cid,const string& tid)
         return false;
     }
     return false;
-}
+}*/
 
 
 

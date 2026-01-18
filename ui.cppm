@@ -127,17 +127,7 @@ void Ui::teacherui()
         switch(choice)
         {
             case 1:
-                print("请输入课程号: ");
-                cin>>cid;
-                print("请输入学生号: ");
-                cin>>sid;
-                print("请输入该学生的中期成绩和期末成绩: ");
-                cin >> midterm >> final;
-                print("请输入该学生家庭作业成绩: ");
-                for(double h;cin>>h;){
-                    homework.push_back(h);
-                }
-                _registrar.teacherEnterGrade(tid,sid,cid,midterm,final,homework);
+                _registrar.enterGradeManage(tid);
                 break;
             case 2:
                 //查看教师课表

@@ -19,13 +19,13 @@ public:
 
     void studentDropCourse(string sid,string cid);
 
-    bool teacherEnterGrade(string tid,string sid,string cid,double midterm,double final,vector<double>homework);
+    bool teacherEnterGrade(string sid,string cid,double midterm,double final,vector<double>homework);
 
     void courseRoster(string cid);  //打印指定课程的学生花名册（课程名单）
     void classSchedule(string sid);  //打印指定学生的课表
 
     void printAllCourse();
-    bool
+    void enterGradeManage(string tid);
 
     void initialize();  //系统初始化
 
@@ -41,6 +41,10 @@ public:
     void modifyEntrytime(string entryid,string time);
     void modifyEntryroom(string entryid,string room);
     void modifyEntryteacher(string entryid,string teacherid);
+
+    bool affirmStudent(string sid);
+    bool affirmTeacher(string tid);
+    bool affirmSecretary(string tsid);
 private:
     Registrar(); //禁止直接创建对象（将类的构造函数私有化，
                  //再配合静态成员函数来创建对象）
@@ -61,32 +65,84 @@ Registrar& Registrar::system()
     return instance;
 }
 
+bool Registrar::affirmStudent(string sid)
+{
+    if(_studentBroker.findStudentById(sid)){
+        return true;
+    }
+    return false;
+}
+
+bool Registrar::affirmTeacher(string tid)
+{
+    if(_teacherBroker.findTeacherById(tid)){
+        return true;
+    }
+    return false;
+}
+
+bool Registrar::affirmSecretary(string tsid)
+{
+    if(_secretaryBroker.findTeacherSecretaryById(tsid)){
+        return true;
+    }
+    return false;
+}
+
+
+void Registrar::enterGradeManage(string tid)
+{
+    string cid,sid;
+    double midterm,final;
+    vector<double> homework;
+    print("请输入课程号: ");
+    std::cin>>cid;
+    if(_courseBroker.CourseToTeacher(tid,cid)){
+        print("请输入学生号: ");
+        std::cin>>sid;
+        if(_enrollmentBroker.findEnrollmentById(sid,cid)){
+            print("请输入该学生的中期成绩和期末成绩: ");
+            std::cin >> midterm >> final;
+            print("请输入该学生家庭作业成绩: ");
+            for(double h;std::cin>>h;){
+                homework.push_back(h);
+            }
+            if(teacherEnterGrade(sid,cid,midterm,final,homework)){
+                print("登入成绩成功！\n");
+            }else{
+                print("登入成绩失败！\n");
+            }
+        }else{
+            print("该学生不在课程名单中！\n");
+            return;
+        }
+    }else{
+        //print("没有该课程权限！\n");
+        return;
+    }
+}
+
+
 void Registrar::printAllCourse()
 {
     _courseBroker.courseEntry();
 }
 
 
-bool Registrar::teacherEnterGrade(string tid,string sid,string cid,double midterm,double final,vector<double>homework)
+bool Registrar::teacherEnterGrade(string sid,string cid,double midterm,double final,vector<double>homework)
 {
-    if(tid.empty()||sid.empty()||cid.empty()){
+    if(sid.empty()||cid.empty()){
         std::cerr << "数据错误" <<std::endl;
         return false;
     }
-    auto teacher = _teacherBroker.findTeacherById(tid);
     auto student = _studentBroker.findStudentById(sid);
     auto course = _courseBroker.findCourseById(cid);
 
-    if(student && course && teacher){
-        if(_courseBroker.CourseEvalueAccess(cid,tid)){
-            auto enrollment = _enrollmentBroker.findEnrollmentById(sid,cid);
-            enrollment->computeSort(midterm,final,homework);//修改缓存成绩
-            if(_enrollmentBroker.updateGrade(*enrollment)){
-                return true;
-            }
-        }else{
-            print("没有权限\n");
-            return false;
+    if(student && course){
+        auto enrollment = _enrollmentBroker.findEnrollmentById(sid,cid);
+        enrollment->computeSort(midterm,final,homework);//修改缓存成绩
+        if(_enrollmentBroker.updateGrade(*enrollment)){
+            return true;
         }
     }
     return false;
