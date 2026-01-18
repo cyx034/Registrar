@@ -4,6 +4,7 @@ module;
 
 export module registrar:broker.studentbroker;
 import :broker.registrarbroker;
+import :domain.student;
 import std;
 
 using std::string;
@@ -33,8 +34,8 @@ void StudentBroker::initialize()
         return;
     }
     pqxx::read_transaction t(*dbConnection);
-    pqxx::result res = rtx.exec("SELECT sno,sname,sacademy,smajor FROM student LIMIT 5");
-    rtx.commit();
+    pqxx::result res = t.exec("SELECT sno,sname,sacademy,smajor FROM student LIMIT 5");
+    t.commit();
     _students.clear();
     for(const auto& row : res) {
         _students.push_back(std::make_shared<Student>(
@@ -69,7 +70,7 @@ shared_ptr<Student> StudentBroker::findStudentByIdDB(const string& id)
     }
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec_params("SELECT sno,sname,sacademy,smajor FROM student WHERE sno = $1",id);
+        pqxx::result res = t.exec("SELECT sno,sname,sacademy,smajor FROM student WHERE sno = $1",id);
         t.commit();
         if (res.empty()) {
             std::cout << "未找到学生ID：" << id << endl;

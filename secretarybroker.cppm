@@ -4,6 +4,7 @@ module;
 
 export module registrar:broker.teachersecretarybroker;
 import :broker.registrarbroker;
+import :domain.teacherSecretary;
 import std;
 
 using std::string;
@@ -32,8 +33,8 @@ void TeacherSecretaryBroker::initialize()
         return;
     }
     pqxx::read_transaction t(*dbConnection);
-    pqxx::result res = rtx.exec("SELECT tsno,tsname,tsacademy FROM teachersecretary LIMIT 5"); //只读入前5行进入缓存
-    rtx.commit();
+    pqxx::result res = t.exec("SELECT tsno,tsname,tsacademy FROM teachersecretary LIMIT 5"); //只读入前5行进入缓存
+    t.commit();
     _teachersecretary.clear();
     for(const auto& row : res) {
         _teachersecretary.push_back(std::make_shared<TeacherSecretary>(
@@ -67,7 +68,7 @@ shared_ptr<TeacherSecretary> TeacherSecretaryBroker::findTeacherSecretaryByIdDB(
     }
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec_params("SELECT tno,tname,tacademy FROM teachersecretary WHERE tsno = $1",id);
+        pqxx::result res = t.exec("SELECT tno,tname,tacademy FROM teachersecretary WHERE tsno = $1",id);
         t.commit();
         if (res.empty()) {
             std::cout << "未找到教学秘书ID：" << id << endl;

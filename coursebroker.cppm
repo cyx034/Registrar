@@ -1,9 +1,12 @@
 module;
 
 #include <pqxx/pqxx>
+#include <pqxx/zview>
 
 export module registrar:broker.coursebroker;
 import :broker.registrarbroker;
+
+import :domain.course;
 
 import std;
 
@@ -36,8 +39,8 @@ void CourseBroker::initialize()
         return;
     }
     pqxx::read_transaction t(*dbConnection);
-    pqxx::result res = rtx.exec("SELECT cno,cname,ccredit,cacademy,tno FROM course LIMIT 5"); //只读入前5行进入缓存
-    rtx.commit();
+    pqxx::result res = t.exec("SELECT cno,cname,ccredit,cacademy,tno FROM course LIMIT 5"); //只读入前5行进入缓存
+    t.commit();
     _courses.clear();
     for(const auto& row : res) {
         _courses.push_back(std::make_shared<Course>(
@@ -53,11 +56,11 @@ bool CourseBroker::CourseEvalueAccess(const string& cid,const string& tid)
 {
     if (!status) {
         cerr << "数据库未连接" << endl;
-        return nullptr;
+        return false;
     }
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec_params("SELECT EXISTS(SELECT 1 FROM course WHERE cno = $1 AND tno = $2)",cid,tid);
+        pqxx::result res = t.exec("SELECT EXISTS(SELECT 1 FROM course WHERE cno = $1 AND tno = $2)",,tid);
         t.commit();
         if(res.size() == 1){
             return res[0][0].as<bool>();
@@ -95,7 +98,7 @@ shared_ptr<Course> CourseBroker::findCourseByIdDB(const string& id)
     }
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec_params("SELECT cno,cname,ccredit,cacademy,tno FROM course WHERE cno = $1",id);
+        auto res = t.exec("SELECT cno,cname,ccredit,cacademy,tno FROM course WHERE cno = $1",id);
         t.commit();
         if (res.empty()) {
             std::cout << "未找到课程ID：" << id << endl;

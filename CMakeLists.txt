@@ -76,20 +76,11 @@ target_sources(registrar  PRIVATE FILE_SET cxx_modules TYPE CXX_MODULES
 target_compile_features(registrar PRIVATE cxx_std_23)
 
 
-target_include_directories(registrar
-    PRIVATE
-        /usr/include
-)
+target_include_directories(registrar PRIVATE
+    /usr/include)
 
-target_link_libraries(registrar
-    PRIVATE
-        pqxx
-        pq
-        pthread
-        dl
-)
-
-
+target_link_directories(registrar PRIVATE
+    /usr/lib/libpqxx.so)
 
 
 

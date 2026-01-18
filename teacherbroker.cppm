@@ -5,19 +5,22 @@ module;
 export module registrar:broker.teacherbroker;
 import :broker.registrarbroker;
 
+import :domain.teacher;
+
 import std;
 
 using std::string;
 using std::cerr;
 using std::endl;
 using std::shared_ptr;
+using std::vector;
 
 export class TeacherBroker : public RegistrarBroker
 {
 public:
     using RegistrarBroker::RegistrarBroker;
 
-    std::shared_ptr<Teacher> findTeacherById(const std::string& id);
+    std::shared_ptr<class Teacher> findTeacherById(const std::string& id);
     void initialize();
 
 private:
@@ -33,8 +36,8 @@ void TeacherBroker::initialize()
         return;
     }
     pqxx::read_transaction t(*dbConnection);
-    pqxx::result res = rtx.exec("SELECT tno,tname,tacademy FROM teacher LIMIT 5"); //只读入前5行进入缓存
-    rtx.commit();
+    pqxx::result res = t.exec("SELECT tno,tname,tacademy FROM teacher LIMIT 5"); //只读入前5行进入缓存
+    t.commit();
     _teacher.clear();
     for(const auto& row : res) {
         _teacher.push_back(std::make_shared<Teacher>(
@@ -68,7 +71,7 @@ shared_ptr<Teacher> TeacherBroker::findTeacherByIdDB(const string& id)
     }
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec_params("SELECT tno,tname,tacademy FROM teacher WHERE tno = $1",id);
+        auto res = t.exec("SELECT tno,tname,tacademy FROM teacher WHERE tno = $1",id);
         t.commit();
         if (res.empty()) {
             std::cout << "未找到老师ID：" << id << endl;
