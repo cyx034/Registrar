@@ -68,7 +68,7 @@ bool CourseBroker::CourseToTeacher(string tid,string cid)
         pqxx::read_transaction t(*dbConnection);
         pqxx::result res = t.exec(pqxx::zview{"SELECT tno FROM course WHERE cno = $1"},pqxx::params{cid});
         t.commit();
-        if(res[0][0].as<string>()== tid)return true;
+        if(!res.empty()&&res[0][0].as<string>()== tid)return true;
         std::print("没有该课程权限！\n");
         return false;
     }else{

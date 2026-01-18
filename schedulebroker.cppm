@@ -46,7 +46,7 @@ void ScheduleBroker::initialize()
         _schedule.push_back(std::make_shared<Schedule>(
             res[0]["scheduleid"].as<string>(),
             res[0]["term"].as<string>(),
-            res[0]["academy"].as<string>(),
+            res[0]["acadamy"].as<string>(),
             res[0]["major"].as<string>(),
             res[0]["gradelevel"].as<string>()));
     }
