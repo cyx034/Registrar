@@ -16,6 +16,7 @@ using std::cerr;
 using std::endl;
 using std::shared_ptr;
 using std::vector;
+using std::print;
 
 export class CourseBroker : public RegistrarBroker
 {
@@ -25,6 +26,9 @@ public:
     std::shared_ptr<class Course> findCourseById(const std::string& id);
 
     bool CourseEvalueAccess(const string& cid,const string& tid);
+
+    void courseEntry();
+
     void initialize();
 
 private:
@@ -50,6 +54,27 @@ void CourseBroker::initialize()
             res[0]["ccredit"].as<string>(),
             res[0]["cacademy"].as<string>(),
             res[0]["tno"].as<string>()));
+    }
+}
+
+void CourseBroker::courseEntry()
+{
+    if (!status) {
+        cerr << "数据库未连接" << endl;
+        return;
+    }
+    pqxx::read_transaction t(*dbConnection);
+    pqxx::result res = t.exec(pqxx::zview{"SELECT * FROM course"});
+    t.commit();
+    print("id       name              credit       academy\n");
+    int i = 0;
+    for(const auto& row : res) {
+
+        print("{:<8}{:<20}{:<5}{:<10}\n",res[i]["cno"].as<string>(),
+              res[i]["cname"].as<string>(),
+              res[i]["ccredit"].as<string>(),
+              res[i]["cacademy"].as<string>());
+        i++;
     }
 }
 

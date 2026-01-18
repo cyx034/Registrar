@@ -35,7 +35,7 @@ void TeacherSecretaryBroker::initialize()
         return;
     }
     pqxx::read_transaction t(*dbConnection);
-    pqxx::result res = t.exec("SELECT tsno,tsname,tsacademy FROM teachersecretary LIMIT 5"); //只读入前5行进入缓存
+    pqxx::result res = t.exec("SELECT tsno,tsname,tsacademy FROM tsecretary LIMIT 5"); //只读入前5行进入缓存
     t.commit();
     _teachersecretary.clear();
     for(const auto& row : res) {
@@ -70,7 +70,7 @@ shared_ptr<TeacherSecretary> TeacherSecretaryBroker::findTeacherSecretaryByIdDB(
     }
     try {
         pqxx::work t(*dbConnection);
-        pqxx::result res = t.exec(pqxx::zview{"SELECT tno,tname,tacademy FROM teachersecretary WHERE tsno = $1"},pqxx::params{id});
+        pqxx::result res = t.exec(pqxx::zview{"SELECT tno,tname,tacademy FROM tsecretary WHERE tsno = $1"},pqxx::params{id});
         t.commit();
         if (res.empty()) {
             std::cout << "未找到教学秘书ID：" << id << endl;

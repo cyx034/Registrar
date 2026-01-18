@@ -91,6 +91,7 @@ void Ui::studentui()
                 _registrar.studentDropCourse(sid,cid);
                 break;
             case 3:
+                _registrar.printAllCourse();
                 break;
             case 4:
                 break;
@@ -126,7 +127,6 @@ void Ui::teacherui()
         switch(choice)
         {
             case 1:
-                double grade;
                 print("请输入课程号: ");
                 cin>>cid;
                 print("请输入学生号: ");
