@@ -10,12 +10,14 @@ using std::print;
 //课程表
 export class Schedule
 {
+    friend class ScheduleBroker;
 public:
     Schedule(string scheduleid,string term,string academy,string major,string gradelevel);
     ~Schedule();
     shared_ptr<Schedule> create(string scheduleid,string term,string academy,string major,string gradelevel);
     void addScheduleEntry(shared_ptr<class ScheduleEntry> scheduleEntry);
     void removeScheduleEntry(shared_ptr<class ScheduleEntry> scheduleEntry);
+    bool hasId(string id);
 private:
     string m_scheduleid;
     string m_term;
@@ -55,4 +57,9 @@ void Schedule::removeScheduleEntry(shared_ptr<ScheduleEntry> scheduleEntry)
         _scheduleEntrys.erase(it);
         print("已从该课程中成功删除该条目");
     }
+}
+
+bool Schedule::hasId(string id)
+{
+    return m_scheduleid == id;
 }

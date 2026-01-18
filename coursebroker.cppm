@@ -112,6 +112,7 @@ shared_ptr<Course> CourseBroker::findCourseByIdDB(const string& id)
             res[0]["cacademy"].as<string>(),
             res[0]["tno"].as<string>());
         _courses.push_back(std::move(course));   //把用到的存入缓存区
+        return course;
     } catch (const std::exception& e) {
         cerr << "查询失败：" << e.what() << endl;
         return nullptr;

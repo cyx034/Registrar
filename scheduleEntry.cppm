@@ -7,6 +7,7 @@ using std::string;
 
 export class ScheduleEntry
 {
+    friend class ScheduleEntryBroker;
 public:
     ScheduleEntry(string id,string classTime,string classRoom,weak_ptr<class Teacher> teacher,weak_ptr<class Course> course);
     ~ScheduleEntry();

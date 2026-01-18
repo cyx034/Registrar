@@ -126,7 +126,7 @@ bool ScheduleEntryBroker::modifyEntryteacher(string entryid,string tid)
         cerr << "数据库未连接" << endl;
         return false;
     }
-    try {set -Ux LD_LIBRARY_PATH /opt/gcc-latest/lib64 $LD_LIBRARY_PATH
+    try {
         pqxx::work t(*dbConnection);
         auto res = t.exec(pqxx::zview{"SELECT EXISTS(SELECT 1 FROM schedule_entry WHERE entryid = $1)"},pqxx::params{entryid});
         t.commit();

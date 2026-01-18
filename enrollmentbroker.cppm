@@ -33,8 +33,8 @@ public:
 
 private:
     vector<std::shared_ptr<class Enrollment>> _enrollment;
-    shared_ptr<class Erollment> findEnrollmentByIdLocal(const string& sid,const string& cid);
-    shared_ptr<class Erollment> findEnrollmentByIdDB(const string& sid,const string& cid);
+    shared_ptr<class Enrollment> findEnrollmentByIdDB(const string& sid,const string& cid);
+    shared_ptr<Enrollment> findEnrollmentByLocal(const string& sid,const string& cid);
 };
 
 void EnrollmentBroker::initialize()
@@ -113,7 +113,7 @@ bool EnrollmentBroker::remove(const string& sid,const string& cid)
             deleteTxn.commit();
 
             for (auto it = _enrollment.begin(); it != _enrollment.end(); ) {
-                if ((*it)->sid == sid && (*it)->cid == cid) {
+                if ((*it)->_sid == sid && (*it)->_cid == cid) {
                     it = _enrollment.erase(it);  // erase返回下一个有效迭代器
                 } else {
                     ++it;
@@ -153,15 +153,15 @@ bool EnrollmentBroker::updateGrade(const Enrollment& enrollment)
 
 shared_ptr<Enrollment> EnrollmentBroker::findEnrollmentById(const std::string& sid,const std::string& cid)
 {
-    if(auto local = findEnrollmentByIdLocal(sid,cid))//先从本地缓存中找
+    if(auto local = findEnrollmentByLocal(sid,cid))//先从本地缓存中找
         return local;
     return findEnrollmentByIdDB(sid,cid); //没有就去数据库中找
 }
 
-shared_ptr<Erollment> EnrollmentBroker::findEnrollmentByLocal(const string& sid,const string& cid)
+shared_ptr<Enrollment> EnrollmentBroker::findEnrollmentByLocal(const string& sid,const string& cid)
 {
     for(auto& enrollment : _enrollment){
-        if(enrollment->hasId(id))
+        if(enrollment->hasId(sid,cid))
             return enrollment;
     }
     return nullptr;
@@ -175,22 +175,26 @@ shared_ptr<Enrollment> EnrollmentBroker::findEnrollmentByIdDB(const string& sid,
     }
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec(pqxx::zview{"SELECT sno,cno,grade FROM course WHERE cno = $1"},pqxx::params{id});
+        pqxx::result res = t.exec(pqxx::zview{"SELECT sno,cno,grade FROM sc WHERE sno = $1 AND cno = $2"},pqxx::params{sid,cid});
         t.commit();
         if (res.empty()) {
-            std::cout << "未找到scID：" << id << endl;
+            std::print("未找到scID：\n");
             return nullptr;
         }
+        pqxx::row row = res[0];
         string sno = res[0]["sno"].as<string>();
         string cno = res[0]["cno"].as<string>();
 
+        shared_ptr<Enrollment> enrollment;
         if(!row["grade"].is_null()){
             double grade = res[0]["grade"].as<double>();
-            _enrollment.push_back(std::make_shared<Enrollment>(sno,cno,grade));
+            enrollment = std::make_shared<Enrollment>(sno,cno,grade);
+            _enrollment.push_back(enrollment);
         }else{
-            _enrollment.push_back(std::make_shared<Enrollment>(sno,cno,0.0));
+            enrollment = std::make_shared<Enrollment>(sno,cno,0.0);
+            _enrollment.push_back(enrollment);
         }
-        _enrollment.push_back(std::move(Enrollment));   //把用到的存入缓存区
+        return enrollment;
     } catch (const std::exception& e) {
         cerr << "查询失败：" << e.what() << endl;
         return nullptr;
