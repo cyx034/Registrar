@@ -259,9 +259,9 @@ void Ui::teachingsecretaryui()
             break;
         case 7:
             string scheduleid,entryid;
-            print("请输入你要添加课程条目的课程表编号:");
+            print("请输入你要删除课程条目的课程表编号:");
             cin>>scheduleid;
-            print("请输入你要添加到课程表的课程条目id:");
+            print("请输入你要删除到课程表的课程条目id:");
             cin>>entryid;
             _registrar.removeEntrysToSchedule(tsid,scheduleid,entryid);
             break;

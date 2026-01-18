@@ -13,6 +13,7 @@ add_executable(registrar
     #math.cpp                              # 模块实现单元
     main.cpp
     doc/业务逻辑.txt
+    doc/readme
 
 
 )
