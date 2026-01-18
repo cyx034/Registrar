@@ -1,7 +1,8 @@
 module;
 
 #include <pqxx/pqxx>
-
+#include <pqxx/zview>
+#include <pqxx/params>
 export module registrar:broker.teacherbroker;
 import :broker.registrarbroker;
 
@@ -71,7 +72,7 @@ shared_ptr<Teacher> TeacherBroker::findTeacherByIdDB(const string& id)
     }
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec("SELECT tno,tname,tacademy FROM teacher WHERE tno = $1",id);
+        auto res = t.exec(pqxx::zview{"SELECT tno,tname,tacademy FROM teacher WHERE tno = $1"},pqxx::params{id});
         t.commit();
         if (res.empty()) {
             std::cout << "未找到老师ID：" << id << endl;
@@ -82,6 +83,7 @@ shared_ptr<Teacher> TeacherBroker::findTeacherByIdDB(const string& id)
             res[0]["tname"].as<string>(),
             res[0]["tacademy"].as<string>());
         _teacher.push_back(std::move(teacher));   //把用到的存入缓存区
+        return teacher;
     } catch (const std::exception& e) {
         cerr << "查询失败：" << e.what() << endl;
         return nullptr;

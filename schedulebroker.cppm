@@ -1,9 +1,12 @@
 module;
 
 #include <pqxx/pqxx>
-
+#include <pqxx/zview>
+#include <pqxx/params>
 export module registrar:broker.schedulebroker;
 import :broker.registrarbroker;
+
+import :domain.schedule;
 import std;
 
 using std::string;
@@ -163,6 +166,7 @@ shared_ptr<Schedule> ScheduleBroker::findScheduleByIdDB(const string& id)
             res[0]["gradelevel"].as<string>()
         );
         _schedule.push_back(std::move(schedule));
+        return schedule;
     } catch (const std::exception& e) {
         cerr << "查询失败：" << e.what() << endl;
         return nullptr;

@@ -1,7 +1,8 @@
 module;
 
 #include <pqxx/pqxx>
-
+#include <pqxx/zview>
+#include <pqxx/params>
 export module registrar:broker.enrollmentbroker;
 import :broker.registrarbroker;
 

@@ -343,6 +343,7 @@ shared_ptr<ScheduleEntry> ScheduleEntryBroker::findScheduleEntryByIdDB(const str
             res[0]["classrom"].as<string>()
         );
         _scheduleEntry.push_back(std::move(scheduleEntry));
+        return scheduleEntry;
     } catch (const std::exception& e) {
         cerr << "查询失败：" << e.what() << endl;
         return nullptr;
