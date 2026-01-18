@@ -62,7 +62,12 @@ void Ui::studentui()
     string sid;
     print("请输入你的学号");
     cin>>sid;
-    print("登录成功\n");   //未添加判断
+    if(_registrar.affirmStudent(sid)){
+        print("登录成功\n");
+    }else{
+        print("输入错误，登录失败！\n");
+        return;
+    }
 
     string cid;
     int choice=0;
@@ -84,7 +89,7 @@ void Ui::studentui()
                 print("请输入要选择的课程号: ");
                 cin>>cid;
                 _registrar.studentEnrollsInCourse(sid,cid);
-            break;
+                break;
             case 2:
                 print("请输入要退选的课程号: ");
                 cin>>cid;
@@ -109,12 +114,14 @@ void Ui::teacherui()
     string tid;
     print("请输入你的教师号: ");
     cin>>tid;
-    print("登录成功\n");   //未添加判断
 
-    string cid;
-    string sid;
-    double midterm ,final;
-    vector<double> homework;
+    if(_registrar.affirmTeacher(tid)){
+        print("登录成功\n");
+    }else{
+        print("输入错误，登录失败！\n");
+        return;
+    }
+
     int choice=0;
     while(choice!=3){
         print("\n--------------------------------------------\n");
@@ -146,8 +153,13 @@ void Ui::teachingsecretaryui()
     string tsid;
     print("请输入你的教学秘书编号: ");
     cin>>tsid;
-    print("登录成功\n");   //未添加判断
 
+    if(_registrar.affirmSecretary(tsid)){
+        print("登录成功\n");
+    }else{
+        print("输入错误，登录失败！\n");
+        return;
+    }
 
     string id,term,academy,major,gradelevel;
     string eid,time,room,tid,cid;
