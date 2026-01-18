@@ -11,26 +11,27 @@ using std::string;
 using std::cerr;
 using std::endl;
 using std::shared_ptr;
+using std::vector;
 
 export class EnrollmentBroker : public RegistrarBroker
 {
 public:
     using RegistrarBroker::RegistrarBroker;
 
-    std::shared_ptr<Enrollment> findEnrollmentById(const string& sid,const string& cid);
+    std::shared_ptr<class Enrollment> findEnrollmentById(const string& sid,const string& cid);
 //    string getCourseRoster(const string& courseId);
 
     bool save(const string& sid,const string& cid);
-    bool remove(const string& sid,const string& cid)
+    bool remove(const string& sid,const string& cid);
 
     bool updateGrade(const Enrollment& enrollment);
 
     void initialize();
 
 private:
-    vector<std::shared_ptr<Enrollment>> _enrollment;
-    shared_ptr<Erollment> findEnrollmentByIdLocal(const string& sid,const string& cid);
-    shared_ptr<Erollment> findEnrollBymentIdDB(const string& sid,const string& cid);
+    vector<std::shared_ptr<class Enrollment>> _enrollment;
+    shared_ptr<class Erollment> findEnrollmentByIdLocal(const string& sid,const string& cid);
+    shared_ptr<class Erollment> findEnrollBymentIdDB(const string& sid,const string& cid);
 };
 
 void EnrollmentBroker::initialize()

@@ -10,6 +10,7 @@ using std::string;
 using std::cerr;
 using std::endl;
 using std::shared_ptr;
+using std::vector;
 
 export class ScheduleBroker: public RegistrarBroker
 {
@@ -19,13 +20,13 @@ public:
     bool save(string scheduleid,string term,string academy,string major,string gradelevel);
     bool remove(string scheduleid);
 
-    std::shared_ptr<Schedule> findScheduleById(const std::string& id);
+    std::shared_ptr<class Schedule> findScheduleById(const std::string& id);
     void initialize();
 
 private:
-    vector<shared_ptr<Schedule>> _schedule;
-    shared_ptr<Schedule> findScheduleByIdLocal(const string &id);
-    shared_ptr<Schedule> findScheduleByIdDB(const string& id);
+    vector<shared_ptr<class Schedule>> _schedule;
+    shared_ptr<class Schedule> findScheduleByIdLocal(const string &id);
+    shared_ptr<class Schedule> findScheduleByIdDB(const string& id);
 };
 
 void ScheduleBroker::initialize()

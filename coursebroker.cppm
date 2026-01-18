@@ -1,4 +1,4 @@
-\module;
+module;
 
 #include <pqxx/pqxx>
 
@@ -11,21 +11,22 @@ using std::string;
 using std::cerr;
 using std::endl;
 using std::shared_ptr;
+using std::vector;
 
 export class CourseBroker : public RegistrarBroker
 {
 public:
     using RegistrarBroker::RegistrarBroker;
 
-    std::shared_ptr<Course> findCourseById(const std::string& id);
+    std::shared_ptr<class Course> findCourseById(const std::string& id);
 
     bool CourseEvalueAccess(const string& cid,const string& tid);
     void initialize();
 
 private:
-    vector<std::shared_ptr<Course>> _courses;
-    shared_ptr<Course> findCourseByIdLocal(const string &id);
-    shared_ptr<Course> findCourseByIdDB(const string& id);
+    vector<std::shared_ptr<class Course>> _courses;
+    shared_ptr<class Course> findCourseByIdLocal(const string &id);
+    shared_ptr<class Course> findCourseByIdDB(const string& id);
 };
 
 void CourseBroker::initialize()
