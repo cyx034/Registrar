@@ -1,6 +1,7 @@
 export module registrar:domain.teacherSecretary;
 import std;
 import :domain.person;
+
 using std::shared_ptr;
 using std::weak_ptr;
 using std::make_shared;

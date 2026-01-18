@@ -2,23 +2,7 @@ module;
 
 #include <pqxx/pqxx>
 
-export module registrar:broker.registrarbroker;
-
-import std;
-
-using std::string;
-
-export class RegistrarBroker
-{
-public:
-    RegistrarBroker();
-    virtual ~RegistrarBroker();
-    void connect();
-protected:
-    std::shared_ptr<pqxx::connection> dbConnection;//conn("host=localhost port=5432 dbname=db user=postgres");
-    bool status;
-};
-
+module registrar:broker.enrollmentbroker;
 
 RegistrarBroker::RegistrarBroker()
     :status(false),dbConnection(nullptr)

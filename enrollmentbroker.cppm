@@ -4,6 +4,7 @@ module;
 
 export module registrar:broker.enrollmentbroker;
 import :broker.registrarbroker;
+
 import std;
 
 using std::string;

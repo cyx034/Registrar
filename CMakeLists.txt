@@ -7,10 +7,14 @@ set(CMAKE_CXX_MODULE_STD ON)
 
 project(registrar LANGUAGES CXX)
 
+
 # set(MODULE_LIB_DIR1 /opt/utils/modules)  # 模块库的目录的设置
 add_executable(registrar
     #math.cpp                              # 模块实现单元
     main.cpp
+    doc/业务逻辑.txt
+
+
 )
 
 set(MODULE_INTERFACE_FILES
@@ -19,7 +23,7 @@ set(MODULE_INTERFACE_FILES
 )
 
 set(MODULE_BROKER
-    registrarbroker.cppm
+
     studentbroker.cppm
     coursebroker.cppm
     enrollmentbroker.cppm
@@ -28,6 +32,7 @@ set(MODULE_BROKER
     broker.cppm
     schedulebroker.cppm
     scheduleEntrybroker.cppm
+    registrarbroker.cppm
 )
 
 set(MODULE_CONTROL
@@ -79,9 +84,9 @@ target_link_libraries(registrar
     PRIVATE
         pqxx
         pq
+        pthread
+        dl
 )
-
-
 
 
 

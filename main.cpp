@@ -1,9 +1,11 @@
 import std;
+import registrar:ui;
+
 
 int main()
 {
-    std::cout << "hello, world" << std::endl;
-    std::println("hello");
+    Ui ui;
+    ui.welcomeui();
 
     return 0;
 }
