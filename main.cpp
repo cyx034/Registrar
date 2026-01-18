@@ -7,7 +7,6 @@ int main()
 {
     Ui ui;
     ui.welcomeui();
-
     return 0;
 }
 

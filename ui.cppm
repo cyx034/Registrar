@@ -66,38 +66,40 @@ void Ui::studentui()
 
     string cid;
     int choice;
-    print("\n--------------------------------------------\n");
-    print("                    学生系统                  \n\n");
-    print("                  1.选课功能                   \n");
-    print("                  2.退课功能                   \n");
-    print("                  3.查看课表                   \n");
-    print("                  4.查看成绩                   \n");
-    print("                  5.返回主菜单                  \n\n");
-    print("请选择你要进行的操作: ");
-    cin>>choice;
-    switch(choice)
-    {
-        case 1:
+    while(choice!=5){
+        print("\n--------------------------------------------\n");
+        print("                    学生系统                  \n\n");
+        print("                  1.选课功能                   \n");
+        print("                  2.退课功能                   \n");
+        print("                  3.查看课表                   \n");
+        print("                  4.查看成绩                   \n");
+        print("                  5.返回主菜单                  \n\n");
+        print("请选择你要进行的操作: ");
+        cin>>choice;
+        switch(choice)
+        {
+            case 1:
             //打印所有课程信息
 
             print("请输入要选择的课程号: ");
             cin>>cid;
             _registrar.studentEnrollsInCourse(sid,cid);
             break;
-        case 2:
-            print("请输入要退选的课程号: ");
-            cin>>cid;
-            _registrar.studentDropCourse(sid,cid);
-            break;
-        case 3:
-            break;
-        case 4:
-            break;
-        case 5:
-            print("返回主菜单\n");
-            break;
-        default:
-            print("输入无效，请重新选择!\n");
+            case 2:
+                print("请输入要退选的课程号: ");
+                cin>>cid;
+                _registrar.studentDropCourse(sid,cid);
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                print("返回主菜单\n");
+                break;
+            default:
+                print("输入无效，请重新选择!\n");
+            }
     }
 }
 
@@ -120,34 +122,32 @@ void Ui::teacherui()
     print("                  3.返回主菜单                  \n\n");
     print("请选择你要进行的操作: ");
     cin>>choice;
-    switch(choice)
-    {
-        case 1:
-
-            double grade;
-            print("请输入课程号: ");
-            cin>>cid;
-            print("请输入学生号: ");
-            cin>>sid;
-            print("请输入该学生的中期成绩和期末成绩: ");
-
-            cin >> midterm >> final;
-            print("请输入该学生家庭作业成绩: ");
-
-            for(double h;cin>>h;){
-                homework.push_back(h);
+    while(choice!=3){
+        switch(choice)
+        {
+            case 1:
+                double grade;
+                print("请输入课程号: ");
+                cin>>cid;
+                print("请输入学生号: ");
+                cin>>sid;
+                print("请输入该学生的中期成绩和期末成绩: ");
+                cin >> midterm >> final;
+                print("请输入该学生家庭作业成绩: ");
+                for(double h;cin>>h;){
+                    homework.push_back(h);
+                }
+                _registrar.teacherEnterGrade(tid,sid,cid,midterm,final,homework);
+                break;
+            case 2:
+                //查看教师课表
+                break;
+            case 3:
+                print("返回主菜单\n");
+                break;
+            default:
+                print("输入无效，请重新选择!\n");
             }
-            _registrar.teacherEnterGrade(tid,sid,cid,midterm,final,homework);
-            break;
-        case 2:
-            //查看教师课表
-
-            break;
-        case 3:
-            print("返回主菜单\n");
-            break;
-        default:
-            print("输入无效，请重新选择!\n");
     }
 }
 
@@ -175,97 +175,100 @@ void Ui::teachingsecretaryui()
     print("                  8.返回主菜单                  \n\n");
     print("请选择你要进行的操作: ");
     cin>>choice;
-    switch(choice)
-    {
-        case 1:
+    while(choice!=8){
+        switch(choice){
+            case 1:
 
-            print("请输入课程表号: ");
-            cin>>id;
-            print("请输入当前学期: ");
-            cin>>term;
-            print("请输入所属学院: ");
-            cin>>academy;
-            print("请输入所属专业:");
-            cin>>major;
-            print("请输入年级: ");
-            cin>>gradelevel;
-            _registrar.createSchedules(tsid,id,term,academy,major,gradelevel);
-            break;
-        case 2:
-            print("请输入你想删除的课程表号: ");
-            cin>>id;
-            _registrar.removeSchedules(tsid,id);
-            break;
-        case 3:
+                print("请输入课程表号: ");
+                cin>>id;
+                print("请输入当前学期: ");
+                cin>>term;
+                print("请输入所属学院: ");
+                cin>>academy;
+                print("请输入所属专业:");
+                cin>>major;
+                print("请输入年级: ");
+                cin>>gradelevel;
+                _registrar.createSchedules(tsid,id,term,academy,major,gradelevel);
+                break;
+            case 2:
+                print("请输入你想删除的课程表号: ");
+                cin>>id;
+                _registrar.removeSchedules(tsid,id);
+                break;
+            case 3:
 
-            print("请输入课程条目编号:");
-            cin>>eid;
-            print("请输入课程时间:");
-            cin>>time;
-            print("请输入所在教室:");
-            cin>>room;
-            print("请输入教师编号:");
-            cin>>tid;
-            print("请输入课程编号:");
-            cin>>cid;
-            _registrar.createScheduleEntrys(tsid,eid,time,room,tid,cid);
-            break;
-        case 4:
-            print("请输入你要修改的课程条目编号: ");
-            cin>>id;
-            print("-------------课程条目:{}----------\n\n",id);
-            print("             1.修改时间           \n");
-            print("             2.修改地点           \n");
-            print("             3.修改授课老师        \n");
-            print("             4.返回上一页          \n");
-            print("请选择你要进行的操作: ");
-            cin>>choice;
-            switch(choice)
-            {
-                case 1:
-                    print("请输入你要修改的时间：");
-                    cin>>time;
-                    _registrar.modifyEntrytime(id,time);
+                print("请输入课程条目编号:");
+                cin>>eid;
+                print("请输入课程时间:");
+                cin>>time;
+                print("请输入所在教室:");
+                cin>>room;
+                print("请输入教师编号:");
+                cin>>tid;
+                print("请输入课程编号:");
+                cin>>cid;
+                _registrar.createScheduleEntrys(tsid,eid,time,room,tid,cid);
+                break;
+            case 4:
+                print("请输入你要修改的课程条目编号: ");
+                cin>>id;
+                print("-------------课程条目:{}----------\n\n",id);
+                print("             1.修改时间           \n");
+                print("             2.修改地点           \n");
+                print("             3.修改授课老师        \n");
+                print("             4.返回上一页          \n");
+                print("请选择你要进行的操作: ");
+                cin>>choice;
+                while(choice!=4){
+                    switch(choice)
+                    {
+                        case 1:
+                            print("请输入你要修改的时间：");
+                            cin>>time;
+                            _registrar.modifyEntrytime(id,time);
+                            break;
+                        case 2:
+                            print("请输入你要修改的地点： ");
+                            _registrar.modifyEntryroom(id,room);
+                            break;
+                        case 3:
+                            print("请输入你要修改的教师编号：");
+                            cin>>tid;
+                            _registrar.modifyEntryteacher(id,tid);
+                            break;
+                        case 4:
+                            print("返回上一页\n");
+                            break;
+                        default:
+                            print("输入无效，请重新选择!\n");
+                    }
                     break;
-                case 2:
-                    print("请输入你要修改的地点： ");
-                    _registrar.modifyEntryroom(id,room);
-                    break;
-                case 3:
-                    print("请输入你要修改的教师编号：");
-                    cin>>tid;
-                    _registrar.modifyEntryteacher(id,tid);
-                    break;
-                case 4:
-                    print("返回上一页\n");
-                    break;
-                default:
-                    print("输入无效，请重新选择!\n");
-            }
-            break;
-        case 5:
-            print("请输入你要删除的课程条目编号: ");
-            cin>>id;
-            _registrar.removeScheduleEntrys(tsid,id);
-            break;
-        case 6:
-            print("请输入你要添加课程条目的课程表编号:");
-            cin>>scheduleid;
-            print("请输入你要添加到课程表的课程条目id:");
-            cin>>entryid;
-            _registrar.addEntrysToSchedule(tsid,scheduleid,entryid);
-            break;
-        case 7:
-            print("请输入你要删除课程条目的课程表编号:");
-            cin>>scheduleid;
-            print("请输入你要删除到课程表的课程条目id:");
-            cin>>entryid;
-            _registrar.removeEntrysToSchedule(tsid,scheduleid,entryid);
-            break;
-        case 8:
-            print("返回主菜单\n");
-            break;
-        default:
-            print("输入无效，请重新选择!\n");
-    }
+                    case 5:
+                        print("请输入你要删除的课程条目编号: ");
+                        cin>>id;
+                        _registrar.removeScheduleEntrys(tsid,id);
+                        break;
+                    case 6:
+                        print("请输入你要添加课程条目的课程表编号:");
+                        cin>>scheduleid;
+                        print("请输入你要添加到课程表的课程条目id:");
+                        cin>>entryid;
+                        _registrar.addEntrysToSchedule(tsid,scheduleid,entryid);
+                        break;
+                    case 7:
+                        print("请输入你要删除课程条目的课程表编号:");
+                        cin>>scheduleid;
+                        print("请输入你要删除到课程表的课程条目id:");
+                        cin>>entryid;
+                        _registrar.removeEntrysToSchedule(tsid,scheduleid,entryid);
+                        break;
+                    case 8:
+                        print("返回主菜单\n");
+                        break;
+                    default:
+                        print("输入无效，请重新选择!\n");
+                    }
+                }
+        }
 }
