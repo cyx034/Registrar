@@ -15,8 +15,6 @@ public:
 
     void enrollIn(shared_ptr<Enrollment> enrollment);
     void dropIn(shared_ptr<class Course> course);
-    void schedule();
-    void transcript();
 
 private:
     string m_major;
@@ -43,12 +41,3 @@ void Student::dropIn(shared_ptr<class Course> course)
 
 }*/
 
-void Student::schedule()
-{
-
-}
-
-void Student::transcript()
-{
-
-}

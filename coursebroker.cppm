@@ -143,7 +143,6 @@ shared_ptr<Course> CourseBroker::findCourseById(const std::string& id)
 {
     if(auto local = findCourseByIdLocal(id))  //先从本地缓存中找
         return local;
-    std::print("cDB\n");
     return findCourseByIdDB(id); //没有就去数据库中找
 }
 

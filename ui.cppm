@@ -190,11 +190,6 @@ void Ui::teachingsecretaryui()
             case 1:
                 print("请输入课程表号: ");
                 cin>>scid;
-                while(_registrar.affirmSchedule(scid)){
-                    print("该课表已存在！请重新输入(输入-1取消）：\n");
-                    cin>>scid;
-                    if(scid=="-1") break;
-                }
                 print("请输入当前学期: ");
                 cin>>term;
                 print("请输入所属学院: ");
@@ -218,11 +213,6 @@ void Ui::teachingsecretaryui()
             case 3:
                 print("请输入课程条目编号:");
                 cin>>eid;
-                while(_registrar.affirmScheduleEntry(eid)){
-                    print("该课程条目已存在！请重新输入(输入-1取消）：\n");
-                    cin>>eid;
-                    if(eid=="-1") break;
-                }
                 print("请输入课程时间:");
                 cin>>time;
                 print("请输入所在教室:");
@@ -241,7 +231,10 @@ void Ui::teachingsecretaryui()
                     while(!_registrar.affirmScheduleEntry(eid)){
                         print("不存在该课程条目！请重新输入(输入-1取消）：\n");
                         cin>>eid;
-                        if(eid=="-1") break;
+                        if(eid=="-1"){
+                            choice = 4;
+                            break;
+                        }
                     }
                     print("-------------课程条目:{}----------\n\n",eid);
                     print("             1.修改时间           \n");
