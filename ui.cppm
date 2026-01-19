@@ -107,6 +107,7 @@ void Ui::studentui()
                 _registrar.classSchedule(sid);
                 break;
             case 4:
+                _registrar.printAllCourseGrade(sid);
                 break;
             case 5:
                 print("返回主菜单\n");

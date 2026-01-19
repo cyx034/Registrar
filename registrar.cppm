@@ -26,7 +26,10 @@ public:
     void classSchedule(string sid);  //打印指定学生的课表
 
     void printAllCourse();
+    void printAllCourseGrade(string sid);
+
     void enterGradeManage(string tid);
+
 
     void initialize();  //系统初始化
 
@@ -90,6 +93,11 @@ bool Registrar::affirmSecretary(string tsid)
     return false;
 }
 
+void Registrar::printAllCourseGrade(string sid)
+{
+    _enrollmentBroker.printCourseGrade(sid);
+}
+
 
 void Registrar::enterGradeManage(string tid)
 {
@@ -105,8 +113,10 @@ void Registrar::enterGradeManage(string tid)
             if(_enrollmentBroker.findEnrollmentById(sid,cid)){
                 print("请输入该学生的中期成绩和期末成绩: ");
                 std::cin >> midterm >> final;
-                print("请输入该学生家庭作业成绩: ");
-                for(double h;std::cin>>h;){
+                print("请输入该学生家庭作业成绩:(输入-1停止) ");
+                double h;
+                while(std::cin>>h&&h!=-1){
+
                     homework.push_back(h);
                 }
                 if(teacherEnterGrade(sid,cid,midterm,final,homework)){
@@ -158,17 +168,7 @@ void Registrar::studentEnrollsInCourse(string sid,string cid)
 {
     auto student = _studentBroker.findStudentById(sid);  //查找学生
     auto course = _courseBroker.findCourseById(cid);  //查找课程
-
-    print("sin\n");
-    if (!student) {
-            print("student 是 null\n");
-    }
-    if (!course) {
-            print("course 是 null\n");
-    }
     if(student && course){  //如果学生和课程都存在
-        print("进入sin\n");
-
        if(!_enrollmentBroker.save(sid,cid)){
            print("注册失败!\n");
         }

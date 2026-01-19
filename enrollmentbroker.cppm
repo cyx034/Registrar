@@ -33,6 +33,7 @@ public:
     bool updateGrade(const Enrollment& enrollment);
 
     void printSchedule(string sid);
+    void printCourseGrade(string sid);
 
     void initialize();
 
@@ -61,8 +62,40 @@ void EnrollmentBroker::initialize()
             auto e = std::make_shared<Enrollment>(sno,cno,grade);
             _enrollment.push_back(e);
         }else{
-            auto en = std::make_shared<Enrollment>(sno,cno,0.0);
+            auto en = std::make_shared<Enrollment>(sno,cno,-1);
             _enrollment.push_back(en);
+        }
+    }
+}
+
+void EnrollmentBroker::printCourseGrade(string sid)
+{
+    if (!status) {
+        cerr << "数据库未连接" << endl;
+        return;
+    }
+    pqxx::work t(*dbConnection);
+    pqxx::result res = t.exec(pqxx::zview{"SELECT sc.cno,course.cname,course.ccredit,course.cacademy,teacher.tname,sc.grade FROM sc "
+                                          "JOIN course ON sc.cno = course.cno JOIN teacher ON teacher.tno = course.tno WHERE sno = $1"},pqxx::params{sid});
+    t.commit();
+    double grade;
+    std::print(" id        name               credit        academy                 teacher      grade\n");
+    for(const auto& row : res) {
+
+        std::print(" {:<8} ",row["cno"].as<string>());
+        std::print(" {:<20} ",row["cname"].as<string>());
+        std::print(" {:<5} ",row["ccredit"].as<string>());
+        std::print(" {:<15}         ",row["cacademy"].as<string>());
+        std::print("{}",row["tname"].as<string>());
+        if(!row["grade"].is_null()){
+            grade = row["grade"].as<double>();
+            if(!(grade == -1)){
+                std::print("    {:.2f}\n",grade);
+            }else{
+                std::print("     未登入\n");
+            }
+        }else{
+            std::print("     未登入\n");
         }
     }
 }
@@ -78,7 +111,7 @@ void EnrollmentBroker::printSchedule(string sid)
                                           "JOIN course ON sc.cno = course.cno JOIN teacher ON teacher.tno = course.tno WHERE sno = $1"},pqxx::params{sid});
     t.commit();
     for(const auto& row : res) {
-        std::print("id      name               credit        academy                teacher\n");
+        std::print("id        name               credit        academy                teacher\n");
         std::print(" {:<8} ",row["cno"].as<string>());
         std::print(" {:<20} ",row["cname"].as<string>());
         std::print(" {:<5} ",row["ccredit"].as<string>());
@@ -103,10 +136,10 @@ bool EnrollmentBroker::save(const string& sid,const string& cid)
         bool exists = res[0][0].as<bool>();
         if (!exists) {
             pqxx::work deleteTxn(*dbConnection);
-            deleteTxn.exec(pqxx::zview{"INSERT INTO sc VALUES ($1,$2)"},pqxx::params{sid,cid});
+            deleteTxn.exec(pqxx::zview{"INSERT INTO sc VALUES ($1,$2,$3)"},pqxx::params{sid,cid,-1});
             deleteTxn.commit();
 
-            auto enrollment = std::make_shared<Enrollment>(sid,cid,0.0);
+            auto enrollment = std::make_shared<Enrollment>(sid,cid,-1);
             _enrollment.push_back(enrollment);  //存入缓存区
 
             std::print("注册成功\n");
@@ -218,7 +251,7 @@ shared_ptr<Enrollment> EnrollmentBroker::findEnrollmentByIdDB(const string& sid,
             enrollment = std::make_shared<Enrollment>(sno,cno,grade);
             _enrollment.push_back(enrollment);
         }else{
-            enrollment = std::make_shared<Enrollment>(sno,cno,0.0);
+            enrollment = std::make_shared<Enrollment>(sno,cno,-1);
             _enrollment.push_back(enrollment);
         }
         return enrollment;
