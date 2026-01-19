@@ -85,15 +85,22 @@ void Ui::studentui()
         {
             case 1:
                 //打印所有课程信息
-
-                print("请输入要选择的课程号: ");
+                print("请输入要选择的课程号(输入-1停止）: ");
                 cin>>cid;
-                _registrar.studentEnrollsInCourse(sid,cid);
+                while(cid!="-1"){
+                    _registrar.studentEnrollsInCourse(sid,cid);
+                    print("请输入要选择的课程号(输入-1停止）: ");
+                    cin>>cid;
+                }
                 break;
             case 2:
-                print("请输入要退选的课程号: ");
+                print("请输入要退选的课程号(输入-1停止): ");
                 cin>>cid;
-                _registrar.studentDropCourse(sid,cid);
+                while(cid!="-1"){
+                    _registrar.studentDropCourse(sid,cid);
+                    print("请输入要退选的课程号(输入-1停止): ");
+                    cin>>cid;
+                }
                 break;
             case 3:
                 _registrar.printAllCourse();

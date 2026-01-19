@@ -10,6 +10,7 @@ using std::string;
 using std::vector;
 using std::make_unique;
 using std::print;
+using std::cin;
 
 export class Registrar
 {
@@ -96,25 +97,29 @@ void Registrar::enterGradeManage(string tid)
     double midterm,final;
     vector<double> homework;
     print("请输入课程号: ");
-    std::cin>>cid;
+    cin>>cid;
     if(_courseBroker.CourseToTeacher(tid,cid)){
-        print("请输入学生号: ");
-        std::cin>>sid;
-        if(_enrollmentBroker.findEnrollmentById(sid,cid)){
-            print("请输入该学生的中期成绩和期末成绩: ");
-            std::cin >> midterm >> final;
-            print("请输入该学生家庭作业成绩: ");
-            for(double h;std::cin>>h;){
-                homework.push_back(h);
-            }
-            if(teacherEnterGrade(sid,cid,midterm,final,homework)){
-                print("登入成绩成功！\n");
+        print("请输入学生号(输入-1停止）: ");
+        cin>>sid;
+        while(sid!="-1"){
+            if(_enrollmentBroker.findEnrollmentById(sid,cid)){
+                print("请输入该学生的中期成绩和期末成绩: ");
+                std::cin >> midterm >> final;
+                print("请输入该学生家庭作业成绩: ");
+                for(double h;std::cin>>h;){
+                    homework.push_back(h);
+                }
+                if(teacherEnterGrade(sid,cid,midterm,final,homework)){
+                    print("登入成绩成功！\n");
+                }else{
+                    print("登入成绩失败！\n");
+                }
             }else{
-                print("登入成绩失败！\n");
+                print("该学生不在课程名单中！\n");
+                return;
             }
-        }else{
-            print("该学生不在课程名单中！\n");
-            return;
+            print("请输入学生号(输入-1停止）: ");
+            cin>>sid;
         }
     }else{
         //print("没有该课程权限！\n");
