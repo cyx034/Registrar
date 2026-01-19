@@ -19,7 +19,7 @@ public:
 private:
     string m_major;
     string m_gradelevel;
-//    vector<shared_ptr<string>> _enrollments;
+    vector<shared_ptr<string>> _enrollments;
 };
 
 Student::Student(string id,string name,string academy,string major)

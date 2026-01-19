@@ -23,7 +23,7 @@ private:
     string m_credit;
     string m_academy;
 
-//    vector<shared_ptr<string>> _enrollments;
+    vector<shared_ptr<string>> _enrollments;
     string _teacherId;
     shared_ptr<ScheduleEntry> _scheduleEntry;
 
