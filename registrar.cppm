@@ -27,6 +27,7 @@ public:
 
     void printAllCourse();
     void printAllCourseGrade(string sid);
+    void printTeacherCourse(string tid);
 
     void enterGradeManage(string tid);
 
@@ -49,6 +50,9 @@ public:
     bool affirmStudent(string sid);
     bool affirmTeacher(string tid);
     bool affirmSecretary(string tsid);
+
+    bool affirmSchedule(string sid);
+    bool affirmScheduleEntry(string seid);
 private:
     Registrar(); //禁止直接创建对象（将类的构造函数私有化，
                  //再配合静态成员函数来创建对象）
@@ -92,6 +96,29 @@ bool Registrar::affirmSecretary(string tsid)
     }
     return false;
 }
+
+bool Registrar::affirmSchedule(string sid)
+{
+    if(_scheduleBroker.findScheduleById(sid)){
+        return true;
+    }
+    return false;
+}
+
+bool Registrar::affirmScheduleEntry(string seid)
+{
+    if(_scheduleEntryBroker.findScheduleEntryById(seid)){
+        return true;
+    }
+    return false;
+}
+
+
+void Registrar::printTeacherCourse(string tid)
+{
+    _courseBroker.teacherCourse(tid);
+}
+
 
 void Registrar::printAllCourseGrade(string sid)
 {
@@ -205,13 +232,43 @@ void Registrar::classSchedule(string sid)
 
 void Registrar::initialize()  //系统初始化
 {
-    _studentBroker.initialize();
+/*    _studentBroker.initialize();
     _courseBroker.initialize();
     _teacherBroker.initialize();
     _secretaryBroker.initialize();
     _enrollmentBroker.initialize();
     _scheduleBroker.initialize();
+    _scheduleEntryBroker.initialize();*/
+
+    std::print("[DEBUG] 1. 初始化 StudentBroker...\n");
+    _studentBroker.initialize();
+    std::print("[DEBUG] ✓ StudentBroker 初始化成功\n");
+
+    std::print("[DEBUG] 2. 初始化 CourseBroker...\n");
+    _courseBroker.initialize();
+    std::print("[DEBUG] ✓ CourseBroker 初始化成功\n");
+
+    std::print("[DEBUG] 3. 初始化 TeacherBroker...\n");
+    _teacherBroker.initialize();
+    std::print("[DEBUG] ✓ TeacherBroker 初始化成功\n");
+
+    std::print("[DEBUG] 4. 初始化 TeacherSecretaryBroker...\n");
+    _secretaryBroker.initialize();
+    std::print("[DEBUG] ✓ TeacherSecretaryBroker 初始化成功\n");
+
+    std::print("[DEBUG] 5. 初始化 EnrollmentBroker...\n");
+     _enrollmentBroker.initialize();
+     std::print("[DEBUG] ✓ EnrollmentBroker 初始化成功\n");
+
+    std::print("[DEBUG] 6. 初始化 ScheduleBroker...\n");
+    _scheduleBroker.initialize();
+    std::print("[DEBUG] ✓ ScheduleBroker 初始化成功\n");
+
+    std::print("[DEBUG] 7. 初始化 ScheduleEntryBroker...\n");
     _scheduleEntryBroker.initialize();
+    std::print("[DEBUG] ✓ ScheduleEntryBroker 初始化成功\n");
+
+     std::print("[DEBUG] 系统初始化完成！\n");
 }
 
 Registrar::Registrar(){}

@@ -50,16 +50,24 @@ void ScheduleEntryBroker::initialize()
     pqxx::result res = t.exec("SELECT entryid,scheduleid,cno,tno,time,classroom FROM schedule_entry LIMIT 5");
     t.commit();
     _scheduleEntry.clear();
+    string scheduleid = "";
+
     for(const auto& row : res) {
+        if (!row["scheduleid"].is_null()) {
+            scheduleid = row["scheduleid"].as<string>();
+        }
         _scheduleEntry.push_back(std::make_shared<ScheduleEntry>(
             row["entryid"].as<string>(),
-            row["scheduleid"].as<string>(),
+            scheduleid,
             row["cno"].as<string>(),
             row["tno"].as<string>(),
             row["time"].as<string>(),
             row["classroom"].as<string>()));
     }
 }
+
+
+
 
 bool ScheduleEntryBroker::modifyEntrytime(string entryid,string time)
 {
@@ -69,7 +77,7 @@ bool ScheduleEntryBroker::modifyEntrytime(string entryid,string time)
     }
     try {
         pqxx::work t(*dbConnection);
-        auto res = t.exec(pqxx::zview{"SELECT EXISTS(SELECT 1 FROM schedule_entry WHERE entryid = $1"},pqxx::params{entryid});
+        auto res = t.exec(pqxx::zview{"SELECT EXISTS(SELECT 1 FROM schedule_entry WHERE entryid = $1)"},pqxx::params{entryid});
         t.commit();
         bool exists = res[0][0].as<bool>();
         if (exists) {
@@ -187,7 +195,7 @@ bool ScheduleEntryBroker::removeToSchedule(string entryid,string scheduleid)
     }
     try {
         pqxx::work checkTxn(*dbConnection);
-        auto res = checkTxn.exec(pqxx::zview{"SELECT EXISTS(SELECT 1 FROM schedule_entry"
+        auto res = checkTxn.exec(pqxx::zview{"SELECT EXISTS(SELECT 1 FROM schedule_entry "
                                              "WHERE entryid = $1 AND scheduleid = $2)"},pqxx::params{entryid, scheduleid});
         checkTxn.commit();
 

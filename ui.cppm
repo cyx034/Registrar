@@ -146,7 +146,7 @@ void Ui::teacherui()
                 _registrar.enterGradeManage(tid);
                 break;
             case 2:
-                //查看教师课表
+                _registrar.printTeacherCourse(tid);
                 break;
             case 3:
                 print("返回主菜单\n");
@@ -225,6 +225,7 @@ void Ui::teachingsecretaryui()
                 while(choice!=4){
                     print("请输入你要修改的课程条目编号: ");
                     cin>>id;
+                    _registrar.
                     print("-------------课程条目:{}----------\n\n",id);
                     print("             1.修改时间           \n");
                     print("             2.修改地点           \n");

@@ -29,6 +29,7 @@ public:
 
     void courseEntry();
     bool CourseToTeacher(string tid,string cid);
+    void teacherCourse(string tid);
 
     void initialize();
 
@@ -57,6 +58,27 @@ void CourseBroker::initialize()
             row["tno"].as<string>()));
     }
 }
+
+void CourseBroker::teacherCourse(string tid)
+{
+    if (!status) {
+        cerr << "数据库未连接" << endl;
+        return;
+    }
+    pqxx::read_transaction t(*dbConnection);
+    pqxx::result res = t.exec(pqxx::zview{"SELECT cno,cname,ccredit,cacademy FROM course WHERE tno = $1"},pqxx::params{tid}); //只读入前5行进入缓存
+    t.commit();
+    print("cid       name           credit         academy\n");
+    for(const auto& row : res) {
+        print("{:<8}{:<15}  {:<5}{:<15}\n",
+            row["cno"].as<string>(),
+            row["cname"].as<string>(),
+            row["ccredit"].as<string>(),
+            row["cacademy"].as<string>());
+    }
+
+}
+
 
 bool CourseBroker::CourseToTeacher(string tid,string cid)
 {
