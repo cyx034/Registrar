@@ -170,9 +170,8 @@ void Ui::teachingsecretaryui()
         return;
     }
 
-    string id,term,academy,major,gradelevel;
+    string scid,term,academy,major,gradelevel;
     string eid,time,room,tid,cid;
-    string scheduleid,entryid;
     int choice=0;
     while(choice!=8){
         print("\n--------------------------------------------\n");
@@ -190,7 +189,12 @@ void Ui::teachingsecretaryui()
         switch(choice){
             case 1:
                 print("请输入课程表号: ");
-                cin>>id;
+                cin>>scid;
+                while(_registrar.affirmSchedule(scid)){
+                    print("该课表已存在！请重新输入(输入-1取消）：\n");
+                    cin>>scid;
+                    if(scid=="-1") break;
+                }
                 print("请输入当前学期: ");
                 cin>>term;
                 print("请输入所属学院: ");
@@ -199,17 +203,26 @@ void Ui::teachingsecretaryui()
                 cin>>major;
                 print("请输入年级: ");
                 cin>>gradelevel;
-                _registrar.createSchedules(tsid,id,term,academy,major,gradelevel);
+                _registrar.createSchedules(tsid,scid,term,academy,major,gradelevel);
                 break;
             case 2:
                 print("请输入你想删除的课程表号: ");
-                cin>>id;
-                _registrar.removeSchedules(tsid,id);
+                cin>>scid;
+                while(!_registrar.affirmSchedule(scid)){
+                    print("不存在该课表！请重新输入(输入-1取消）：\n");
+                    cin>>scid;
+                    if(scid=="-1") break;
+                }
+                _registrar.removeSchedules(tsid,scid);
                 break;
             case 3:
-
                 print("请输入课程条目编号:");
                 cin>>eid;
+                while(_registrar.affirmScheduleEntry(eid)){
+                    print("该课程条目已存在！请重新输入(输入-1取消）：\n");
+                    cin>>eid;
+                    if(eid=="-1") break;
+                }
                 print("请输入课程时间:");
                 cin>>time;
                 print("请输入所在教室:");
@@ -224,9 +237,13 @@ void Ui::teachingsecretaryui()
                 choice=0;//初始化choice
                 while(choice!=4){
                     print("请输入你要修改的课程条目编号: ");
-                    cin>>id;
-                    _registrar.
-                    print("-------------课程条目:{}----------\n\n",id);
+                    cin>>eid;
+                    while(!_registrar.affirmScheduleEntry(eid)){
+                        print("不存在该课程条目！请重新输入(输入-1取消）：\n");
+                        cin>>eid;
+                        if(eid=="-1") break;
+                    }
+                    print("-------------课程条目:{}----------\n\n",scid);
                     print("             1.修改时间           \n");
                     print("             2.修改地点           \n");
                     print("             3.修改授课老师        \n");
@@ -238,16 +255,16 @@ void Ui::teachingsecretaryui()
                         case 1:
                             print("请输入你要修改的时间：");
                             cin>>time;
-                            _registrar.modifyEntrytime(id,time);
+                            _registrar.modifyEntrytime(eid,time);
                             break;
                         case 2:
                             print("请输入你要修改的地点： ");
-                            _registrar.modifyEntryroom(id,room);
+                            _registrar.modifyEntryroom(eid,room);
                             break;
                         case 3:
                             print("请输入你要修改的教师编号：");
                             cin>>tid;
-                            _registrar.modifyEntryteacher(id,tid);
+                            _registrar.modifyEntryteacher(eid,tid);
                             break;
                         case 4:
                             print("返回上一页\n");
@@ -258,22 +275,47 @@ void Ui::teachingsecretaryui()
                     break;
                 case 5:
                     print("请输入你要删除的课程条目编号: ");
-                    cin>>id;
-                    _registrar.removeScheduleEntrys(tsid,id);
+                    cin>>eid;
+                    while(!_registrar.affirmScheduleEntry(eid)){
+                        print("不存在该课程条目！请重新输入(输入-1取消）：\n");
+                        cin>>eid;
+                        if(eid=="-1") break;
+                    }
+                    _registrar.removeScheduleEntrys(tsid,eid);
                     break;
                 case 6:
                     print("请输入你要添加课程条目的课程表编号:");
-                    cin>>scheduleid;
+                    cin>>scid;
+                    while(!_registrar.affirmSchedule(scid)){
+                        print("不存在该课表！请重新输入(输入-1取消）：\n");
+                        cin>>scid;
+                        if(scid=="-1") break;
+                    }
                     print("请输入你要添加到课程表的课程条目id:");
-                    cin>>entryid;
-                    _registrar.addEntrysToSchedule(tsid,scheduleid,entryid);
+                    cin>>eid;
+                    while(!_registrar.affirmScheduleEntry(eid)){
+                        print("不存在该课程条目！请重新输入(输入-1取消）：\n");
+                        cin>>eid;
+                        if(eid=="-1") break;
+                    }
+                    _registrar.addEntrysToSchedule(tsid,scid,eid);
                     break;
                 case 7:
                     print("请输入你要删除课程条目的课程表编号:");
-                    cin>>scheduleid;
+                    cin>>scid;
+                    while(!_registrar.affirmSchedule(scid)){
+                        print("不存在该课表！请重新输入(输入-1取消）：\n");
+                        cin>>scid;
+                        if(scid=="-1") break;
+                    }
                     print("请输入你要删除到课程表的课程条目id:");
-                    cin>>entryid;
-                    _registrar.removeEntrysToSchedule(tsid,scheduleid,entryid);
+                    cin>>eid;
+                    while(!_registrar.affirmScheduleEntry(eid)){
+                        print("不存在该课程条目！请重新输入(输入-1取消）：\n");
+                        cin>>eid;
+                        if(eid=="-1") break;
+                    }
+                    _registrar.removeEntrysToSchedule(tsid,scid,eid);
                     break;
                 case 8:
                     print("返回主菜单\n");
