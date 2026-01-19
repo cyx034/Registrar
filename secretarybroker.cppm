@@ -70,7 +70,7 @@ shared_ptr<TeacherSecretary> TeacherSecretaryBroker::findTeacherSecretaryByIdDB(
     }
     try {
         pqxx::work t(*dbConnection);
-        pqxx::result res = t.exec(pqxx::zview{"SELECT tsno,tname,tacademy FROM tsecretary WHERE tsno = $1"},pqxx::params{id});
+        pqxx::result res = t.exec(pqxx::zview{"SELECT tsno,tsname,tsacademy FROM tsecretary WHERE tsno = $1"},pqxx::params{id});
         t.commit();
         if (res.empty()) {
             std::cout << "未找到教学秘书ID：" << id << endl;

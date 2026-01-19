@@ -110,8 +110,9 @@ void EnrollmentBroker::printSchedule(string sid)
     pqxx::result res = t.exec(pqxx::zview{"SELECT sc.cno,course.cname,course.ccredit,course.cacademy,teacher.tname FROM sc "
                                           "JOIN course ON sc.cno = course.cno JOIN teacher ON teacher.tno = course.tno WHERE sno = $1"},pqxx::params{sid});
     t.commit();
+    std::print("id        name               credit        academy                teacher\n");
     for(const auto& row : res) {
-        std::print("id        name               credit        academy                teacher\n");
+
         std::print(" {:<8} ",row["cno"].as<string>());
         std::print(" {:<20} ",row["cname"].as<string>());
         std::print(" {:<5} ",row["ccredit"].as<string>());

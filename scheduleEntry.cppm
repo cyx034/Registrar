@@ -34,9 +34,7 @@ ScheduleEntry::ScheduleEntry(string eid,string sid,string cno,string tno,string 
 
 
 ScheduleEntry::~ScheduleEntry()
-{
-    print("This ScheduleEntry isn't exit!!!");
-}
+{}
 
 bool ScheduleEntry::hasId(string id)
 {

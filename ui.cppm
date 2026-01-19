@@ -252,6 +252,7 @@ void Ui::teachingsecretaryui()
                             break;
                         case 2:
                             print("请输入你要修改的地点： ");
+                            cin>>room;
                             _registrar.modifyEntryroom(eid,room);
                             break;
                         case 3:

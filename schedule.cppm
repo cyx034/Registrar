@@ -29,9 +29,7 @@ private:
 
 Schedule::Schedule(string scheduleid,string term,string academy,string major,string gradelevel)
     :m_scheduleid(scheduleid),m_term(term),m_academy(academy),m_major(major),m_gradelevel(gradelevel)
-{
-    print("The Schedule create");
-}
+{}
 
 Schedule::~Schedule()
 {}
