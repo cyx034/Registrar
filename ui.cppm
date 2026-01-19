@@ -243,7 +243,7 @@ void Ui::teachingsecretaryui()
                         cin>>eid;
                         if(eid=="-1") break;
                     }
-                    print("-------------课程条目:{}----------\n\n",scid);
+                    print("-------------课程条目:{}----------\n\n",eid);
                     print("             1.修改时间           \n");
                     print("             2.修改地点           \n");
                     print("             3.修改授课老师        \n");
