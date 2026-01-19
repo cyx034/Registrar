@@ -85,6 +85,7 @@ void Ui::studentui()
         {
             case 1:
                 //打印所有课程信息
+                _registrar.printAllCourse();
                 print("请输入要选择的课程号(输入-1停止）: ");
                 cin>>cid;
                 while(cid!="-1"){
@@ -103,7 +104,7 @@ void Ui::studentui()
                 }
                 break;
             case 3:
-                _registrar.printAllCourse();
+                _registrar.classSchedule(sid);
                 break;
             case 4:
                 break;

@@ -40,10 +40,10 @@ void StudentBroker::initialize()
     _students.clear();
     for(const auto& row : res) {
         _students.push_back(std::make_shared<Student>(
-            res[0]["sno"].as<string>(),
-            res[0]["sname"].as<string>(),
-            res[0]["sacademy"].as<string>(),
-            res[0]["smajor"].as<string>()));
+            row["sno"].as<string>(),
+            row["sname"].as<string>(),
+            row["sacademy"].as<string>(),
+            row["smajor"].as<string>()));
     }
 }
 
@@ -83,7 +83,7 @@ shared_ptr<Student> StudentBroker::findStudentByIdDB(const string& id)
             res[0]["sacademy"].as<string>(),
             res[0]["smajor"].as<string>()
         );
-        _students.push_back(std::move(student));
+        _students.push_back(student);
         return student;
     } catch (const std::exception& e) {
         cerr << "查询失败：" << e.what() << endl;

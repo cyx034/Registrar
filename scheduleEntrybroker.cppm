@@ -52,12 +52,12 @@ void ScheduleEntryBroker::initialize()
     _scheduleEntry.clear();
     for(const auto& row : res) {
         _scheduleEntry.push_back(std::make_shared<ScheduleEntry>(
-            res[0]["entryid"].as<string>(),
-            res[0]["scheduleid"].as<string>(),
-            res[0]["cno"].as<string>(),
-            res[0]["tno"].as<string>(),
-            res[0]["time"].as<string>(),
-            res[0]["classroom"].as<string>()));
+            row["entryid"].as<string>(),
+            row["scheduleid"].as<string>(),
+            row["cno"].as<string>(),
+            row["tno"].as<string>(),
+            row["time"].as<string>(),
+            row["classroom"].as<string>()));
     }
 }
 
@@ -335,7 +335,7 @@ shared_ptr<ScheduleEntry> ScheduleEntryBroker::findScheduleEntryByIdDB(const str
             res[0]["time"].as<string>(),
             res[0]["classroom"].as<string>()
         );
-        _scheduleEntry.push_back(std::move(scheduleEntry));
+        _scheduleEntry.push_back(scheduleEntry);
         return scheduleEntry;
     } catch (const std::exception& e) {
         cerr << "查询失败：" << e.what() << endl;

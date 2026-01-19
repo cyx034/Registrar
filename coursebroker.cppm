@@ -50,11 +50,11 @@ void CourseBroker::initialize()
     _courses.clear();
     for(const auto& row : res) {
         _courses.push_back(std::make_shared<Course>(
-            res[0]["cno"].as<string>(),
-            res[0]["cname"].as<string>(),
-            res[0]["ccredit"].as<string>(),
-            res[0]["cacademy"].as<string>(),
-            res[0]["tno"].as<string>()));
+            row["cno"].as<string>(),
+            row["cname"].as<string>(),
+            row["ccredit"].as<string>(),
+            row["cacademy"].as<string>(),
+            row["tno"].as<string>()));
     }
 }
 
@@ -86,14 +86,12 @@ void CourseBroker::courseEntry()
     pqxx::result res = t.exec(pqxx::zview{"SELECT * FROM course"});
     t.commit();
     print("id       name              credit       academy\n");
-    int i = 0;
     for(const auto& row : res) {
 
-        print("{:<8}{:<20}{:<5}{:<10}\n",res[i]["cno"].as<string>(),
-              res[i]["cname"].as<string>(),
-              res[i]["ccredit"].as<string>(),
-              res[i]["cacademy"].as<string>());
-        i++;
+        print("{:<8}{:<20}{:<5}{:<10}\n",row["cno"].as<string>(),
+              row["cname"].as<string>(),
+              row["ccredit"].as<string>(),
+              row["cacademy"].as<string>());
     }
 }
 
@@ -123,6 +121,7 @@ shared_ptr<Course> CourseBroker::findCourseById(const std::string& id)
 {
     if(auto local = findCourseByIdLocal(id))  //先从本地缓存中找
         return local;
+    std::print("cDB\n");
     return findCourseByIdDB(id); //没有就去数据库中找
 }
 
@@ -155,7 +154,7 @@ shared_ptr<Course> CourseBroker::findCourseByIdDB(const string& id)
             res[0]["ccredit"].as<string>(),
             res[0]["cacademy"].as<string>(),
             res[0]["tno"].as<string>());
-        _courses.push_back(std::move(course));   //把用到的存入缓存区
+        _courses.push_back(course);   //把用到的存入缓存区
         return course;
     } catch (const std::exception& e) {
         cerr << "查询失败：" << e.what() << endl;

@@ -42,9 +42,9 @@ void TeacherBroker::initialize()
     _teacher.clear();
     for(const auto& row : res) {
         _teacher.push_back(std::make_shared<Teacher>(
-            res[0]["tno"].as<string>(),
-            res[0]["tname"].as<string>(),
-            res[0]["tacademy"].as<string>()));
+            row["tno"].as<string>(),
+            row["tname"].as<string>(),
+            row["tacademy"].as<string>()));
     }
 }
 
@@ -82,7 +82,7 @@ shared_ptr<Teacher> TeacherBroker::findTeacherByIdDB(const string& id)
             res[0]["tno"].as<string>(),
             res[0]["tname"].as<string>(),
             res[0]["tacademy"].as<string>());
-        _teacher.push_back(std::move(teacher));   //把用到的存入缓存区
+        _teacher.push_back(teacher);   //把用到的存入缓存区
         return teacher;
     } catch (const std::exception& e) {
         cerr << "查询失败：" << e.what() << endl;

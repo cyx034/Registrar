@@ -159,7 +159,16 @@ void Registrar::studentEnrollsInCourse(string sid,string cid)
     auto student = _studentBroker.findStudentById(sid);  //查找学生
     auto course = _courseBroker.findCourseById(cid);  //查找课程
 
+    print("sin\n");
+    if (!student) {
+            print("student 是 null\n");
+    }
+    if (!course) {
+            print("course 是 null\n");
+    }
     if(student && course){  //如果学生和课程都存在
+        print("进入sin\n");
+
        if(!_enrollmentBroker.save(sid,cid)){
            print("注册失败!\n");
         }
@@ -185,14 +194,13 @@ void Registrar::studentDropCourse(string sid,string cid)
     auto c = _courseBroker.findCourseById(cid); //查找课程
     //缺少空指针检查
     print("{}\n",c->roster());
-}
+}*/
 
 //打印指定学生的课表
 void Registrar::classSchedule(string sid)
 {
-    auto s = _studentBroker.findStudentById(sid);
-    print("{}\n",s->printSchedules());
-}*/
+    _enrollmentBroker.printSchedule(sid);
+}
 
 
 void Registrar::initialize()  //系统初始化

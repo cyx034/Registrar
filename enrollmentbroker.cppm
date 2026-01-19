@@ -6,6 +6,8 @@ module;
 export module registrar:broker.enrollmentbroker;
 import :broker.registrarbroker;
 
+//import :broker.coursebroker;
+
 import :domain.enrollment;
 
 import std;
@@ -15,6 +17,7 @@ using std::cerr;
 using std::endl;
 using std::shared_ptr;
 using std::vector;
+
 
 export class EnrollmentBroker : public RegistrarBroker
 {
@@ -28,6 +31,8 @@ public:
     bool remove(const string& sid,const string& cid);
 
     bool updateGrade(const Enrollment& enrollment);
+
+    void printSchedule(string sid);
 
     void initialize();
 
@@ -48,11 +53,11 @@ void EnrollmentBroker::initialize()
     t.commit();
     _enrollment.clear();
     for(const auto& row : res) {
-        string sno = res[0]["sno"].as<string>();
-        string cno = res[0]["cno"].as<string>();
+        string sno = row["sno"].as<string>();
+        string cno = row["cno"].as<string>();
 
         if(!row["grade"].is_null()){
-            double grade = res[0]["grade"].as<double>();
+            double grade = row["grade"].as<double>();
             auto e = std::make_shared<Enrollment>(sno,cno,grade);
             _enrollment.push_back(e);
         }else{
@@ -61,6 +66,28 @@ void EnrollmentBroker::initialize()
         }
     }
 }
+
+void EnrollmentBroker::printSchedule(string sid)
+{
+    if (!status) {
+        cerr << "数据库未连接" << endl;
+        return;
+    }
+    pqxx::work t(*dbConnection);
+    pqxx::result res = t.exec(pqxx::zview{"SELECT sc.cno,course.cname,course.ccredit,course.cacademy,teacher.tname FROM sc "
+                                          "JOIN course ON sc.cno = course.cno JOIN teacher ON teacher.tno = course.tno WHERE sno = $1"},pqxx::params{sid});
+    t.commit();
+    for(const auto& row : res) {
+        std::print("id      name               credit        academy                teacher\n");
+        std::print(" {:<8} ",row["cno"].as<string>());
+        std::print(" {:<20} ",row["cname"].as<string>());
+        std::print(" {:<5} ",row["ccredit"].as<string>());
+        std::print(" {:<20}         ",row["cacademy"].as<string>());
+        std::print(" {}\n",row["tname"].as<string>());
+    }
+}
+
+
 
 bool EnrollmentBroker::save(const string& sid,const string& cid)
 {

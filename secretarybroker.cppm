@@ -40,9 +40,9 @@ void TeacherSecretaryBroker::initialize()
     _teachersecretary.clear();
     for(const auto& row : res) {
         _teachersecretary.push_back(std::make_shared<TeacherSecretary>(
-            res[0]["tsno"].as<string>(),
-            res[0]["tsname"].as<string>(),
-            res[0]["tsacademy"].as<string>()));
+            row["tsno"].as<string>(),
+            row["tsname"].as<string>(),
+            row["tsacademy"].as<string>()));
     }
 }
 
@@ -80,7 +80,7 @@ shared_ptr<TeacherSecretary> TeacherSecretaryBroker::findTeacherSecretaryByIdDB(
             res[0]["tsno"].as<string>(),
             res[0]["tsname"].as<string>(),
             res[0]["tsacademy"].as<string>());
-        _teachersecretary.push_back(std::move(teachersecretary));   //把用到的存入缓存区
+        _teachersecretary.push_back(teachersecretary);   //把用到的存入缓存区
         return teachersecretary;
     } catch (const std::exception& e) {
         cerr << "查询失败：" << e.what() << endl;
